@@ -240,7 +240,7 @@ namespace Lan.Shapes.Shapes
                     return;
                 }
 
-                HandleTranslate(point);
+                //HandleTranslate(point);
             }
             else
             {
@@ -259,10 +259,36 @@ namespace Lan.Shapes.Shapes
             switch ((DragLocation)SelectedDragHandle!.Id)
             {
                 case DragLocation.TopLeft:
+                    //upper
+                    _edgeDict[EdgeType.Upper].Start = point;
+                    _edgeDict[EdgeType.Upper].End = new Point(_edgeDict[EdgeType.Upper].End.X, point.Y);
+
+                    //right
+                    _edgeDict[EdgeType.Right].Start = _edgeDict[EdgeType.Upper].End;
+
+                    //left
+                    _edgeDict[EdgeType.Left].Start = point;
+                    _edgeDict[EdgeType.Left].End = new Point(point.X, _edgeDict[EdgeType.Left].End.Y);
+
+                    //bottom
+                    _edgeDict[EdgeType.Bottom].Start = _edgeDict[EdgeType.Left].End;
                     break;
                 case DragLocation.TopMiddle:
                     break;
                 case DragLocation.TopRight:
+                    //right
+                    _edgeDict[EdgeType.Right].Start = point;
+                    _edgeDict[EdgeType.Right].End = new Point(point.X, _edgeDict[EdgeType.Right].End.Y);
+
+                    //upper
+                    _edgeDict[EdgeType.Upper].End = point;
+                    _edgeDict[EdgeType.Upper].Start= new Point(_edgeDict[EdgeType.Upper].Start.X, point.Y);
+
+                    //bottom
+                    _edgeDict[EdgeType.Bottom].End = _edgeDict[EdgeType.Right].End;
+
+                    //left
+                    _edgeDict[EdgeType.Left].Start = _edgeDict[EdgeType.Upper].Start;
                     break;
                 case DragLocation.RightMiddle:
                     break;
@@ -283,6 +309,20 @@ namespace Lan.Shapes.Shapes
                 case DragLocation.BottomMiddle:
                     break;
                 case DragLocation.BottomLeft:
+                    //upper start
+                    _edgeDict[EdgeType.Upper].Start = new Point(point.X, _edgeDict[EdgeType.Upper].Start.Y);
+
+                    //left
+                    _edgeDict[EdgeType.Left].Start = _edgeDict[EdgeType.Upper].Start;
+                    _edgeDict[EdgeType.Left].End = point;
+
+                    //bottom
+                    _edgeDict[EdgeType.Bottom].Start = point;
+                    _edgeDict[EdgeType.Bottom].End = new Point(_edgeDict[EdgeType.Bottom].End.X, point.Y);
+
+                    //right
+                    _edgeDict[EdgeType.Right].End = _edgeDict[EdgeType.Bottom].End;
+
                     break;
                 case DragLocation.LeftMiddle:
                     break;
@@ -312,7 +352,7 @@ namespace Lan.Shapes.Shapes
 
         private Rect GenerateRect()
         {
-            return new Rect(new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
+            return new Rect(_edgeDict[EdgeType.Upper].Start, new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
         }
 
         private void UpdateGeometryGroup()

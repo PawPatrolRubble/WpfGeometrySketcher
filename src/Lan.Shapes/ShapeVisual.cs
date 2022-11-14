@@ -55,6 +55,7 @@ namespace Lan.Shapes
         {
             var renderContext = RenderOpen();
             renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
+            renderContext.DrawRectangle(ShapeStyler.FillColor,ShapeStyler.SketchPen,RenderGeometry.Bounds);
             renderContext.Close();
         }
 
@@ -73,7 +74,16 @@ namespace Lan.Shapes
         }
 
         protected List<DragHandle> Handles = new List<DragHandle>();
-        protected DragHandle? SelectedDragHandle;
+        private DragHandle? _selectedDragHandle;
+
+        protected DragHandle? SelectedDragHandle
+        {
+            get => _selectedDragHandle;
+            set
+            {
+                _selectedDragHandle = value;
+            }
+        }
 
         public abstract void CreateHandles();
 
