@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes", "src\Lan.Shape
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.SketchBoard", "src\Lan.SketchBoard\Lan.SketchBoard.csproj", "{75C0EA06-A765-4801-94E7-9E5D02A7D4E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lan.Shapes.TestApp", "Test\Lan.Shapes.TestApp\Lan.Shapes.TestApp.csproj", "{F447EFCD-F5D7-4950-BE42-C899271A7A26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{72CD207F-85D8-4F06-90A0-8BCCF15D9E16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{86C7D4B1-878E-42CF-A839-FC79516BEE77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,11 +27,20 @@ Global
 		{75C0EA06-A765-4801-94E7-9E5D02A7D4E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75C0EA06-A765-4801-94E7-9E5D02A7D4E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75C0EA06-A765-4801-94E7-9E5D02A7D4E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F447EFCD-F5D7-4950-BE42-C899271A7A26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F447EFCD-F5D7-4950-BE42-C899271A7A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F447EFCD-F5D7-4950-BE42-C899271A7A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F447EFCD-F5D7-4950-BE42-C899271A7A26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B85921A7-54EA-4457-A6A5-6FA9797B8176}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{061B040E-CD17-4D39-B0BB-8ECF96977CF9} = {72CD207F-85D8-4F06-90A0-8BCCF15D9E16}
+		{75C0EA06-A765-4801-94E7-9E5D02A7D4E6} = {72CD207F-85D8-4F06-90A0-8BCCF15D9E16}
+		{F447EFCD-F5D7-4950-BE42-C899271A7A26} = {86C7D4B1-878E-42CF-A839-FC79516BEE77}
 	EndGlobalSection
 EndGlobal

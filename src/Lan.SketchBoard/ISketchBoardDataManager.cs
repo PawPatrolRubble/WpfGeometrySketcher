@@ -1,12 +1,17 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Windows.Media;
 using Lan.Shapes;
 
 namespace Lan.SketchBoard
 {
     public interface ISketchBoardDataManager
     {
+        /// <summary>
+        /// this is used to hold all shapes
+        /// </summary>
+        VisualCollection VisualCollection { get; set; }
         
         /// <summary>
         /// get all shapes defined in canvas
@@ -22,7 +27,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        string? SelectedDrawingShape { get; }
+        ShapeVisual? SelectedShape { get; }
 
         /// <summary>
         /// relate a tool with a shape
@@ -46,7 +51,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// manipulator currently used
         /// </summary>
-        IShapeManipulator? CurrentShapeManipulator { get; }
+        // IShapeManipulator? CurrentShapeManipulator { get; }
 
         /// <summary>
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形
@@ -66,7 +71,13 @@ namespace Lan.SketchBoard
         void RemoveAt(int index, int count);
 
         void ClearAllShapes();
-        ShapeVisual GetShapeVisual(int index);
+        ShapeVisual? GetShapeVisual(int index);
+        
+        /// <summary>
+        /// select one shape to draw
+        /// </summary>
+        /// <param name="drawingTool"></param>
+        void SelectDrawingTool(string drawingTool);
     }
     
 }

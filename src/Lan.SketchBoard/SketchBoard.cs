@@ -1,48 +1,70 @@
+#nullable enable
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using Lan.Shapes;
 
 namespace Lan.SketchBoard
 {
     public class SketchBoard : Canvas
     {
-        
-        public static readonly DependencyProperty SketchBoardDataProperty = DependencyProperty.Register(
-            "SketchBoardData", typeof(ISketchBoardDataManager), typeof(SketchBoard),
-            new PropertyMetadata(default(ISketchBoardDataManager)));
+        public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
+            "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
+            new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
 
-        public ISketchBoardDataManager SketchBoardData
+        private static void OnSketchBoardDataManagerChangedCallBack(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
-            get { return (ISketchBoardDataManager)GetValue(SketchBoardDataProperty); }
-            set { SetValue(SketchBoardDataProperty, value); }
+            if (d is SketchBoard sketchBoard && e.NewValue is ISketchBoardDataManager dataManager)
+            {
+                dataManager.VisualCollection = new VisualCollection(sketchBoard);
+            }
+        }
+
+        public ISketchBoardDataManager? SketchBoardDataManager
+        {
+            get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
+            set { SetValue(SketchBoardDataManagerProperty, value); }
         }
 
 
-        #region events handling
+        #region overrides
 
-        private Point _mouseDownPosition;
+        protected override int VisualChildrenCount => SketchBoardDataManager?.VisualCollection.Count ?? 0;
 
-
-
-        /// <summary>Invoked when an unhandled <see cref="E:System.Windows.UIElement.MouseLeftButtonDown" /> routed event is raised on this element. Implement this method to add class handling for this event.</summary>
-        /// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data. The event data reports that the left mouse button was pressed.</param>
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        protected override Visual GetVisualChild(int index)
         {
-            //if not shape tool is selected return
-            if (string.IsNullOrEmpty(SketchBoardData.SelectedDrawingShape))
-            {
-                return;
-            }
-
-            var p = _mouseDownPosition = e.GetPosition(this);
-
-            //hit test if any shape is being selected
-
+            return SketchBoardDataManager?.VisualCollection[index] ?? default(ShapeVisual);
         }
 
         #endregion
 
 
+        #region events handling
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+            //hit test if any shape is being selected
+        }
+
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            //
+            if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this));
+            }
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+        }
+
+        #endregion
     }
 }
