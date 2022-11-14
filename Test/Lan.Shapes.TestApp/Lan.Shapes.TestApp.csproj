@@ -1,16 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <UseWPF>true</UseWPF>
+        <OutputType>WinExe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
+      <ProjectReference Include="..\..\src\Lan.SketchBoard\Lan.SketchBoard.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
     </ItemGroup>
 
 </Project>
