@@ -24,7 +24,7 @@ namespace Lan.Shapes.Handle
         
         public bool HitTest(Point p)
         {
-            return HandleGeometry.FillContains(p, DetectionRange, ToleranceType.Relative);
+            return HandleGeometry.FillContains(p, DetectionRange, ToleranceType.Absolute);
         }
     }
 }
