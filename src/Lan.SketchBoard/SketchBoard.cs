@@ -53,11 +53,7 @@ namespace Lan.SketchBoard
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            //
-            if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
-            {
-                SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this));
-            }
+            SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this), e.MouseDevice.LeftButton);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)

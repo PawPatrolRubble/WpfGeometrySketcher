@@ -15,4 +15,8 @@
       <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="reference.png" />
+    </ItemGroup>
+
 </Project>

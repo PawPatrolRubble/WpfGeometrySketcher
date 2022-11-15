@@ -13,8 +13,7 @@ namespace Lan.Shapes.TestApp
             SketchBoardDataManager = sketchBoardDataManager;
             SketchBoardDataManager.RegisterDrawingTool("rectangle", typeof(Rectangle));
             SelectOneShapeCommand= new RelayCommand(SelectOneShapeCommandImpl);
-
-            
+            GetShapeInfoCommand= new RelayCommand(GetShapeInfoCommandImpl);
         }
 
         public ISketchBoardDataManager  SketchBoardDataManager { get; set; }
@@ -23,6 +22,13 @@ namespace Lan.Shapes.TestApp
         private void SelectOneShapeCommandImpl()
         {
             SketchBoardDataManager.SelectDrawingTool("rectangle");
+        }
+
+        public ICommand GetShapeInfoCommand { get; private set; }
+        private void GetShapeInfoCommandImpl()
+        {
+            var shapeVisual = SketchBoardDataManager.SelectedShape;
+
         }
     }
 }

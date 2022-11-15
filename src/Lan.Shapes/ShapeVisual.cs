@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
 using Lan.Shapes.Styler;
@@ -38,7 +39,7 @@ namespace Lan.Shapes
         /// <summary>
         /// 鼠标点击
         /// </summary>
-        public abstract void OnMouseMove(Point point);
+        public abstract void OnMouseMove(Point point,MouseButtonState buttonState);
 
         /// <summary>
         /// 选择时
@@ -55,7 +56,6 @@ namespace Lan.Shapes
         {
             var renderContext = RenderOpen();
             renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
-            renderContext.DrawRectangle(ShapeStyler.FillColor,ShapeStyler.SketchPen,RenderGeometry.Bounds);
             renderContext.Close();
         }
 
@@ -72,7 +72,7 @@ namespace Lan.Shapes
 
             SelectedDragHandle = null;
         }
-
+        
         protected List<DragHandle> Handles = new List<DragHandle>();
         private DragHandle? _selectedDragHandle;
 

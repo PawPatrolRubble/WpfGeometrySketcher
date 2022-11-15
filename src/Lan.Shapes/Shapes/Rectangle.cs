@@ -38,10 +38,7 @@ namespace Lan.Shapes.Shapes
         public Point Start
         {
             get => _start;
-            set
-            {
-                _start = value;
-            }
+            set { _start = value; }
         }
 
         private Point _end;
@@ -49,10 +46,7 @@ namespace Lan.Shapes.Shapes
         public Point End
         {
             get => _end;
-            set
-            {
-                _end = value;
-            }
+            set { _end = value; }
         }
 
         public Point MiddlePoint => new Point((End.X + Start.X) / 2, (End.Y + Start.Y) / 2);
@@ -207,10 +201,37 @@ namespace Lan.Shapes.Shapes
             if (RenderGeometry.FillContains(newPoint) || !IsGeometryInitialized)
             {
                 FindSelectedHandle(newPoint);
+
+                if (SelectedDragHandle != null) UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
                 _oldPoint = newPoint;
             }
         }
 
+        private void UpdateMouseCursor(DragLocation dragLocation)
+        {
+            switch (dragLocation)
+            {
+                case DragLocation.TopLeft:
+                    break;
+                case DragLocation.TopMiddle:
+                    break;
+                case DragLocation.TopRight:
+                    break;
+                case DragLocation.RightMiddle:
+                    break;
+                case DragLocation.BottomRight:
+                    Mouse.SetCursor(Cursors.SizeNESW);
+                    break;
+                case DragLocation.BottomMiddle:
+                    break;
+                case DragLocation.BottomLeft:
+                    break;
+                case DragLocation.LeftMiddle:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(dragLocation), dragLocation, null);
+            }
+        }
 
         /// <summary>
         /// when mouse left button up
@@ -229,30 +250,52 @@ namespace Lan.Shapes.Shapes
         /// <summary>
         /// left mouse pressed or not pressed
         /// </summary>
-        public override void OnMouseMove(Point point)
+        public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-
-            if (IsGeometryInitialized)
+            if (RenderGeometry.FillContains(point))
             {
-                if (SelectedDragHandle != null)
-                {
-                    HandleGeometryExtension(point);
-                    return;
-                }
-
-                //HandleTranslate(point);
+                Mouse.SetCursor(Cursors.Hand);
+                _canMoveWithHand = true;
             }
             else
             {
-                DrawGeometry(point);
-                CreateHandles();
-                UpdateGeometryGroup();
-                UpdateVisual();
+                _canMoveWithHand = false;
+            }
+            
+            if (buttonState == MouseButtonState.Pressed)
+            {
+                if (IsGeometryInitialized)
+                {
+                    //scale operation
+                    if (SelectedDragHandle != null)
+                    {
+                        HandleGeometryExtension(point);
+                        return;
+                    }
+
+                    if (_canMoveWithHand)
+                    {
+                        HandleTranslate(point);
+                        CreateHandles();
+                        UpdateGeometryGroup();
+                        UpdateVisual();
+                    }
+                }
+                else
+                {
+                    DrawGeometry(point);
+                    CreateHandles();
+                    UpdateGeometryGroup();
+                    UpdateVisual();
+                }
             }
 
-            _oldPoint = point;
 
+
+            _oldPoint = point;
         }
+
+        private bool _canMoveWithHand;
 
         private void HandleGeometryExtension(Point point)
         {
@@ -282,7 +325,7 @@ namespace Lan.Shapes.Shapes
 
                     //upper
                     _edgeDict[EdgeType.Upper].End = point;
-                    _edgeDict[EdgeType.Upper].Start= new Point(_edgeDict[EdgeType.Upper].Start.X, point.Y);
+                    _edgeDict[EdgeType.Upper].Start = new Point(_edgeDict[EdgeType.Upper].Start.X, point.Y);
 
                     //bottom
                     _edgeDict[EdgeType.Bottom].End = _edgeDict[EdgeType.Right].End;
@@ -352,7 +395,8 @@ namespace Lan.Shapes.Shapes
 
         private Rect GenerateRect()
         {
-            return new Rect(_edgeDict[EdgeType.Upper].Start, new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
+            return new Rect(_edgeDict[EdgeType.Upper].Start,
+                new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
         }
 
         private void UpdateGeometryGroup()
@@ -360,7 +404,6 @@ namespace Lan.Shapes.Shapes
             _geometryGroup.Children.Clear();
 
             var rect = GenerateRect();
-            Debug.WriteLine($"{rect}");
             _geometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
             _geometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
         }
