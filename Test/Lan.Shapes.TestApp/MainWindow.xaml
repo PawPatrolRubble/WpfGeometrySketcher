@@ -9,15 +9,30 @@
         Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance local:MainWindowViewModel }">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <sketchBoard:SketchBoard
-            Background="LightGray"
-            SketchBoardDataManager="{Binding SketchBoardDataManager }" />
-        
-        <Button  Grid.Row="1" 
-                 Content="select one shape"
-                 Command="{Binding SelectOneShapeCommand}" ></Button>
+
+        <Grid Row="0" Background="Aquamarine">
+
+            <Image
+                Width="1000"
+                Height="828"
+                Stretch="None" Source="D:\HelloMaster\GeometryShapesSketcher\Test\Lan.Shapes.TestApp\reference.png">
+            </Image>
+            <sketchBoard:SketchBoard
+                Background="Transparent"
+                Width="1000"
+                Height="828"
+                SketchBoardDataManager="{Binding SketchBoardDataManager }" />
+        </Grid>
+
+        <Button Grid.Row="1"
+                Content="select one shape"
+                Command="{Binding SelectOneShapeCommand}">
+        </Button>
+
+        <Button Grid.Row="2" Content="get shape inform" Command="{Binding GetShapeInfoCommand}"></Button>
     </Grid>
 </Window>
