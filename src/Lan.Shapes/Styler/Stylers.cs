@@ -6,10 +6,10 @@ namespace Lan.Shapes.Styler
     {
 
         public static IShapeStyler SelectedStyler { get; } =
-            new ShapeStyler(Brushes.Red, Brushes.Lime, DashStyles.Solid);
+            new ShapeStyler(Brushes.Red, Brushes.Lime, DashStyles.Solid,5);
 
         public static IShapeStyler UnselectedStyler { get; } =
-            new ShapeStyler(Brushes.Transparent, Brushes.Lime, DashStyles.Solid);
+            new ShapeStyler(Brushes.Transparent, Brushes.Lime, DashStyles.Solid,5);
 
     }
 }

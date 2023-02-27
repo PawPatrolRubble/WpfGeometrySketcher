@@ -428,10 +428,10 @@ namespace Lan.Shapes.Shapes
         {
             Handles.Clear();
 
-            Handles.Add(new CircleDragHandle(5, _edgeDict[EdgeType.Left].Start, (int)DragLocation.TopLeft));
-            Handles.Add(new CircleDragHandle(5, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
-            Handles.Add(new CircleDragHandle(5, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
-            Handles.Add(new CircleDragHandle(5, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].Start, (int)DragLocation.TopLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
         }
 
         #endregion

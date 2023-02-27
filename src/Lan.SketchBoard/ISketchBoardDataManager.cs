@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media;
 using Lan.Shapes;
+using Lan.Shapes.Styler;
 
 namespace Lan.SketchBoard
 {
@@ -71,6 +72,7 @@ namespace Lan.SketchBoard
         void RemoveAt(int index, int count);
 
         void ClearAllShapes();
+
         ShapeVisual? GetShapeVisual(int index);
         
         /// <summary>
@@ -78,6 +80,13 @@ namespace Lan.SketchBoard
         /// </summary>
         /// <param name="drawingTool"></param>
         void SelectDrawingTool(string drawingTool);
+
+        /// <summary>
+        /// provides styler for the new shaped created
+        /// </summary>
+        /// <param name="drawingTool"></param>
+        /// <param name="styler"></param>
+        void SelectDrawingTool(string drawingTool, IShapeStyler styler);
     }
     
 }
