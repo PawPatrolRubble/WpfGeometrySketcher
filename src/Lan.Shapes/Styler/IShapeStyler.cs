@@ -8,6 +8,8 @@ namespace Lan.Shapes.Styler
         void SetFillColor(Brush color);
         void SetStrokeThickness(double strokeThickness);
         void SetPenDashStyle(DashStyle dashStyle);
+
+        double DragHandleSize { get; }
         Pen SketchPen { get; }
         Brush FillColor { get; }
         string Name { get; set; }

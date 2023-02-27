@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
+using System.Windows.Media;
 using Lan.Shapes.Shapes;
+using Lan.Shapes.Styler;
 using Lan.SketchBoard;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -21,7 +23,7 @@ namespace Lan.Shapes.TestApp
         public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
         {
-            SketchBoardDataManager.SelectDrawingTool("rectangle");
+            SketchBoardDataManager.SelectDrawingTool("rectangle", new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5,50));
         }
 
         public ICommand GetShapeInfoCommand { get; private set; }

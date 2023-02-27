@@ -11,6 +11,10 @@ namespace Lan.SketchBoard
     {
         private ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
+
+        /// <summary>
+        /// 当前图层
+        /// </summary>
         private ShapeLayer? _currentShapeLayer;
 
 
@@ -63,7 +67,7 @@ namespace Lan.SketchBoard
         /// </summary>
         public ShapeLayer? CurrentShapeLayer => _currentShapeLayer;
 
-        
+
         /// <summary>
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形
         /// </summary>
@@ -95,11 +99,22 @@ namespace Lan.SketchBoard
             VisualCollection.RemoveAt(index);
         }
 
+
+        /// <summary>
+        /// not supported
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void RemoveAt(int index, int count)
         {
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// clear all shapes on canvas
+        /// </summary>
         public void ClearAllShapes()
         {
             VisualCollection.Clear();
@@ -116,21 +131,48 @@ namespace Lan.SketchBoard
         /// <param name="drawingTool"></param>
         public void SelectDrawingTool(string drawingTool)
         {
-            //todo throw exception if visualcollection is null
+            LocalAddNewGeometry(drawingTool, _shapeStylerFactory.ShapeUnselectedVisualState());
+        }
 
-            if (VisualCollection==null)
+        private void LocalAddNewGeometry(string drawingTool, IShapeStyler shapeStyler)
+        {
+            if (string.IsNullOrEmpty(drawingTool))
+            {
+                throw new ArgumentNullException(nameof(drawingTool));
+            }
+
+            if (shapeStyler == null)
+            {
+                throw new ArgumentNullException(nameof(shapeStyler));
+            }
+
+
+            if (VisualCollection == null)
             {
                 throw new NullReferenceException("visual collection must be init first");
             }
-            
+
+
+
             if (_drawingTools.ContainsKey(drawingTool))
             {
-               var shape =(ShapeVisual)Activator.CreateInstance(_drawingTools[drawingTool])!;
-               shape.ShapeStyler = _shapeStylerFactory.ShapeUnselectedVisualState();
+                var shape = (ShapeVisual)Activator.CreateInstance(_drawingTools[drawingTool])!;
+                shape.ShapeStyler = shapeStyler;
 
-               SelectedShape = shape;
-               VisualCollection.Add(shape);
+                SelectedShape = shape;
+                VisualCollection.Add(shape);
             }
+        }
+
+
+        /// <summary>
+        /// create a shape with custom style
+        /// </summary>
+        /// <param name="drawingTool"></param>
+        /// <param name="styler"></param>
+        public void SelectDrawingTool(string drawingTool, IShapeStyler styler)
+        {
+            LocalAddNewGeometry(drawingTool, styler);
         }
     }
 }

@@ -58,6 +58,7 @@ namespace Lan.Shapes.Styler
             return _selectedStyler;
         }
 
+
         public IShapeStyler CustomShapeStyler(Brush fillColor, Brush strokeColor, double strokeThickness)
         {
             var customStyler = new ShapeStyler();
@@ -65,6 +66,16 @@ namespace Lan.Shapes.Styler
             customStyler.SetStrokeColor(strokeColor);
             customStyler.SetStrokeThickness(strokeThickness);
 
+            return customStyler;
+        }   
+        
+        public IShapeStyler CustomShapeStyler(Brush fillColor, Brush strokeColor, double strokeThickness,double dragHandleSize)
+        {
+            var customStyler = new ShapeStyler();
+            customStyler.SetFillColor(fillColor);
+            customStyler.SetStrokeColor(strokeColor);
+            customStyler.SetStrokeThickness(strokeThickness);
+            customStyler.DragHandleSize = dragHandleSize;
             return customStyler;
         }
     }

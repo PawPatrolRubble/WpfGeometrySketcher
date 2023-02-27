@@ -11,7 +11,7 @@ namespace Lan.Shapes.Styler
 
         public IShapeStyler Clone()
         {
-            return new ShapeStyler(FillColor, _sketchPen.Brush, _sketchPen.DashStyle);
+            return new ShapeStyler(FillColor, _sketchPen.Brush, _sketchPen.DashStyle, DragHandleSize);
         }
 
         public void SetFillColor(Brush color)
@@ -34,16 +34,19 @@ namespace Lan.Shapes.Styler
             _sketchPen.DashStyle = dashStyle;
         }
 
+        public double DragHandleSize { get; set; }
+
         public ShapeStyler()
         {
         }
 
-        public ShapeStyler(Brush fillColor, Brush strokeColor, DashStyle dashStyle)
+        public ShapeStyler(Brush fillColor, Brush strokeColor, DashStyle dashStyle, double dragHandleSize)
         {
             this.FillColor = fillColor;
             _sketchPen.Thickness = 1;
             _sketchPen.Brush = strokeColor;
             _sketchPen.DashStyle = dashStyle;
+            DragHandleSize = dragHandleSize;
         }
     }
 }
