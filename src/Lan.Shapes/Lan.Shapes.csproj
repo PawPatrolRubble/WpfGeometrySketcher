@@ -3,7 +3,13 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <UseWPF>true</UseWPF>
+
     </PropertyGroup>
+
+	<PropertyGroup>
+		<PackageVersion>1.0.0-preview05</PackageVersion>
+	</PropertyGroup>
+
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />

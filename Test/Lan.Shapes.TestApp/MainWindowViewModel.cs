@@ -23,7 +23,7 @@ namespace Lan.Shapes.TestApp
         public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
         {
-            SketchBoardDataManager.SelectDrawingTool("rectangle", new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5,50));
+            SketchBoardDataManager.SelectDrawingTool("rectangle", new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5,15));
         }
 
         public ICommand GetShapeInfoCommand { get; private set; }

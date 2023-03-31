@@ -192,6 +192,8 @@ namespace Lan.Shapes.Shapes
         }
 
 
+        private Point? _startPoint;
+
         /// <summary>
         /// left mouse button down event
         /// </summary>
@@ -204,6 +206,7 @@ namespace Lan.Shapes.Shapes
 
                 if (SelectedDragHandle != null) UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
                 _oldPoint = newPoint;
+                _startPoint ??= newPoint;
             }
         }
 
@@ -283,7 +286,7 @@ namespace Lan.Shapes.Shapes
                 }
                 else
                 {
-                    DrawGeometry(point);
+                    if (_startPoint != null) DrawGeometry(_startPoint.Value, point);
                     CreateHandles();
                     UpdateGeometryGroup();
                     UpdateVisual();
@@ -378,18 +381,19 @@ namespace Lan.Shapes.Shapes
             UpdateVisual();
         }
 
-        private void DrawGeometry(Point point)
+        private void DrawGeometry(Point oldPoint, Point point)
         {
-            _edgeDict[EdgeType.Upper].Start = new Point(0, 0);
-            _edgeDict[EdgeType.Upper].End = new Point(point.X, 0);
 
-            _edgeDict[EdgeType.Left].Start = new Point(0, 0);
-            _edgeDict[EdgeType.Left].End = new Point(0, point.Y);
+            _edgeDict[EdgeType.Upper].Start = new Point(oldPoint.X,oldPoint.Y);
+            _edgeDict[EdgeType.Upper].End = new Point(point.X, oldPoint.Y);
 
-            _edgeDict[EdgeType.Right].Start = new Point(point.X, 0);
+            _edgeDict[EdgeType.Left].Start = new Point(oldPoint.X, oldPoint.Y);
+            _edgeDict[EdgeType.Left].End = new Point(oldPoint.X, point.Y);
+
+            _edgeDict[EdgeType.Right].Start = new Point(point.X, oldPoint.Y);
             _edgeDict[EdgeType.Right].End = new Point(point.X, point.Y);
 
-            _edgeDict[EdgeType.Bottom].Start = new Point(0, point.Y);
+            _edgeDict[EdgeType.Bottom].Start = new Point(oldPoint.X, point.Y);
             _edgeDict[EdgeType.Bottom].End = new Point(point.X, point.Y);
         }
 
