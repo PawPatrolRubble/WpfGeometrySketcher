@@ -26,10 +26,9 @@
                 Source="D:\HelloMaster\GeometryShapesSketcher\Test\Lan.Shapes.TestApp\reference.png"
                 Stretch="None" />
             <Viewbox>
-
                 <sketchBoard:SketchBoard
-                    Width="5000"
-                    Height="4000"
+                    Width="1000"
+                    Height="828"
                     Background="Transparent"
                     SketchBoardDataManager="{Binding SketchBoardDataManager}" />
             </Viewbox>
