@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+	  <PropertyGroup>
+		  <TargetFramework>netcoreapp3.1</TargetFramework>
+		  <UseWPF>true</UseWPF>
+	  </PropertyGroup>
+
+
+	  <ItemGroup>
+	    <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
+	  </ItemGroup>
+
+
+</Project>

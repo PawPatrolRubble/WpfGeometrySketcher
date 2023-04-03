@@ -30,6 +30,17 @@ namespace Lan.SketchBoard
         }
 
 
+
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register(
+            "Image", typeof(ImageSource), typeof(SketchBoard), new PropertyMetadata(default(ImageSource)));
+
+        public ImageSource Image
+        {
+            get { return (ImageSource)GetValue(ImageProperty); }
+            set { SetValue(ImageProperty, value); }
+        }
+
+
         #region overrides
 
         protected override int VisualChildrenCount => SketchBoardDataManager?.VisualCollection.Count ?? 0;
