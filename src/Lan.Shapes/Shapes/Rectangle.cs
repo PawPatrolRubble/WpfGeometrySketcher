@@ -92,6 +92,9 @@ namespace Lan.Shapes.Shapes
         private Dictionary<EdgeType, RectangleEdge> _edgeDict;
 
         private RectangleEdge? _selectedEdge;
+        private CombinedGeometry _panSensitiveArea = new CombinedGeometry();
+        private readonly GeometryGroup _handleGeometry = new GeometryGroup();
+
 
         #endregion
 
@@ -200,34 +203,41 @@ namespace Lan.Shapes.Shapes
         /// <param name="newPoint"></param>
         public override void OnMouseLeftButtonDown(Point newPoint)
         {
-            if (RenderGeometry.FillContains(newPoint) || !IsGeometryInitialized)
+            if (_handleGeometry.FillContains(newPoint))
             {
                 FindSelectedHandle(newPoint);
-
-                if (SelectedDragHandle != null) UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
-                _oldPoint = newPoint;
-                _startPoint ??= newPoint;
             }
+
+            _oldPoint = newPoint;
+            _startPoint ??= newPoint;
         }
+
+
 
         private void UpdateMouseCursor(DragLocation dragLocation)
         {
             switch (dragLocation)
             {
                 case DragLocation.TopLeft:
+                    Mouse.SetCursor(Cursors.SizeNWSE);
+
                     break;
                 case DragLocation.TopMiddle:
                     break;
                 case DragLocation.TopRight:
+                    Mouse.SetCursor(Cursors.SizeNESW);
+
                     break;
                 case DragLocation.RightMiddle:
                     break;
                 case DragLocation.BottomRight:
-                    Mouse.SetCursor(Cursors.SizeNESW);
+                    Mouse.SetCursor(Cursors.SizeNWSE);
                     break;
                 case DragLocation.BottomMiddle:
                     break;
                 case DragLocation.BottomLeft:
+                    Mouse.SetCursor(Cursors.SizeNESW);
+
                     break;
                 case DragLocation.LeftMiddle:
                     break;
@@ -255,7 +265,14 @@ namespace Lan.Shapes.Shapes
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-            if (RenderGeometry.FillContains(point))
+            if (_handleGeometry.FillContains(point) && buttonState == MouseButtonState.Released)
+            {
+                var handle = FindDragHandleMouseOver(point);
+                if (handle != null) UpdateMouseCursor((DragLocation)handle.Id);
+            }
+
+
+            if (_panSensitiveArea.FillContains(point))
             {
                 Mouse.SetCursor(Cursors.Hand);
                 _canMoveWithHand = true;
@@ -264,7 +281,7 @@ namespace Lan.Shapes.Shapes
             {
                 _canMoveWithHand = false;
             }
-            
+
             if (buttonState == MouseButtonState.Pressed)
             {
                 if (IsGeometryInitialized)
@@ -272,6 +289,7 @@ namespace Lan.Shapes.Shapes
                     //scale operation
                     if (SelectedDragHandle != null)
                     {
+                        UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
                         HandleGeometryExtension(point);
                         return;
                     }
@@ -384,7 +402,7 @@ namespace Lan.Shapes.Shapes
         private void DrawGeometry(Point oldPoint, Point point)
         {
 
-            _edgeDict[EdgeType.Upper].Start = new Point(oldPoint.X,oldPoint.Y);
+            _edgeDict[EdgeType.Upper].Start = new Point(oldPoint.X, oldPoint.Y);
             _edgeDict[EdgeType.Upper].End = new Point(point.X, oldPoint.Y);
 
             _edgeDict[EdgeType.Left].Start = new Point(oldPoint.X, oldPoint.Y);
@@ -436,6 +454,11 @@ namespace Lan.Shapes.Shapes
             Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
             Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
             Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
+
+            _handleGeometry.Children.Clear();
+            _handleGeometry.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+
+            _panSensitiveArea = new CombinedGeometry(GeometryCombineMode.Exclude, _geometryGroup, _handleGeometry);
         }
 
         #endregion

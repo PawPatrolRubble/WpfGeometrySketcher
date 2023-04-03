@@ -59,18 +59,24 @@ namespace Lan.Shapes
             renderContext.Close();
         }
 
-        public virtual void FindSelectedHandle(Point p)
+
+
+        public DragHandle? FindDragHandleMouseOver(Point p)
         {
-            foreach (var handle in Handles)   
+            foreach (var handle in Handles)
             {
-                if (handle.HitTest(p))
+                if (handle.HandleGeometry.FillContains(p))
                 {
-                    SelectedDragHandle = handle;
-                    return;
+                    return handle;
                 }
             }
 
-            SelectedDragHandle = null;
+            return null;
+        }
+
+        public virtual void FindSelectedHandle(Point p)
+        {
+            SelectedDragHandle = FindDragHandleMouseOver(p);
         }
         
         protected List<DragHandle> Handles = new List<DragHandle>();
