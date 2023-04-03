@@ -56,10 +56,12 @@
 
                                 <sketchBoard:SketchBoard
                                     x:Name="SketchBoard"
+                                    Margin="10"
                                     Width="{Binding Path=Width, ElementName=ImageViewer}"
                                     Height="{Binding ElementName=ImageViewer, Path=Height}"
                                     Panel.ZIndex="2"
-                                    Background="Transparent"
+                                    Background="LightGray"
+                                    Opacity="0.5"
                                     ClipToBounds="True"
                                     SketchBoardDataManager="{Binding SketchBoardDataManager}" />
                             </Grid>

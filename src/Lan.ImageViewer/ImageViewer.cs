@@ -119,12 +119,12 @@ namespace Lan.ImageViewer
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data. The event data reports that the left mouse button was pressed.</param>
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            //if (Keyboard.IsKeyDown(Key.LeftCtrl))
-            //{
+            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
                 //capture the mouse, even when the mouse is not above the control, the mouse events will still be fired
                 CaptureMouse();
                 _mousePos = e.GetPosition(this);
-            //}
+            }
         }
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseUp" /> routed event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
@@ -172,6 +172,8 @@ namespace Lan.ImageViewer
 
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
+                Mouse.SetCursor(Cursors.Hand);
+
                 if (_mousePos.HasValue && e.LeftButton == MouseButtonState.Pressed && !_isMouseFirstClick)
                 {
                     var matrix = _matrixTransform.Matrix;

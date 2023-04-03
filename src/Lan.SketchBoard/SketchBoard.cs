@@ -57,19 +57,42 @@ namespace Lan.SketchBoard
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+            try
+            {
+
+                SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
             //hit test if any shape is being selected
         }
 
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this), e.MouseDevice.LeftButton);
+            try
+            {
+                SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this), e.MouseDevice.LeftButton);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+            try
+            {
+                SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
 
         #endregion
