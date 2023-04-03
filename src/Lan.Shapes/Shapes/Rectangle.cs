@@ -265,25 +265,10 @@ namespace Lan.Shapes.Shapes
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-            if (_handleGeometry.FillContains(point) && buttonState == MouseButtonState.Released)
-            {
-                var handle = FindDragHandleMouseOver(point);
-                if (handle != null) UpdateMouseCursor((DragLocation)handle.Id);
-            }
-
-
-            if (_panSensitiveArea.FillContains(point))
-            {
-                Mouse.SetCursor(Cursors.Hand);
-                _canMoveWithHand = true;
-            }
-            else
-            {
-                _canMoveWithHand = false;
-            }
 
             if (buttonState == MouseButtonState.Pressed)
             {
+                Console .WriteLine("button pressed");
                 if (IsGeometryInitialized)
                 {
                     //scale operation
@@ -311,9 +296,28 @@ namespace Lan.Shapes.Shapes
                 }
             }
 
+            //Console.WriteLine($"{point},{buttonState}");
 
+            if (_handleGeometry.FillContains(point) && buttonState == MouseButtonState.Released)
+            {
+                var handle = FindDragHandleMouseOver(point);
+                if (handle != null) UpdateMouseCursor((DragLocation)handle.Id);
+            }
+
+
+            if (_panSensitiveArea.FillContains(point))
+            {
+                Mouse.SetCursor(Cursors.Hand);
+                _canMoveWithHand = true;
+            }
+            else
+            {
+                _canMoveWithHand = false;
+            }
 
             _oldPoint = point;
+
+
         }
 
         private bool _canMoveWithHand;

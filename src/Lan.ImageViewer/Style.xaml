@@ -14,6 +14,7 @@
                         <Canvas
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
+                            IsHitTestVisible="True"
                             ClipToBounds="True">
 
                             <TextBlock
