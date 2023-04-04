@@ -4,7 +4,7 @@ using Lan.SketchBoard;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Lan.Shapes.TestApp
+namespace Lan.Shapes.App
 {
     public class App : Application
     {

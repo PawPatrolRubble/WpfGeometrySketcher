@@ -6,7 +6,7 @@ using Lan.SketchBoard;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
-namespace Lan.Shapes.TestApp
+namespace Lan.Shapes.App
 {
     public class MainWindowViewModel:ObservableObject
     {
