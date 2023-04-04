@@ -15,7 +15,7 @@ namespace Lan.Shapes
     {
         #region fields
 
-        private List<ShapeVisual> _shapeVisuals = new List<ShapeVisual>();
+        private List<ShapeVisualBase> _shapeVisuals = new List<ShapeVisualBase>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,7 +95,7 @@ namespace Lan.Shapes
 
         #region public interfaces
 
-        public IEnumerable<ShapeVisual> RenderShapes(IEnumerable<ShapeVisual> shapeVisuals)
+        public IEnumerable<ShapeVisualBase> RenderShapes(IEnumerable<ShapeVisualBase> shapeVisuals)
         {
             foreach (var visual in shapeVisuals)
             {

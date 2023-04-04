@@ -9,7 +9,7 @@ namespace Lan.Shapes
     /// <summary>
     /// responsible for displaying and update shape data, update geometry 
     /// </summary>
-    public interface IShapeManipulator<T> : IShapeManipulator where T : ShapeVisual, new()
+    public interface IShapeManipulator<T> : IShapeManipulator where T : ShapeVisualBase, new()
     {
         /// <summary>
         /// 移动

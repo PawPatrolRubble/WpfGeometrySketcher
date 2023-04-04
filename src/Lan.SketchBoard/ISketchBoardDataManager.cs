@@ -18,7 +18,7 @@ namespace Lan.SketchBoard
         /// get all shapes defined in canvas
         /// </summary>
         /// <returns></returns>
-        IEnumerable<ShapeVisual> GetSketchBoardVisuals();
+        IEnumerable<ShapeVisualBase> GetSketchBoardVisuals();
 
         /// <summary>
         /// shape count
@@ -28,7 +28,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        ShapeVisual? SelectedShape { get; }
+        ShapeVisualBase? SelectedShape { get; }
 
         /// <summary>
         /// relate a tool with a shape
@@ -58,22 +58,22 @@ namespace Lan.SketchBoard
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形
         /// </summary>
         /// <param name="shape"></param>
-        void AddShape(ShapeVisual shape);
+        void AddShape(ShapeVisualBase shape);
 
         /// <summary>
         /// 指定集合位置添加一个新图形
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="index"></param>
-        void AddShape(ShapeVisual shape, int index);
+        void AddShape(ShapeVisualBase shape, int index);
 
-        void RemoveShape(ShapeVisual shape);
+        void RemoveShape(ShapeVisualBase shape);
         void RemoveAt(int index);
         void RemoveAt(int index, int count);
 
         void ClearAllShapes();
 
-        ShapeVisual? GetShapeVisual(int index);
+        ShapeVisualBase? GetShapeVisual(int index);
         
         /// <summary>
         /// select one shape to draw

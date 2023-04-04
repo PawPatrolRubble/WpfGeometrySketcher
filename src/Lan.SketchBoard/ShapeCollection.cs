@@ -5,11 +5,11 @@ using Lan.Shapes;
 
 namespace Lan.SketchBoard
 {
-    public class ShapeCollection : IList<ShapeVisual>
+    public class ShapeCollection : IList<ShapeVisualBase>
     {
         /// <summary>Returns an enumerator that iterates through the collection.</summary>
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
-        public IEnumerator<ShapeVisual> GetEnumerator()
+        public IEnumerator<ShapeVisualBase> GetEnumerator()
         {
             throw new NotImplementedException();
         }
@@ -24,7 +24,7 @@ namespace Lan.SketchBoard
         /// <summary>Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.</summary>
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
-        public void Add(ShapeVisual item)
+        public void Add(ShapeVisualBase item)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +40,7 @@ namespace Lan.SketchBoard
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, <see langword="false" />.</returns>
-        public bool Contains(ShapeVisual item)
+        public bool Contains(ShapeVisualBase item)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace Lan.SketchBoard
         /// <exception cref="T:System.ArgumentOutOfRangeException">
         /// <paramref name="arrayIndex" /> is less than 0.</exception>
         /// <exception cref="T:System.ArgumentException">The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1" /> is greater than the available space from <paramref name="arrayIndex" /> to the end of the destination <paramref name="array" />.</exception>
-        public void CopyTo(ShapeVisual[] array, int arrayIndex)
+        public void CopyTo(ShapeVisualBase[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +63,7 @@ namespace Lan.SketchBoard
         /// <returns>
         /// <see langword="true" /> if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, <see langword="false" />. This method also returns <see langword="false" /> if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
-        public bool Remove(ShapeVisual item)
+        public bool Remove(ShapeVisualBase item)
         {
             throw new NotImplementedException();
         }
@@ -80,7 +80,7 @@ namespace Lan.SketchBoard
         /// <summary>Determines the index of a specific item in the <see cref="T:System.Collections.Generic.IList`1" />.</summary>
         /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.IList`1" />.</param>
         /// <returns>The index of <paramref name="item" /> if found in the list; otherwise, -1.</returns>
-        public int IndexOf(ShapeVisual item)
+        public int IndexOf(ShapeVisualBase item)
         {
             throw new NotImplementedException();
         }
@@ -91,7 +91,7 @@ namespace Lan.SketchBoard
         /// <exception cref="T:System.ArgumentOutOfRangeException">
         /// <paramref name="index" /> is not a valid index in the <see cref="T:System.Collections.Generic.IList`1" />.</exception>
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IList`1" /> is read-only.</exception>
-        public void Insert(int index, ShapeVisual item)
+        public void Insert(int index, ShapeVisualBase item)
         {
             throw new NotImplementedException();
         }
@@ -112,7 +112,7 @@ namespace Lan.SketchBoard
         /// <exception cref="T:System.ArgumentOutOfRangeException">
         /// <paramref name="index" /> is not a valid index in the <see cref="T:System.Collections.Generic.IList`1" />.</exception>
         /// <exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IList`1" /> is read-only.</exception>
-        public ShapeVisual this[int index]
+        public ShapeVisualBase this[int index]
         {
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();

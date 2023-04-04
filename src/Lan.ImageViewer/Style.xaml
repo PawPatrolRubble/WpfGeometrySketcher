@@ -60,8 +60,7 @@
                                     Width="{Binding Path=Width, ElementName=ImageViewer}"
                                     Height="{Binding ElementName=ImageViewer, Path=Height}"
                                     Panel.ZIndex="2"
-                                    Background="LightGray"
-                                    Opacity="0.5"
+                                    Background="Transparent"
                                     ClipToBounds="True"
                                     SketchBoardDataManager="{Binding SketchBoardDataManager}" />
                             </Grid>

@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace Lan.Shapes.Shapes
 {
-    public class Polygon : ShapeVisual
+    public class Polygon : ShapeVisualBase
     {
         public override Geometry RenderGeometry { get; }
 
@@ -43,6 +43,24 @@ namespace Lan.Shapes.Shapes
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        protected override void UpdateGeometryGroup()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void HandleResizing(Point point)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// 选择时
         /// </summary>
         public override void OnSelected()
@@ -58,7 +76,12 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
-        public override void CreateHandles()
+        protected override void CreateHandles()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void HandleTranslate(Point newPoint)
         {
             throw new NotImplementedException();
         }

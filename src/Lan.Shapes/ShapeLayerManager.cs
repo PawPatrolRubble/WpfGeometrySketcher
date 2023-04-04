@@ -15,7 +15,7 @@ namespace Lan.Shapes
     {
         #region fields
 
-        private readonly List<ShapeVisual> _shapes = new List<ShapeVisual>();
+        private readonly List<ShapeVisualBase> _shapes = new List<ShapeVisualBase>();
 
         #endregion
 
@@ -45,12 +45,12 @@ namespace Lan.Shapes
         public ObservableCollection<ShapeLayer> Layers { get; private set; } = new ObservableCollection<ShapeLayer>();
 
         public static readonly DependencyProperty ShapesProperty = DependencyProperty.Register(nameof(Shapes),
-            typeof(ObservableCollection<ShapeVisual>), typeof(ShapeLayerManager),
-            new PropertyMetadata(default(ObservableCollection<ShapeVisual>)));
+            typeof(ObservableCollection<ShapeVisualBase>), typeof(ShapeLayerManager),
+            new PropertyMetadata(default(ObservableCollection<ShapeVisualBase>)));
 
-        public ObservableCollection<ShapeVisual> Shapes
+        public ObservableCollection<ShapeVisualBase> Shapes
         {
-            get => (ObservableCollection<ShapeVisual>)GetValue(ShapesProperty);
+            get => (ObservableCollection<ShapeVisualBase>)GetValue(ShapesProperty);
             set { SetValue(ShapesProperty, value); }
         }
 
@@ -61,8 +61,8 @@ namespace Lan.Shapes
 
         public ShapeLayerManager()
         {
-            this.Shapes = new ObservableCollection<ShapeVisual>();
-            this.SetValue(ShapesProperty, new ObservableCollection<ShapeVisual>());
+            this.Shapes = new ObservableCollection<ShapeVisualBase>();
+            this.SetValue(ShapesProperty, new ObservableCollection<ShapeVisualBase>());
         }
 
         #endregion
@@ -122,7 +122,7 @@ namespace Lan.Shapes
         }
 
 
-        public void AddShape(ShapeVisual shape)
+        public void AddShape(ShapeVisualBase shape)
         {
             if (SelectedLayer != null)
             {
@@ -130,7 +130,7 @@ namespace Lan.Shapes
             }
         }
 
-        public void RemoveShape(ShapeVisual shape)
+        public void RemoveShape(ShapeVisualBase shape)
         {
             _shapes.Remove(shape);
         }

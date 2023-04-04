@@ -13,7 +13,8 @@ namespace Lan.Shapes.TestApp
         public MainWindowViewModel(ISketchBoardDataManager sketchBoardDataManager)
         {
             SketchBoardDataManager = sketchBoardDataManager;
-            SketchBoardDataManager.RegisterDrawingTool("rectangle", typeof(Rectangle));
+            SketchBoardDataManager.RegisterDrawingTool("Rectangle", typeof(Rectangle));
+            SketchBoardDataManager.RegisterDrawingTool("Ellipse", typeof(Ellipse));
             SelectOneShapeCommand= new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand= new RelayCommand(GetShapeInfoCommandImpl);
         }
@@ -23,7 +24,7 @@ namespace Lan.Shapes.TestApp
         public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
         {
-            SketchBoardDataManager.SelectDrawingTool("rectangle", new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5,15));
+            SketchBoardDataManager.SelectDrawingTool(nameof(Ellipse), new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5,15));
         }
 
         public ICommand GetShapeInfoCommand { get; private set; }

@@ -4,8 +4,8 @@ namespace Lan.Shapes
 {
     public interface IShapeLayerManager
     {
-        void AddShape(ShapeVisual shape);
-        void RemoveShape(ShapeVisual shape);
+        void AddShape(ShapeVisualBase shape);
+        void RemoveShape(ShapeVisualBase shape);
         void ReadShapeLayers(string configurationFilePath);
         ObservableCollection<ShapeLayer> Layers { get; }
         ShapeLayer SelectedLayer { get; set; }

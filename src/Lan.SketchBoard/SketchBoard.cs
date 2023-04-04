@@ -47,7 +47,7 @@ namespace Lan.SketchBoard
 
         protected override Visual GetVisualChild(int index)
         {
-            return SketchBoardDataManager?.VisualCollection[index] ?? default(ShapeVisual);
+            return SketchBoardDataManager?.VisualCollection[index] ?? default(ShapeVisualBase);
         }
 
         #endregion
@@ -59,7 +59,6 @@ namespace Lan.SketchBoard
         {
             try
             {
-
                 SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
             }
             catch (Exception exception)
