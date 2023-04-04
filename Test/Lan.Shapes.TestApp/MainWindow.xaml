@@ -34,7 +34,7 @@
 
 
 
-            <imageViewer:ImageViewer ImageSource="D:\Phoenix\docs\自动间距\20230303\Bottom_180628123.bmp" />
+            <imageViewer:ImageViewer ImageSource="/Lan.Shapes.App;component/reference.png" />
 
         </Border>
 
