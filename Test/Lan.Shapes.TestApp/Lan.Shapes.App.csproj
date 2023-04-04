@@ -17,7 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="reference.png" />
+      <Resource Include="reference.png">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Resource>
     </ItemGroup>
 
 </Project>

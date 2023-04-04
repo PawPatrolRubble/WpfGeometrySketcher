@@ -14,8 +14,8 @@
                         <Canvas
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
-                            IsHitTestVisible="True"
-                            ClipToBounds="True">
+                            ClipToBounds="True"
+                            IsHitTestVisible="True">
 
                             <TextBlock
                                 x:Name="TbMousePosition"
@@ -56,9 +56,9 @@
 
                                 <sketchBoard:SketchBoard
                                     x:Name="SketchBoard"
-                                    Margin="10"
                                     Width="{Binding Path=Width, ElementName=ImageViewer}"
                                     Height="{Binding ElementName=ImageViewer, Path=Height}"
+                                    Margin="10"
                                     Panel.ZIndex="2"
                                     Background="Transparent"
                                     ClipToBounds="True"
