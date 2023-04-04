@@ -11,24 +11,6 @@ using Lan.Shapes.Handle;
 
 namespace Lan.Shapes.Shapes
 {
-    public enum ShapeStateMachine
-    {
-        Uninitialized,
-        Scaling, // being scaled by dragging handle
-    }
-
-    enum DragLocation
-    {
-        TopLeft = 1,
-        TopMiddle,
-        TopRight,
-        RightMiddle,
-        BottomRight,
-        BottomMiddle,
-        BottomLeft,
-        LeftMiddle
-    }
-
     public class Line
     {
         public double Length => Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
@@ -84,7 +66,7 @@ namespace Lan.Shapes.Shapes
     }
 
 
-    public class Rectangle : ShapeVisual
+    public class Rectangle : ShapeVisualBase
     {
         #region edges
 
@@ -92,8 +74,8 @@ namespace Lan.Shapes.Shapes
         private Dictionary<EdgeType, RectangleEdge> _edgeDict;
 
         private RectangleEdge? _selectedEdge;
-        private CombinedGeometry _panSensitiveArea = new CombinedGeometry();
-        private GeometryGroup? _handleGeometry ;
+
+
 
 
         #endregion
@@ -116,41 +98,35 @@ namespace Lan.Shapes.Shapes
 
         #endregion
 
-        private readonly GeometryGroup _geometryGroup = new GeometryGroup();
 
-        public override Geometry RenderGeometry
-        {
-            get => _geometryGroup;
-        }
 
         /// <summary>
         /// 
         /// </summary>
         public override Rect BoundsRect
         {
-            get => _geometryGroup.Bounds;
+            get => RenderGeometry.Bounds;
         }
 
 
         #region mouse events handler
 
-        private Point? _oldPoint;
 
 
         /// <summary>
         /// move with pan
         /// </summary>
         /// <param name="newPoint"></param>
-        private void HandleTranslate(Point newPoint)
+        protected override void HandleTranslate(Point newPoint)
         {
-            if (_oldPoint.HasValue)
+            if (OldPointForTranslate.HasValue)
             {
                 var matrix = new Matrix();
-                matrix.Translate(newPoint.X - _oldPoint.Value.X, newPoint.Y - _oldPoint.Value.Y);
+                matrix.Translate(newPoint.X - OldPointForTranslate.Value.X, newPoint.Y - OldPointForTranslate.Value.Y);
                 _edges.ForEach(x => x.Transform(matrix));
             }
 
-            _oldPoint = newPoint;
+            OldPointForTranslate = newPoint;
         }
 
 
@@ -160,14 +136,14 @@ namespace Lan.Shapes.Shapes
         /// <param name="point"></param>
         private void HandleDragToScale(Point point)
         {
-            if (_selectedEdge != null && _oldPoint.HasValue)
+            if (_selectedEdge != null && OldPointForTranslate.HasValue)
             {
                 switch (_selectedEdge.EdgeType)
                 {
                     case EdgeType.Upper:
 
                         var matrix = new Matrix();
-                        matrix.Translate(0, point.Y - _oldPoint.Value.Y);
+                        matrix.Translate(0, point.Y - OldPointForTranslate.Value.Y);
                         //update upper edge
                         _edgeDict[EdgeType.Upper].Transform(matrix);
 
@@ -195,136 +171,7 @@ namespace Lan.Shapes.Shapes
         }
 
 
-        private Point? _startPoint;
-
-        /// <summary>
-        /// left mouse button down event
-        /// </summary>
-        /// <param name="newPoint"></param>
-        public override void OnMouseLeftButtonDown(Point newPoint)
-        {
-            Console.WriteLine("mouse down enter");
-            if (_handleGeometry?.FillContains(newPoint) ?? false)
-            {
-                FindSelectedHandle(newPoint);
-            }
-
-            _oldPoint = newPoint;
-            _startPoint ??= newPoint;
-            Console.WriteLine("mouse down exit");
-        }
-
-
-
-        private void UpdateMouseCursor(DragLocation dragLocation)
-        {
-            switch (dragLocation)
-            {
-                case DragLocation.TopLeft:
-                    Mouse.SetCursor(Cursors.SizeNWSE);
-
-                    break;
-                case DragLocation.TopMiddle:
-                    break;
-                case DragLocation.TopRight:
-                    Mouse.SetCursor(Cursors.SizeNESW);
-
-                    break;
-                case DragLocation.RightMiddle:
-                    break;
-                case DragLocation.BottomRight:
-                    Mouse.SetCursor(Cursors.SizeNWSE);
-                    break;
-                case DragLocation.BottomMiddle:
-                    break;
-                case DragLocation.BottomLeft:
-                    Mouse.SetCursor(Cursors.SizeNESW);
-
-                    break;
-                case DragLocation.LeftMiddle:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dragLocation), dragLocation, null);
-            }
-        }
-
-        /// <summary>
-        /// when mouse left button up
-        /// </summary>
-        /// <param name="newPoint"></param>
-        public override void OnMouseLeftButtonUp(Point newPoint)
-        {
-            if (!IsGeometryInitialized && _geometryGroup.Children.Count > 0)
-            {
-                IsGeometryInitialized = true;
-            }
-
-            SelectedDragHandle = null;
-        }
-
-        /// <summary>
-        /// left mouse pressed or not pressed
-        /// </summary>
-        public override void OnMouseMove(Point point, MouseButtonState buttonState)
-        {
-
-            if (buttonState == MouseButtonState.Pressed)
-            {
-                Console .WriteLine("button pressed");
-                if (IsGeometryInitialized)
-                {
-                    //scale operation
-                    if (SelectedDragHandle != null)
-                    {
-                        UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
-                        HandleGeometryExtension(point);
-                        return;
-                    }
-
-                    if (_canMoveWithHand)
-                    {
-                        HandleTranslate(point);
-                        CreateHandles();
-                        UpdateGeometryGroup();
-                        UpdateVisual();
-                    }
-                }
-                else
-                {
-                    if (_startPoint != null) DrawGeometry(_startPoint.Value, point);
-                    CreateHandles();
-                    UpdateGeometryGroup();
-                    UpdateVisual();
-                }
-            }
-
-            //Console.WriteLine($"{point},{buttonState}");
-
-            if ((_handleGeometry?.FillContains(point) ?? false) && buttonState == MouseButtonState.Released)
-            {
-                var handle = FindDragHandleMouseOver(point);
-                if (handle != null) UpdateMouseCursor((DragLocation)handle.Id);
-            }
-
-
-            if (_panSensitiveArea.FillContains(point))
-            {
-                Mouse.SetCursor(Cursors.Hand);
-                _canMoveWithHand = true;
-            }
-            else
-            {
-                _canMoveWithHand = false;
-            }
-
-            _oldPoint = point;
-
-
-        }
-
-        private bool _canMoveWithHand;
-
-        private void HandleGeometryExtension(Point point)
+        protected override void HandleResizing(Point point)
         {
             switch ((DragLocation)SelectedDragHandle!.Id)
             {
@@ -400,12 +247,12 @@ namespace Lan.Shapes.Shapes
                     throw new ArgumentOutOfRangeException();
             }
 
-            CreateHandles();
-            UpdateGeometryGroup();
-            UpdateVisual();
+            //CreateHandles();
+            //UpdateGeometryGroup();
+            //UpdateVisual();
         }
 
-        private void DrawGeometry(Point oldPoint, Point point)
+        protected override void DrawGeometryInMouseMove(Point oldPoint, Point point)
         {
 
             _edgeDict[EdgeType.Upper].Start = new Point(oldPoint.X, oldPoint.Y);
@@ -421,21 +268,36 @@ namespace Lan.Shapes.Shapes
             _edgeDict[EdgeType.Bottom].End = new Point(point.X, point.Y);
         }
 
+        protected override void UpdateGeometryGroup()
+        {
+            RenderGeometryGroup.Children.Clear();
+
+            var rect = GenerateRect();
+            RenderGeometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
+            RenderGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+        }
+
+        protected override void CreateHandles()
+        {
+            Handles.Clear();
+
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].Start, (int)DragLocation.TopLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
+
+            HandleGeometryGroup ??= new GeometryGroup();
+            HandleGeometryGroup.Children.Clear();
+            HandleGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+
+            PanSensitiveArea = new CombinedGeometry(GeometryCombineMode.Exclude, RenderGeometryGroup, HandleGeometryGroup);
+        }
+
         private Rect GenerateRect()
         {
             return new Rect(_edgeDict[EdgeType.Upper].Start,
                 new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
         }
-
-        private void UpdateGeometryGroup()
-        {
-            _geometryGroup.Children.Clear();
-
-            var rect = GenerateRect();
-            _geometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
-            _geometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-        }
-
         /// <summary>
         /// 选择时
         /// </summary>
@@ -452,21 +314,6 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
-        public override void CreateHandles()
-        {
-            Handles.Clear();
-
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].Start, (int)DragLocation.TopLeft));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
-
-            _handleGeometry ??= new GeometryGroup();
-            _handleGeometry.Children.Clear();
-            _handleGeometry.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-
-            _panSensitiveArea = new CombinedGeometry(GeometryCombineMode.Exclude, _geometryGroup, _handleGeometry);
-        }
 
         #endregion
     }

@@ -27,7 +27,7 @@ namespace Lan.SketchBoard
         /// get all shapes defined in canvas
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ShapeVisual> GetSketchBoardVisuals()
+        public IEnumerable<ShapeVisualBase> GetSketchBoardVisuals()
         {
             // return VisualCollection;
             return null;
@@ -41,7 +41,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        public ShapeVisual? SelectedShape { get; private set; }
+        public ShapeVisualBase? SelectedShape { get; private set; }
 
         /// <summary>
         /// relate a tool with a shape
@@ -72,7 +72,7 @@ namespace Lan.SketchBoard
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形
         /// </summary>
         /// <param name="shape"></param>
-        public void AddShape(ShapeVisual shape)
+        public void AddShape(ShapeVisualBase shape)
         {
             VisualCollection.Add(shape);
             SelectedShape = shape;
@@ -83,13 +83,13 @@ namespace Lan.SketchBoard
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="index"></param>
-        public void AddShape(ShapeVisual shape, int index)
+        public void AddShape(ShapeVisualBase shape, int index)
         {
             VisualCollection.Insert(index, shape);
             SelectedShape = shape;
         }
 
-        public void RemoveShape(ShapeVisual shape)
+        public void RemoveShape(ShapeVisualBase shape)
         {
             VisualCollection.Remove(shape);
         }
@@ -120,9 +120,9 @@ namespace Lan.SketchBoard
             VisualCollection.Clear();
         }
 
-        public ShapeVisual? GetShapeVisual(int index)
+        public ShapeVisualBase? GetShapeVisual(int index)
         {
-            return VisualCollection[index] as ShapeVisual;
+            return VisualCollection[index] as ShapeVisualBase;
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Lan.SketchBoard
 
             if (_drawingTools.ContainsKey(drawingTool))
             {
-                var shape = (ShapeVisual)Activator.CreateInstance(_drawingTools[drawingTool])!;
+                var shape = (ShapeVisualBase)Activator.CreateInstance(_drawingTools[drawingTool])!;
                 shape.ShapeStyler = shapeStyler;
 
                 SelectedShape = shape;
