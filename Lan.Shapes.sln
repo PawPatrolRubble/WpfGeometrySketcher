@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes", "src\Lan.Shape
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.SketchBoard", "src\Lan.SketchBoard\Lan.SketchBoard.csproj", "{75C0EA06-A765-4801-94E7-9E5D02A7D4E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes.TestApp", "Test\Lan.Shapes.TestApp\Lan.Shapes.TestApp.csproj", "{F447EFCD-F5D7-4950-BE42-C899271A7A26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes.App", "Test\Lan.Shapes.TestApp\Lan.Shapes.App.csproj", "{F447EFCD-F5D7-4950-BE42-C899271A7A26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{72CD207F-85D8-4F06-90A0-8BCCF15D9E16}"
 EndProject

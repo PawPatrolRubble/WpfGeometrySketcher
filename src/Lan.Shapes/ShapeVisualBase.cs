@@ -35,6 +35,13 @@ namespace Lan.Shapes
         /// </summary>
         protected readonly GeometryGroup RenderGeometryGroup = new GeometryGroup();
 
+        /// <summary>
+        /// list of handles for drag and resizing
+        /// </summary>
+        protected List<DragHandle> Handles = new List<DragHandle>();
+
+
+
         private bool _canMoveWithHand;
 
         #endregion
@@ -150,7 +157,7 @@ namespace Lan.Shapes
 
 
         /// <summary>
-        /// 
+        /// add geometries to group
         /// </summary>
         protected abstract void UpdateGeometryGroup();
 
@@ -197,7 +204,6 @@ namespace Lan.Shapes
             SelectedDragHandle = FindDragHandleMouseOver(p);
         }
 
-        protected List<DragHandle> Handles = new List<DragHandle>();
 
         protected DragHandle? SelectedDragHandle { get; set; }
 
