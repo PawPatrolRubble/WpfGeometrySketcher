@@ -6,11 +6,11 @@
 
     </PropertyGroup>
 
-	<PropertyGroup>
-		<PackageVersion>1.0.0-preview05</PackageVersion>
-	</PropertyGroup>
-
-
+	<Target Name="PrePackage" BeforeTargets="BuildPackage">
+		<PropertyGroup>
+			<BuildCommand>$(BuildCommand) -IncludeReferencedProjects</BuildCommand>
+		</PropertyGroup>
+	</Target>
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     </ItemGroup>

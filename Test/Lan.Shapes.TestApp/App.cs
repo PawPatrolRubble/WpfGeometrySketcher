@@ -10,7 +10,7 @@ namespace Lan.Shapes.App
     {
 
         private IServiceProvider _serviceProvider;
-        private IServiceCollection _serviceCollection = new ServiceCollection();
+        private readonly IServiceCollection _serviceCollection = new ServiceCollection();
         
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -25,7 +25,7 @@ namespace Lan.Shapes.App
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();
             
-            _serviceCollection.TryAddSingleton<ISketchBoardDataManager, SketchBoardDataManager>();
+            _serviceCollection.TryAddTransient<ISketchBoardDataManager, SketchBoardDataManager>();
             
             _serviceProvider = _serviceCollection.BuildServiceProvider();
         }

@@ -2,6 +2,7 @@
     x:Class="Lan.Shapes.App.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:Lan.Shapes.App"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,7 +10,7 @@
     Title="MainWindow"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
+    d:DataContext="{d:DesignInstance app:MainWindowViewModel}"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -28,14 +29,23 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <UniformGrid>
 
-        <Border Padding="10">
+            <imageViewer:ImageViewerControl
+                Margin="5"
+                Padding="10"
+                BorderBrush="Red"
+                DataContext="{Binding Camera1}"
+                BorderThickness="1" />
 
+            <imageViewer:ImageViewerControl
+                Margin="5"
+                Padding="10"
+                BorderBrush="Red"
+                DataContext="{Binding Camera2}"
+                BorderThickness="1" />
 
-
-            <imageViewer:ImageViewer ImageSource="/Lan.Shapes.App;component/reference.png" />
-
-        </Border>
+        </UniformGrid>
 
         <StackPanel Grid.Row="1">
 

@@ -35,7 +35,14 @@ namespace Lan.SketchBoard
         /// </summary>
         /// <param name="displayToolName"></param>
         /// <param name="shapeType"></param>
-        void RegisterDrawingTool(string displayToolName, Type shapeType);
+        void RegisterGeometryType(string displayToolName, Type shapeType);
+
+        /// <summary>
+        /// return a list of registered drawing tools
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<string> GetRegisteredGeometryTypes();
+
 
         /// <summary>
         /// 设置图层

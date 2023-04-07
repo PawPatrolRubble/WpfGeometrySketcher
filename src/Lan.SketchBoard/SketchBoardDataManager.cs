@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Media;
 using Lan.Shapes;
 using Lan.Shapes.Styler;
@@ -9,7 +10,7 @@ namespace Lan.SketchBoard
 {
     public class SketchBoardDataManager : ISketchBoardDataManager
     {
-        private ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
+        private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
         /// <summary>
@@ -48,9 +49,18 @@ namespace Lan.SketchBoard
         /// </summary>
         /// <param name="displayToolName"></param>
         /// <param name="shapeType"></param>
-        public void RegisterDrawingTool(string displayToolName, Type shapeType)
+        public void RegisterGeometryType(string displayToolName, Type shapeType)
         {
             _drawingTools.Add(displayToolName, shapeType);
+        }
+
+        /// <summary>
+        /// return a list of registered drawing tools
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetRegisteredGeometryTypes()
+        {
+            return _drawingTools.Keys;
         }
 
         /// <summary>
@@ -131,7 +141,8 @@ namespace Lan.SketchBoard
         /// <param name="drawingTool"></param>
         public void SelectDrawingTool(string drawingTool)
         {
-            LocalAddNewGeometry(drawingTool, _shapeStylerFactory.ShapeUnselectedVisualState());
+            Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
+            LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
         }
 
         private void LocalAddNewGeometry(string drawingTool, IShapeStyler shapeStyler)

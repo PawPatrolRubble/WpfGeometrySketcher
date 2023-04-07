@@ -23,7 +23,7 @@ namespace Lan.SketchBoard
             }
         }
 
-        public ISketchBoardDataManager? SketchBoardDataManager
+        public ISketchBoardDataManager SketchBoardDataManager
         {
             get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
             set { SetValue(SketchBoardDataManagerProperty, value); }
