@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{86C7D4B1-878E-42CF-A839-FC79516BEE77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.ImageViewer", "src\Lan.ImageViewer\Lan.ImageViewer.csproj", "{5A3FD69B-7D8B-4F11-8F16-E3881CD25A9D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{061B040E-CD17-4D39-B0BB-8ECF96977CF9} = {061B040E-CD17-4D39-B0BB-8ECF96977CF9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,11 +5,10 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
-	<PropertyGroup>
-		<PackageVersion>1.0.0-preview05</PackageVersion>
-	</PropertyGroup>
-    <ItemGroup>
+	<ItemGroup>
       <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
-    </ItemGroup>
+	</ItemGroup>
+
+
 
 </Project>

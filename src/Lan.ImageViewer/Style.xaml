@@ -62,7 +62,7 @@
                                     Panel.ZIndex="2"
                                     Background="Transparent"
                                     ClipToBounds="True"
-                                    SketchBoardDataManager="{Binding SketchBoardDataManager}" />
+                                    SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
                             </Grid>
 
                         </Canvas>

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Lan.SketchBoard;
 
 namespace Lan.ImageViewer
 {
@@ -26,12 +27,12 @@ namespace Lan.ImageViewer
 
 
         private Point? _mousePos;
-        private MatrixTransform _matrixTransform = new MatrixTransform();
-        private ScaleTransform _scaleTransform = new ScaleTransform();
+        private readonly MatrixTransform _matrixTransform = new MatrixTransform();
+        private readonly ScaleTransform _scaleTransform = new ScaleTransform();
         private Canvas _containerCanvas;
         private Image _image;
         private Grid _gridContainer;
-        private TransformGroup _transformGroup = new TransformGroup();
+        private readonly TransformGroup _transformGroup = new TransformGroup();
         private TextBlock _textBlock;
         private double _totalScale;
         private bool _isMouseFirstClick = true;
@@ -52,6 +53,16 @@ namespace Lan.ImageViewer
         {
             get { return (ImageSource)GetValue(ImageSourceProperty); }
             set { SetValue(ImageSourceProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
+            "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(ImageViewer), new PropertyMetadata(default(ISketchBoardDataManager)));
+
+        public ISketchBoardDataManager SketchBoardDataManager
+        {
+            get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
+            set { SetValue(SketchBoardDataManagerProperty, value); }
         }
 
         #endregion

@@ -4,12 +4,22 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
+		  <PackageVersion>1.0.0-preview08</PackageVersion>
+		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+
 	  </PropertyGroup>
 
+	<PropertyGroup>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+	</PropertyGroup>
+	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+		</ItemGroup>
+	</Target>
 
-	  <ItemGroup>
-	    <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
-	  </ItemGroup>
-
+	<ItemGroup>
+	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
+	</ItemGroup>
 
 </Project>
