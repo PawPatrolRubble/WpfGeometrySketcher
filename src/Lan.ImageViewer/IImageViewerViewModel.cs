@@ -30,5 +30,16 @@ namespace Lan.ImageViewer
         /// </summary>
         ImageSource Image { get; }
 
+        double Scale { get; set; }
+
+
+        #region commands
+
+        ICommand ZoomOutCommand { get; }
+        ICommand ZoomInCommand { get; }
+        ICommand ScaleToOriginalSizeCommand { get; }
+        ICommand ScaleToFitCommand { get; }
+
+        #endregion
     }
 }

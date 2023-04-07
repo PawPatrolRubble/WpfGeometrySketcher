@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.Xml;
 using System.Text;
@@ -27,6 +29,7 @@ namespace Lan.ImageViewer
 
 
         private Point? _mousePos;
+        private Point? _lastMouseDownPoint;
         private readonly MatrixTransform _matrixTransform = new MatrixTransform();
         private readonly ScaleTransform _scaleTransform = new ScaleTransform();
         private Canvas _containerCanvas;
@@ -46,8 +49,57 @@ namespace Lan.ImageViewer
 
         #region dependency properties
 
+        // Register a dependency property with the specified property name,
+        // property type, owner type, and property metadata.
+        // Assign DependencyPropertyKey to a nonpublic field.
+        private static readonly DependencyPropertyKey PixelWidthPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                name: "PixelWidthProperty",
+                propertyType: typeof(double),
+                ownerType: typeof(ImageViewer),
+                typeMetadata: new FrameworkPropertyMetadata());
+
+        public static DependencyProperty PixelWidthProperty = PixelWidthPropertyKey.DependencyProperty;
+
+        // Declare a public get accessor.
+        public double PixelWidth
+        {
+            get => (double)GetValue(PixelWidthProperty);
+        }
+
+
+
+        // Register a dependency property with the specified property name,
+        // property type, owner type, and property metadata.
+        // Assign DependencyPropertyKey to a nonpublic field.
+        private static readonly DependencyPropertyKey PixelHeightPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                name: "PixelHeightProperty",
+                propertyType: typeof(double),
+                ownerType: typeof(ImageViewer),
+                typeMetadata: new FrameworkPropertyMetadata());
+
+
+        public static DependencyProperty PixelHeightProperty = PixelHeightPropertyKey.DependencyProperty;
+
+        // Declare a public get accessor.
+        public double PixelHeight =>
+            (double)GetValue(PixelHeightProperty);
+
+
+
         public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(
-            "ImageSource", typeof(ImageSource), typeof(ImageViewer), new PropertyMetadata(default(ImageSource)));
+            "ImageSource", typeof(ImageSource), typeof(ImageViewer), new PropertyMetadata(default(ImageSource), OnImageSourceChangedCallback));
+
+        private static void OnImageSourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ImageViewer imageViewer = (ImageViewer)d;
+            if (e.NewValue is BitmapSource source)
+            {
+                imageViewer.SetValue(PixelWidthPropertyKey, source.PixelWidth * 1.0);
+                imageViewer.SetValue(PixelHeightPropertyKey, source.PixelHeight * 1.0);
+            }
+        }
 
         public ImageSource ImageSource
         {
@@ -64,6 +116,28 @@ namespace Lan.ImageViewer
             get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
             set { SetValue(SketchBoardDataManagerProperty, value); }
         }
+
+
+        public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(
+            "Scale", typeof(double), typeof(ImageViewer), new PropertyMetadata(default(double), OnScaleChangedCallback));
+
+        private static void OnScaleChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImageViewer imageViewer && !imageViewer._disablePropertyChangeCallback)
+            {
+                var newValue = (double)e.NewValue;
+                imageViewer.ScaleAtMouseDownPos(newValue);
+            }
+        }
+
+
+
+        public double Scale
+        {
+            get { return (double)GetValue(ScaleProperty); }
+            set { SetValue(ScaleProperty, value); }
+        }
+
 
         #endregion
 
@@ -98,28 +172,32 @@ namespace Lan.ImageViewer
             base.OnRenderSizeChanged(sizeInfo);
             if (ImageSource is BitmapSource bitmap && !_isImageScaledByMouseWheel)
             {
-                var ratio = AutoScaleImageToFit(
-                    sizeInfo.NewSize.Width, 
-                    sizeInfo.NewSize.Height, 
+                AutoScaleImageToFit(
+                    sizeInfo.NewSize.Width,
+                    sizeInfo.NewSize.Height,
                     bitmap.PixelWidth,
                     bitmap.PixelHeight);
-
-                var matrix = new Matrix();
-                matrix.ScaleAt(
-                    ratio, 
-                    ratio,
-                    (sizeInfo.NewSize.Width- bitmap.PixelWidth * ratio)/2, 
-                    (sizeInfo.NewSize.Height - bitmap.PixelHeight * ratio)/2);
-
-                _matrixTransform.Matrix = matrix;
 
             }
         }
 
 
-        private double AutoScaleImageToFit(double width, double height, double pixelWidth, double pixelHeight)
+        private double AutoScaleImageToFitRatio(double width, double height, double pixelWidth, double pixelHeight)
         {
             return Math.Min(width / pixelWidth, height / pixelHeight);
+        }
+
+        private void AutoScaleImageToFit(double width, double height, double pixelWidth, double pixelHeight)
+        {
+            var ratio = AutoScaleImageToFitRatio(width, height, pixelWidth, pixelHeight);
+            var matrix = new Matrix();
+            matrix.ScaleAt(
+                ratio,
+                ratio,
+                (width - pixelWidth * ratio) / 2,
+                (height - pixelHeight * ratio) / 2);
+
+            _matrixTransform.Matrix = matrix;
         }
 
 
@@ -130,11 +208,12 @@ namespace Lan.ImageViewer
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data. The event data reports that the left mouse button was pressed.</param>
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            _lastMouseDownPoint = e.GetPosition(this);
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 //capture the mouse, even when the mouse is not above the control, the mouse events will still be fired
                 CaptureMouse();
-                _mousePos = e.GetPosition(this);
+                _mousePos = _lastMouseDownPoint;
             }
         }
 
@@ -150,24 +229,40 @@ namespace Lan.ImageViewer
         }
 
 
+        private bool _disablePropertyChangeCallback = false;
+
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseWheel" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseWheelEventArgs" /> that contains the event data.</param>
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            var pos = e.GetPosition(this);
+            _lastMouseDownPoint = e.GetPosition(this);
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
 
-            _totalScale += scale;
-            ScaleGridContainer(scale, pos);
+
+            _disablePropertyChangeCallback = true;
+            ScaleGridContainer(scale, _lastMouseDownPoint.Value);
+            _disablePropertyChangeCallback = false;
             _isImageScaledByMouseWheel = true;
         }
 
 
-        private void ScaleGridContainer(double scale, Point pos)
+        private void ScaleGridContainer(double scaleDelta, Point pos)
         {
             var matrix = _matrixTransform.Matrix;
-            matrix.ScaleAt(scale, scale, pos.X, pos.Y);
+            matrix.ScaleAt(scaleDelta, scaleDelta, pos.X, pos.Y);
+            Scale = matrix.M11;
+            //Debug.WriteLine($"x scale factor: {matrix.M11}");
             _matrixTransform.Matrix = matrix;
+        }
+
+
+        private void ScaleAtMouseDownPos(double scaleFactor)
+        {
+            if (_lastMouseDownPoint.HasValue)
+            {
+                var matrix = _matrixTransform.Matrix;
+                ScaleGridContainer(scaleFactor / matrix.M11, _lastMouseDownPoint.Value);
+            }
         }
 
 
@@ -198,6 +293,7 @@ namespace Lan.ImageViewer
                 }
             }
         }
+
 
 
         #endregion

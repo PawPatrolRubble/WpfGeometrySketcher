@@ -32,13 +32,46 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <local:ImageViewer ImageSource="{Binding Image}" SketchBoardDataManager="{Binding SketchBoardDataManager}" />
+        <local:ImageViewer
+            ImageSource="{Binding Image}"
+            Scale="{Binding Scale,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
         <StackPanel Grid.Column="1">
             <ListBox
+                MinHeight="150"
                 ItemTemplate="{StaticResource GeometryTypeTemplate}"
                 ItemsSource="{Binding GeometryTypeList}"
                 SelectedItem="{Binding SelectedGeometryType}" />
+
+            <Separator />
+
+            <TextBox 
+                Text="{Binding Scale,StringFormat='{}{0:p2}'}"/>
+
+            <Button
+                Margin="1"
+                Command="{Binding ZoomOutCommand}"
+                Content="zoom in" />
+
+            <Button
+                Margin="1"
+                Command="{Binding ZoomInCommand}"
+                Content="zoom out" />
+
+            <Button
+                Margin="1"
+                Command="{Binding ScaleToOriginalSizeCommand}"
+                Content="to original size" />
+
+            <Button
+                Margin="1"
+                Command="{Binding ScaleToFitCommand}"
+                Content="AutoFit" />
+
+
+
+            <Separator />
 
         </StackPanel>
 
