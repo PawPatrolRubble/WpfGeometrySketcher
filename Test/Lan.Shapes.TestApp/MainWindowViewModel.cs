@@ -22,6 +22,7 @@ namespace Lan.Shapes.App
         {
             SelectOneShapeCommand= new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand= new RelayCommand(GetShapeInfoCommandImpl);
+
             Camera1 = new ImageViewerControlViewModel();
             Camera2 = new ImageViewerControlViewModel();
         }

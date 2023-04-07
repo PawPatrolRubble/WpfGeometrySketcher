@@ -24,9 +24,6 @@ namespace Lan.Shapes.App
         {
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();
-            
-            _serviceCollection.TryAddTransient<ISketchBoardDataManager, SketchBoardDataManager>();
-            
             _serviceProvider = _serviceCollection.BuildServiceProvider();
         }
     }
