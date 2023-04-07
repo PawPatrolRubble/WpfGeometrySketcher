@@ -68,9 +68,7 @@ namespace Lan.Shapes.App
 
             GeometryTypeList = new List<GeometryType>(SketchBoardDataManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, null)));
-
-            Image = new BitmapImage(new Uri(@"D:\Phoenix\docs\自动间距\20230303\Bottom_180629481.bmp"));
-
+            Image = new BitmapImage(new Uri("pack://application:,,,/Lan.Shapes.App;component/reference.png"));
         }
 
 
