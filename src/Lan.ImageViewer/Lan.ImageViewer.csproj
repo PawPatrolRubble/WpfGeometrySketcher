@@ -14,12 +14,37 @@
 	</PropertyGroup>
 	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
 		<ItemGroup>
-			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
+	<ItemGroup>
+	  <None Remove="Icons\ellipse.png" />
+	  <None Remove="Icons\polygon.png" />
+	  <None Remove="Icons\square.png" />
+	  <None Remove="Icons\ZoomIn.png" />
+	  <None Remove="Icons\ZoomOut.png" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Icons\ellipse.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Icons\polygon.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Icons\square.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Icons\ZoomIn.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Icons\ZoomOut.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 </Project>

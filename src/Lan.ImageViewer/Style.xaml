@@ -9,7 +9,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="imageViewer:ImageViewer">
 
-                    <Border>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
                             x:Name="containerCanvas"
@@ -73,4 +73,61 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="IconButton" TargetType="Button">
+
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Background" Value="LightGray" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path
+                                Width="24"
+                                Data="{TemplateBinding imageViewer:GeometryIconElement.IconGeometry}"
+                                Fill="Black"
+                                Stretch="Uniform" >
+                            </Path>
+                            <ContentPresenter
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
+
+
+                    </Border>
+
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="DarkGray" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="BorderBrush" Value="Lime" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+
+
+    </Style>
+
 </ResourceDictionary>

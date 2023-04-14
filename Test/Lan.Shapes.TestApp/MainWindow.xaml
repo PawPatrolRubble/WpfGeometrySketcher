@@ -29,16 +29,15 @@
             <imageViewer:ImageViewerControl
                 Margin="5"
                 Padding="10"
-                BorderBrush="Red"
                 DataContext="{Binding Camera1}"
-                BorderThickness="1" />
+                />
 
-            <imageViewer:ImageViewerControl
+            <!--<imageViewer:ImageViewerControl
                 Margin="5"
                 Padding="10"
-                BorderBrush="Red"
+                BorderBrush="LightGray"
                 DataContext="{Binding Camera2}"
-                BorderThickness="1" />
+                BorderThickness="1" />-->
 
         </UniformGrid>
 

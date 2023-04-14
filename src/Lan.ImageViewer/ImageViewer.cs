@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography.Xml;
-using System.Text;
+﻿using Lan.SketchBoard;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Lan.SketchBoard;
 
 namespace Lan.ImageViewer
 {
@@ -37,8 +26,8 @@ namespace Lan.ImageViewer
         private Grid _gridContainer;
         private readonly TransformGroup _transformGroup = new TransformGroup();
         private TextBlock _textBlock;
-        private double _totalScale;
         private bool _isMouseFirstClick = true;
+        private bool _isImageScaledByMouseWheel;
 
         #region binding properties
 
@@ -164,7 +153,6 @@ namespace Lan.ImageViewer
 
 
 
-        private bool _isImageScaledByMouseWheel = false;
         /// <summary>Raises the <see cref="E:System.Windows.FrameworkElement.SizeChanged" /> event, using the specified information as part of the eventual event data.</summary>
         /// <param name="sizeInfo">Details of the old and new size involved in the change.</param>
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -229,7 +217,7 @@ namespace Lan.ImageViewer
         }
 
 
-        private bool _disablePropertyChangeCallback = false;
+        private bool _disablePropertyChangeCallback;
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseWheel" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseWheelEventArgs" /> that contains the event data.</param>
