@@ -1,0 +1,25 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:o="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+    <RotateTransform x:Key="CW90" Angle="90" CenterX="0.5" CenterY="0.5" />
+
+    <PathGeometry
+        x:Key="ZoomIn"
+        o:Freeze="true"
+        Transform="{StaticResource CW90}"
+        Figures="M256 299h-43v-43h-21v43h-43v21h43v43h21v-43h43v-21zM203 213c53 0 96 43 96 96s-43 96 -96 96s-96 -43 -96 -96s43 -96 96 -96zM331 213l106 -106l-32 -32l-106 106v17l-6 6c-24 -21 -56 -33 -90 -33c-77 0 -139 61 -139 138s62 139 139 139s138 -62 138 -139 c0 -34 -12 -66 -33 -90l6 -6h17z">
+    </PathGeometry>
+
+
+    <PathGeometry
+        x:Key="ZoomOut"
+        o:Freeze="true"
+        Figures="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12zM5 7h6v2H5V7z">
+    </PathGeometry>
+
+    <Geometry x:Key="Rectangle" o:Freeze="true">M2,4H8V6H16V4H22V10H20V14H22V20H16V18H8V20H2V14H4V10H2V4M16,10V8H8V10H6V14H8V16H16V14H18V10H16M4,6V8H6V6H4M18,6V8H20V6H18M4,16V18H6V16H4M18,16V18H20V16H18Z</Geometry>
+    <Geometry x:Key="Ellipse" o:Freeze="true">M23,9V15H20.35C19.38,17.12 17.43,18.78 15,19.54V22H9V19.54C5.5,18.45 3,15.5 3,12C3,7.58 7.03,4 12,4C15.78,4 19,6.07 20.35,9H23M17,15V9H18.06C16.85,7.21 14.59,6 12,6C8.13,6 5,8.69 5,12C5,14.39 6.64,16.46 9,17.42V16H15V17.42C16.29,16.9 17.35,16.05 18.06,15H17M19,13H21V11H19V13M11,20H13V18H11V20Z</Geometry>
+
+</ResourceDictionary>

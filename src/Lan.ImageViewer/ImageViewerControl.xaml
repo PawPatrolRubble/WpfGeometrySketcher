@@ -9,19 +9,34 @@
     d:DataContext="{d:DesignInstance local:IImageViewerViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Background="White"
     mc:Ignorable="d">
 
 
     <UserControl.Resources>
 
-        <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
-            <Border ToolTip="{Binding Description}">
-                <StackPanel>
-                    <Image Source="{Binding IconData}" />
-                    <TextBlock Text="{Binding Name}" />
-                </StackPanel>
-            </Border>
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Lan.ImageViewer;component/Style.xaml" />
+                <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
+                <Border ToolTip="{Binding Description}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image
+                            Width="20"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="{Binding IconData}"
+                            Stretch="Uniform" />
+                        <TextBlock Margin="10,0" Text="{Binding Name}" />
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+
+
 
     </UserControl.Resources>
 
@@ -29,45 +44,51 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="180" />
         </Grid.ColumnDefinitions>
 
         <local:ImageViewer
+            Margin="5"
+            BorderBrush="LightGray"
+            BorderThickness="1"
             ImageSource="{Binding Image}"
-            Scale="{Binding Scale,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" Margin="5">
+            <TextBlock Margin="2,2" Text="Geometry Types" />
             <ListBox
                 MinHeight="150"
+                BorderThickness="1"
+                FontSize="20"
                 ItemTemplate="{StaticResource GeometryTypeTemplate}"
                 ItemsSource="{Binding GeometryTypeList}"
                 SelectedItem="{Binding SelectedGeometryType}" />
 
             <Separator />
 
-            <TextBox 
-                Text="{Binding Scale,StringFormat='{}{0:p2}'}"/>
+
+            <TextBlock Margin="2" Text="Scale rate" />
+
+            <TextBox
+                Height="25"
+                Margin="2"
+                VerticalContentAlignment="Center"
+                FontSize="16"
+                Text="{Binding Scale, StringFormat='{}{0:p2}'}" />
+
 
             <Button
-                Margin="1"
-                Command="{Binding ZoomOutCommand}"
-                Content="zoom in" />
-
-            <Button
-                Margin="1"
+                local:GeometryIconElement.IconGeometry="{StaticResource ZoomIn}"
                 Command="{Binding ZoomInCommand}"
-                Content="zoom out" />
+                Content="Zoom In"
+                Style="{StaticResource IconButton}" />
 
             <Button
-                Margin="1"
-                Command="{Binding ScaleToOriginalSizeCommand}"
-                Content="to original size" />
-
-            <Button
-                Margin="1"
-                Command="{Binding ScaleToFitCommand}"
-                Content="AutoFit" />
+                local:GeometryIconElement.IconGeometry="{StaticResource ZoomOut}"
+                Command="{Binding ZoomOutCommand}"
+                Content="Zoom Out"
+                Style="{StaticResource IconButton}" />
 
 
 
