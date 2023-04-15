@@ -1,12 +1,17 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
 using Lan.Shapes.Styler;
 
 namespace Lan.SketchBoard
 {
+    /// <summary>
+    /// provide the functionality for managing geometry data for <see cref="SketchBoard"/>,
+    /// which is only responsible for displaying
+    /// </summary>
     public interface ISketchBoardDataManager
     {
         /// <summary>
@@ -62,7 +67,7 @@ namespace Lan.SketchBoard
         // IShapeManipulator? CurrentShapeManipulator { get; }
 
         /// <summary>
-        /// 由sketchboard 向此添加,可用于初始化时加载现有图形
+        /// 由sketchboard 向此添加,可用于初始化时加载现有图形,
         /// </summary>
         /// <param name="shape"></param>
         void AddShape(ShapeVisualBase shape);
@@ -74,10 +79,19 @@ namespace Lan.SketchBoard
         /// <param name="index"></param>
         void AddShape(ShapeVisualBase shape, int index);
 
+        /// <summary>
+        /// remove one shape
+        /// </summary>
+        /// <param name="shape"></param>
         void RemoveShape(ShapeVisualBase shape);
+
         void RemoveAt(int index);
+
         void RemoveAt(int index, int count);
 
+        /// <summary>
+        /// remove all shapes on canvas
+        /// </summary>
         void ClearAllShapes();
 
         ShapeVisualBase? GetShapeVisual(int index);
@@ -86,14 +100,25 @@ namespace Lan.SketchBoard
         /// select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
-        void SelectDrawingTool(string drawingTool);
+        void SelectGeometryType(string drawingTool);
 
         /// <summary>
         /// provides styler for the new shaped created
         /// </summary>
         /// <param name="drawingTool"></param>
         /// <param name="styler"></param>
-        void SelectDrawingTool(string drawingTool, IShapeStyler styler);
+        void SelectGeometryType(string drawingTool, IShapeStyler styler);
+
+
+
+        void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas);
+
+        /// <summary>
+        /// handle the mouse up event from canvas
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        void MouseUpHandler(Point mousePosition);
+
     }
     
 }

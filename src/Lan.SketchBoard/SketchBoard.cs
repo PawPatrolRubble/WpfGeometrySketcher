@@ -10,6 +10,7 @@ namespace Lan.SketchBoard
 {
     public class SketchBoard : Canvas
     {
+
         public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
             "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
             new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
@@ -23,7 +24,7 @@ namespace Lan.SketchBoard
             }
         }
 
-        public ISketchBoardDataManager SketchBoardDataManager
+        public ISketchBoardDataManager? SketchBoardDataManager
         {
             get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
             set { SetValue(SketchBoardDataManagerProperty, value); }
@@ -59,13 +60,24 @@ namespace Lan.SketchBoard
         {
             try
             {
-                SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+                Point mousePos = e.GetPosition(this);
+                HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
+
+                if (hitTestResult != null && hitTestResult.VisualHit is ShapeVisualBase visual)
+                {
+                    // Do something with the clicked DrawingVisual
+                    // visual.Transform.Transform(mousePos) will give the position of the mouse click relative to the DrawingVisual
+                    visual.OnMouseLeftButtonDown(e.GetPosition(this));
+                }
+                else
+                {
+                    SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+                }
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
             }
-            //hit test if any shape is being selected
         }
 
 
@@ -73,7 +85,17 @@ namespace Lan.SketchBoard
         {
             try
             {
-                SketchBoardDataManager?.SelectedShape?.OnMouseMove(e.GetPosition(this), e.MouseDevice.LeftButton);
+                Point mousePos = e.GetPosition(this);
+                HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
+
+                if (hitTestResult != null && hitTestResult.VisualHit is ShapeVisualBase visual)
+                {
+                    visual.OnMouseMove(e.GetPosition(this), e.LeftButton);
+                }
+                else
+                {
+                    SketchBoardDataManager?.SelectedShape?.OnMouseMove(mousePos,e.LeftButton);
+                }
             }
             catch (Exception exception)
             {
@@ -85,7 +107,8 @@ namespace Lan.SketchBoard
         {
             try
             {
-                SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+                SketchBoardDataManager?.MouseUpHandler(e.GetPosition(this));
+                //SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
 
             }
             catch (Exception exception)

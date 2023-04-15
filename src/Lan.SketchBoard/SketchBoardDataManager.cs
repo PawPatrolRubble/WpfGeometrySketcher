@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
 using Lan.Shapes.Styler;
 
 namespace Lan.SketchBoard
 {
+   
     public class SketchBoardDataManager : ISketchBoardDataManager
     {
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
@@ -139,7 +141,7 @@ namespace Lan.SketchBoard
         /// select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
-        public void SelectDrawingTool(string drawingTool)
+        public void SelectGeometryType(string drawingTool)
         {
             Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
             LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
@@ -181,9 +183,25 @@ namespace Lan.SketchBoard
         /// </summary>
         /// <param name="drawingTool"></param>
         /// <param name="styler"></param>
-        public void SelectDrawingTool(string drawingTool, IShapeStyler styler)
+        public void SelectGeometryType(string drawingTool, IShapeStyler styler)
         {
             LocalAddNewGeometry(drawingTool, styler);
         }
+
+        /// <summary>
+        /// create new geometry with selected tool
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        public void CreateNew(Point mousePosition)
+        {
+            SelectedShape?.OnMouseLeftButtonDown(mousePosition);
+        }
+
+        public void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas)
+        {
+            SelectedShape = shapeSelectedFromCanvas;
+        }
+
+
     }
 }
