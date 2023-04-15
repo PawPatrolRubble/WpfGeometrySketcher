@@ -46,7 +46,7 @@ namespace Lan.Shapes.App
                 if (SetProperty(ref _selectedGeometryType, value))
                 {
                     if (_selectedGeometryType != null)
-                        SketchBoardDataManager.SelectDrawingTool(_selectedGeometryType.Name);
+                        SketchBoardDataManager.SelectGeometryType(_selectedGeometryType.Name);
 
                 }
 
