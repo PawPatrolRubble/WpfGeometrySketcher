@@ -9,11 +9,12 @@ using Lan.Shapes.Styler;
 
 namespace Lan.SketchBoard
 {
-   
     public class SketchBoardDataManager : ISketchBoardDataManager
     {
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
+
+        private Type? _currentGeometryType;
 
         /// <summary>
         /// 当前图层
@@ -44,7 +45,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        public ShapeVisualBase? SelectedShape { get; private set; }
+        public ShapeVisualBase? SelectedGeometry { get; private set; }
 
         /// <summary>
         /// relate a tool with a shape
@@ -87,7 +88,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape)
         {
             VisualCollection.Add(shape);
-            SelectedShape = shape;
+            SelectedGeometry = shape;
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape, int index)
         {
             VisualCollection.Insert(index, shape);
-            SelectedShape = shape;
+            SelectedGeometry = shape;
         }
 
         public void RemoveShape(ShapeVisualBase shape)
@@ -144,19 +145,33 @@ namespace Lan.SketchBoard
         public void SelectGeometryType(string drawingTool)
         {
             Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
-            LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
+
+            //it is not true when select one new geometry type means the user will create a new shape, it is completely possible that the user
+            //switches the geometry type by accident
+            // LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
+
+            //todo set current geometry type
+            //
+            if (_drawingTools.ContainsKey(drawingTool))
+            {
+                _currentGeometryType = _drawingTools[drawingTool];
+            }
+            else
+            {
+                throw new Exception("the drawing tool does not exist");
+            }
         }
 
-        private void LocalAddNewGeometry(string drawingTool, IShapeStyler shapeStyler)
+        private void LocalAddNewGeometry(string drawingTool, ShapeLayer shapeLayer)
         {
             if (string.IsNullOrEmpty(drawingTool))
             {
                 throw new ArgumentNullException(nameof(drawingTool));
             }
 
-            if (shapeStyler == null)
+            if (shapeLayer == null)
             {
-                throw new ArgumentNullException(nameof(shapeStyler));
+                throw new ArgumentNullException(nameof(shapeLayer));
             }
 
 
@@ -165,28 +180,16 @@ namespace Lan.SketchBoard
                 throw new NullReferenceException("visual collection must be init first");
             }
 
-
-
             if (_drawingTools.ContainsKey(drawingTool))
             {
                 var shape = (ShapeVisualBase)Activator.CreateInstance(_drawingTools[drawingTool])!;
-                shape.ShapeStyler = shapeStyler;
+                shape.ShapeLayer = shapeLayer;
 
-                SelectedShape = shape;
+                SelectedGeometry = shape;
                 VisualCollection.Add(shape);
             }
         }
 
-
-        /// <summary>
-        /// create a shape with custom style
-        /// </summary>
-        /// <param name="drawingTool"></param>
-        /// <param name="styler"></param>
-        public void SelectGeometryType(string drawingTool, IShapeStyler styler)
-        {
-            LocalAddNewGeometry(drawingTool, styler);
-        }
 
         /// <summary>
         /// create new geometry with selected tool
@@ -194,14 +197,26 @@ namespace Lan.SketchBoard
         /// <param name="mousePosition"></param>
         public void CreateNew(Point mousePosition)
         {
-            SelectedShape?.OnMouseLeftButtonDown(mousePosition);
+            SelectedGeometry?.OnMouseLeftButtonDown(mousePosition);
         }
 
         public void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas)
         {
-            SelectedShape = shapeSelectedFromCanvas;
+            SelectedGeometry = shapeSelectedFromCanvas;
         }
 
+        public void MouseUpHandler(Point mousePosition)
+        {
+            // throw new NotImplementedException();
+        }
 
+        public void CreateNewGeometry(Point mousePosition)
+        {
+        }
+
+        public void FinishCreatingNewGeometry()
+        {
+            SelectedGeometry = null;
+        }
     }
 }

@@ -7,19 +7,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Lan.Shapes
 {
     public class ShapeLayerManager : DependencyObject, IShapeLayerManager, INotifyPropertyChanged
     {
-        #region fields
-
-        private readonly List<ShapeVisualBase> _shapes = new List<ShapeVisualBase>();
-
-        #endregion
-
-
         #region properties
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -37,9 +31,21 @@ namespace Lan.Shapes
             }
         }
 
+        public void SaveLayerConfigurations()
+        {
+            // throw new NotImplementedException();
+        }
+
         public void ReadShapeLayers(string configurationFilePath)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(configurationFilePath))
+            {
+                using (var file = new StreamReader(configurationFilePath))
+                {
+                    var shapeLayerParameters = JsonConvert.DeserializeObject<List<ShapeLayerParameter>>(file.ReadToEnd());
+                    Layers.AddRange(shapeLayerParameters.Select(x=>new ShapeLayer(x)));
+                }
+            }
         }
 
         public ObservableCollection<ShapeLayer> Layers { get; private set; } = new ObservableCollection<ShapeLayer>();
@@ -68,26 +74,6 @@ namespace Lan.Shapes
         #endregion
 
         #region public methods
-
-        public void ReadShapeLayersFromConfig(string configurationFilePath)
-        {
-            var shapes = JObject.Parse(File.ReadAllText(configurationFilePath));
-            var layers = from section in shapes["ShapeLayerList"]
-                select new ShapeLayer(new ShapeLayerParameter
-                {
-                    LayerId = (int)section["LayerId"],
-                    Name = (string)section["Name"],
-                    Description = (string)section["Description"],
-                    StylerFillColor =
-                        ColorWithOpacity((string)section["FillColor"], (double)section["FillColorOpacity"]),
-                    StylerStrokeColor = FromHexStringToBrush((string)section["StrokeColor"]),
-                    StylerStrokeThickness = (double)section["LineThickness"],
-                    StylerDashStyle = ConvertToDashStyleFromString((string)section["lineStyle"]),
-                    TextForeground = FromHexStringToBrush((string)section["TextForeground"]),
-                    BorderBackground = FromHexStringToBrush((string)section["BorderBackground"])
-                });
-            Layers.AddRange(layers);
-        }
 
         private Brush ColorWithOpacity(string colorString, double opacity)
         {
@@ -119,20 +105,6 @@ namespace Lan.Shapes
         {
             var converter = new System.Windows.Media.BrushConverter();
             return (Brush)converter.ConvertFromString(hexString);
-        }
-
-
-        public void AddShape(ShapeVisualBase shape)
-        {
-            if (SelectedLayer != null)
-            {
-                _shapes.Add(shape);
-            }
-        }
-
-        public void RemoveShape(ShapeVisualBase shape)
-        {
-            _shapes.Remove(shape);
         }
 
 

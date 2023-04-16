@@ -42,13 +42,13 @@ namespace Lan.Shapes.Shapes
         {
             base.OnMouseLeftButtonDown(newPoint);
 
-            if (IsGeometryInitialized)
+            if (IsGeometryRendered)
             {
                 _mouseDownRadiusX = _ellipseGeometry.RadiusX;
                 _mouseDownRadiusY = _ellipseGeometry.RadiusY;
             }
 
-            if (!IsGeometryInitialized)
+            if (!IsGeometryRendered)
             {
                 if (MouseDownPoint != null)
                     _ellipseGeometry = new EllipseGeometry(new Rect(MouseDownPoint.Value, newPoint));

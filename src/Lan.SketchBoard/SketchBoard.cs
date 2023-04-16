@@ -48,13 +48,22 @@ namespace Lan.SketchBoard
 
         protected override Visual GetVisualChild(int index)
         {
-            return SketchBoardDataManager?.VisualCollection[index] ?? default(ShapeVisualBase);
+            return SketchBoardDataManager?.VisualCollection[index] ?? throw new InvalidOperationException();
         }
 
         #endregion
 
 
         #region events handling
+
+        /// <summary>
+        /// right click the mouse means ending the drawing of current shape
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+        {
+            SketchBoardDataManager?.FinishCreatingNewGeometry();
+        }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -63,6 +72,8 @@ namespace Lan.SketchBoard
                 Point mousePos = e.GetPosition(this);
                 HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
 
+                
+                // if one geometry is selected, then it may 
                 if (hitTestResult != null && hitTestResult.VisualHit is ShapeVisualBase visual)
                 {
                     // Do something with the clicked DrawingVisual
@@ -71,7 +82,9 @@ namespace Lan.SketchBoard
                 }
                 else
                 {
-                    SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+                    //it is to create new points
+                    SketchBoardDataManager?.CreateNewGeometry(mousePos); 
+                    // SketchBoardDataManager?.SelectedGeometry?.OnMouseLeftButtonDown(e.GetPosition(this));
                 }
             }
             catch (Exception exception)
@@ -94,7 +107,7 @@ namespace Lan.SketchBoard
                 }
                 else
                 {
-                    SketchBoardDataManager?.SelectedShape?.OnMouseMove(mousePos,e.LeftButton);
+                    SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(mousePos,e.LeftButton);
                 }
             }
             catch (Exception exception)

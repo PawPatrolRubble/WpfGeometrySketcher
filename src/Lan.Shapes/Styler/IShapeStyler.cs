@@ -4,6 +4,7 @@ namespace Lan.Shapes.Styler
 {
     public interface IShapeStyler
     {
+        string Name { get; set; }
         void SetStrokeColor(Brush color);
         void SetFillColor(Brush color);
         void SetStrokeThickness(double strokeThickness);
@@ -12,7 +13,7 @@ namespace Lan.Shapes.Styler
         double DragHandleSize { get; }
         Pen SketchPen { get; }
         Brush FillColor { get; }
-        string Name { get; set; }
         IShapeStyler Clone();
     }
+    
 }

@@ -40,6 +40,11 @@ namespace Lan.Shapes.Styler
         {
         }
 
+        public ShapeStyler(ShapeStylerParameter parameter)
+        {
+            
+        }
+
         public ShapeStyler(Brush fillColor, Brush strokeColor, DashStyle dashStyle, double dragHandleSize)
         {
             this.FillColor = fillColor;
