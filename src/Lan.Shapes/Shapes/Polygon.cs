@@ -46,7 +46,7 @@ namespace Lan.Shapes.Shapes
         /// <param name="newPoint"></param>
         public override void OnMouseLeftButtonUp(Point newPoint)
         {
-            if (!IsGeometryInitialized)
+            if (!IsGeometryRendered)
             {
 
                 if (_points.Count > 0)
@@ -92,7 +92,7 @@ namespace Lan.Shapes.Shapes
         {
 
             _pathFigure.IsClosed = true;
-            IsGeometryInitialized = true;
+            IsGeometryRendered = true;
 
         }
 

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Lan.Shapes.Styler;
@@ -9,50 +11,45 @@ namespace Lan.Shapes
     /// <summary>
     /// responsible for grouping shapes drawn and setting display style in the group
     /// all shapes must be managed by layer, 
-    /// layer information is read from appsetting.json
+    /// layer information is read from app setting.json
+    /// a shape layer will instruct renderContext how to show the geometry contained
+    /// all shapes in a shapeLayer shape common ui styles,
+    /// like line weight, stroke color, when they are selected, hovered over, etc.
     /// </summary>
-    public class ShapeLayer : INotifyPropertyChanged
+    public class ShapeLayer
     {
         #region fields
 
         private List<ShapeVisualBase> _shapeVisuals = new List<ShapeVisualBase>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        /// <summary>
+        /// all shape stylers contained in one layer
+        /// </summary>
+        private Dictionary<ShapeState, IShapeStyler> _stylers = new Dictionary<ShapeState, IShapeStyler>();
 
         #endregion
 
+        
         #region properties
+        
 
-        private bool _isSelected;
-
-        public bool IsSelected
+        /// <summary>
+        /// get all shapes contained the layer
+        /// </summary>
+        public IEnumerable<ShapeVisualBase> Shapes
         {
-            get => _isSelected;
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged();
-            }
+            get => _shapeVisuals;
         }
+        
+        
+        public int LayerId { get; }
+        public string Name { get; }
+        public string Description { get; }
+        
+        public Brush TextForeground { get; } = Brushes.Black;
+        public Brush BorderBackground { get; } = Brushes.LightBlue;
 
-        internal IShapeStyler GetStyler(bool isSelected)
-        {
-            return isSelected ? GetSelectedState() : GetUnselectedShapeStyler();
-        }
-
-        public int LayerId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public IShapeStyler Styler { get; set; }
-
-        public Brush TextForeground { get; set; } = Brushes.Black;
-        public Brush BorderBackground { get; set; } = Brushes.LightBlue;
-
+        
         #endregion
 
 
@@ -71,64 +68,61 @@ namespace Lan.Shapes
             Name = shapeLayerParameter.Name;
             Description = shapeLayerParameter.Description;
 
-
-            Styler = new ShapeStyler();
-            Styler.SetFillColor(shapeLayerParameter.StylerFillColor);
-            Styler.SetPenDashStyle(shapeLayerParameter.StylerDashStyle);
-            Styler.SetStrokeColor(shapeLayerParameter.StylerStrokeColor);
-            Styler.SetStrokeThickness(shapeLayerParameter.StylerStrokeThickness);
+            _stylers = new Dictionary<ShapeState, IShapeStyler>(shapeLayerParameter.StyleSchema.Select(x =>
+                new KeyValuePair<ShapeState, IShapeStyler>(x.Key, new ShapeStyler(x.Value))));
             BorderBackground = shapeLayerParameter.BorderBackground;
             TextForeground = shapeLayerParameter.TextForeground;
         }
 
-
-        public static ShapeLayer CreateLayer(IShapeStyler shapeStyler, int layerId, string name, string description)
-        {
-            return new ShapeLayer(layerId, name, description)
-            {
-                Styler = shapeStyler,
-            };
-        }
-
+        
         #endregion
 
 
         #region public interfaces
-
-        public IEnumerable<ShapeVisualBase> RenderShapes(IEnumerable<ShapeVisualBase> shapeVisuals)
+        
+        public IEnumerable<ShapeVisualBase> RenderShapes(List<ShapeVisualBase> shapeVisuals)
         {
             foreach (var visual in shapeVisuals)
             {
-                var dc = visual.RenderOpen();
-                dc.DrawGeometry(Styler.FillColor, Styler.SketchPen, visual.RenderGeometry);
-                dc.Close();
+              RenderWithStyler(GetStyler(visual.State),visual);
             }
 
             return shapeVisuals;
         }
 
-        #endregion
-
-        public IShapeStyler GetSelectedState()
+        private void RenderWithStyler(IShapeStyler styler, ShapeVisualBase shape)
         {
-            var brush = BrushFromHexString("#3eb03f");
-            brush.Opacity = 0.3;
-            Styler.SetFillColor(brush);
-
-            return Styler.Clone();
+            var dc = shape.RenderOpen();
+            dc.DrawGeometry(GetStyler(shape.State).FillColor, styler.SketchPen, shape.RenderGeometry);
+            dc.Close();
         }
 
+        #endregion
+        
+        
         private Brush BrushFromHexString(string hextString)
         {
             var converter = new BrushConverter();
             return (Brush)converter.ConvertFromString(hextString);
         }
+        
+        
 
-        public IShapeStyler GetUnselectedShapeStyler()
+        /// <summary>
+        /// get styler based on the state of shape
+        /// </summary>
+        /// <param name="shapeState"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"> if shapeState is not found</exception>
+        public IShapeStyler GetStyler(ShapeState shapeState) => _stylers[shapeState];
+
+
+      
+        public void AddShapeToLayer(ShapeVisualBase shape)
         {
-            Styler.SetFillColor(Brushes.Transparent);
-
-            return Styler.Clone();
+            _shapeVisuals.Add(shape);
         }
+        
+  
     }
 }

@@ -18,7 +18,7 @@ namespace Lan.SketchBoard
         /// this is used to hold all shapes
         /// </summary>
         VisualCollection VisualCollection { get; set; }
-        
+
         /// <summary>
         /// get all shapes defined in canvas
         /// </summary>
@@ -33,7 +33,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        ShapeVisualBase? SelectedShape { get; }
+        ShapeVisualBase? SelectedGeometry { get; }
 
         /// <summary>
         /// relate a tool with a shape
@@ -61,11 +61,7 @@ namespace Lan.SketchBoard
         /// </summary>
         ShapeLayer? CurrentShapeLayer { get; }
 
-        /// <summary>
-        /// manipulator currently used
-        /// </summary>
-        // IShapeManipulator? CurrentShapeManipulator { get; }
-
+        
         /// <summary>
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形,
         /// </summary>
@@ -95,22 +91,18 @@ namespace Lan.SketchBoard
         void ClearAllShapes();
 
         ShapeVisualBase? GetShapeVisual(int index);
-        
+
         /// <summary>
         /// select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
         void SelectGeometryType(string drawingTool);
 
+
         /// <summary>
-        /// provides styler for the new shaped created
+        /// select one geometry
         /// </summary>
-        /// <param name="drawingTool"></param>
-        /// <param name="styler"></param>
-        void SelectGeometryType(string drawingTool, IShapeStyler styler);
-
-
-
+        /// <param name="shapeSelectedFromCanvas"></param>
         void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas);
 
         /// <summary>
@@ -119,6 +111,17 @@ namespace Lan.SketchBoard
         /// <param name="mousePosition"></param>
         void MouseUpHandler(Point mousePosition);
 
+
+        /// <summary>
+        /// create new geometry from mouse down position
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        void CreateNewGeometry(Point mousePosition);
+
+
+        /// <summary>
+        /// use to end the drawing of current geometry, and set current geometry to null
+        /// </summary>
+        void FinishCreatingNewGeometry();
     }
-    
 }

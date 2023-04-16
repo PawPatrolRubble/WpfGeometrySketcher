@@ -13,6 +13,10 @@ namespace Lan.Shapes
     public abstract class ShapeVisualBase : DrawingVisual
     {
         #region fields
+
+        
+        public  ShapeState State { get; protected set; }
+        
         /// <summary>
         /// in this area translation of the shape will be allowed
         /// </summary>
@@ -46,14 +50,18 @@ namespace Lan.Shapes
 
         #endregion
 
+        
+        public ShapeLayer? ShapeLayer { get; set; }
+
         /// <summary>
-        /// set this, when basic geometry is set
+        /// set it to be true, if geometry is first Rendered
         /// </summary>
-        public bool IsGeometryInitialized { get; protected set; }
-        public IShapeStyler? ShapeStyler { get; set; }
-
-
-
+        public bool IsGeometryRendered { get; protected set; }
+        
+        /// <summary>
+        /// the current valid styler should be given from layer base on the shape State
+        /// </summary>
+        public IShapeStyler? ShapeStyler => ShapeLayer?.GetStyler(State);
 
         public virtual Geometry RenderGeometry { get => RenderGeometryGroup; }
 
@@ -83,9 +91,9 @@ namespace Lan.Shapes
         /// <param name="newPoint"></param>
         public virtual void OnMouseLeftButtonUp(Point newPoint)
         {
-            if (!IsGeometryInitialized && RenderGeometryGroup.Children.Count > 0)
+            if (!IsGeometryRendered && RenderGeometryGroup.Children.Count > 0)
             {
-                IsGeometryInitialized = true;
+                IsGeometryRendered = true;
             }
 
             SelectedDragHandle = null;
@@ -119,7 +127,7 @@ namespace Lan.Shapes
             }
             else
             {
-                if (IsGeometryInitialized)
+                if (IsGeometryRendered)
                 {
                     //scale operation
                     if (SelectedDragHandle != null)
