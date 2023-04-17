@@ -10,7 +10,6 @@ namespace Lan.SketchBoard
 {
     public class SketchBoard : Canvas
     {
-
         public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
             "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
             new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
@@ -29,7 +28,6 @@ namespace Lan.SketchBoard
             get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
             set { SetValue(SketchBoardDataManagerProperty, value); }
         }
-
 
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register(
@@ -72,20 +70,16 @@ namespace Lan.SketchBoard
                 Point mousePos = e.GetPosition(this);
                 HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
 
+                ShapeVisualBase? shape = null;
+
+                if (hitTestResult != null)
+                {
+                    shape = hitTestResult.VisualHit as ShapeVisualBase;
+                }
                 
-                // if one geometry is selected, then it may 
-                if (hitTestResult != null && hitTestResult.VisualHit is ShapeVisualBase visual)
-                {
-                    // Do something with the clicked DrawingVisual
-                    // visual.Transform.Transform(mousePos) will give the position of the mouse click relative to the DrawingVisual
-                    visual.OnMouseLeftButtonDown(e.GetPosition(this));
-                }
-                else
-                {
-                    //it is to create new points
-                    SketchBoardDataManager?.CreateNewGeometry(mousePos); 
-                    // SketchBoardDataManager?.SelectedGeometry?.OnMouseLeftButtonDown(e.GetPosition(this));
-                }
+                shape ??= SketchBoardDataManager?.CreateNewGeometry(mousePos);
+                shape?.OnMouseLeftButtonDown(e.GetPosition(this));
+                
             }
             catch (Exception exception)
             {
@@ -107,7 +101,7 @@ namespace Lan.SketchBoard
                 }
                 else
                 {
-                    SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(mousePos,e.LeftButton);
+                    SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(mousePos, e.LeftButton);
                 }
             }
             catch (Exception exception)
@@ -122,7 +116,6 @@ namespace Lan.SketchBoard
             {
                 SketchBoardDataManager?.MouseUpHandler(e.GetPosition(this));
                 //SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
-
             }
             catch (Exception exception)
             {

@@ -13,8 +13,6 @@ namespace Lan.Shapes
     public abstract class ShapeVisualBase : DrawingVisual
     {
         #region fields
-
-        
         public  ShapeState State { get; protected set; }
         
         /// <summary>

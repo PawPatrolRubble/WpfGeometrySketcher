@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 
 namespace Lan.Shapes
 {
@@ -6,6 +7,8 @@ namespace Lan.Shapes
     {
       
     }
+    
+    
     /// <summary>
     /// responsible for displaying and update shape data, update geometry 
     /// </summary>
