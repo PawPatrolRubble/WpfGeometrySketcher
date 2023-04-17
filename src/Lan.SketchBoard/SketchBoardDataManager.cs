@@ -210,7 +210,7 @@ namespace Lan.SketchBoard
             // throw new NotImplementedException();
         }
 
-        public void CreateNewGeometry(Point mousePosition)
+        public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
         {
         }
 

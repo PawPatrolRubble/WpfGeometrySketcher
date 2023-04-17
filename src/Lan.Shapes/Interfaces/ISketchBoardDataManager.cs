@@ -116,7 +116,8 @@ namespace Lan.SketchBoard
         /// create new geometry from mouse down position
         /// </summary>
         /// <param name="mousePosition"></param>
-        void CreateNewGeometry(Point mousePosition);
+        /// <returns>if no geometry type is selected, it will return null</returns>
+        ShapeVisualBase? CreateNewGeometry(Point mousePosition);
 
 
         /// <summary>
