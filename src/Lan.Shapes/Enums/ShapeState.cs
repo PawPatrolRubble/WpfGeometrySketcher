@@ -1,6 +1,6 @@
 ﻿namespace Lan.Shapes
 {
-    public enum ShapeState
+    public enum ShapeVisualState
     {
         Normal,
         BeingSketched,

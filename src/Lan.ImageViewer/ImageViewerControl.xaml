@@ -68,6 +68,19 @@
             <Separator />
 
 
+            <TextBlock
+                FontWeight="Bold"
+                Foreground="Red"
+                TextWrapping="Wrap"
+                Text="Select a Layer before start making drawings" />
+
+            <ComboBox 
+                Margin="0 5"
+                DisplayMemberPath="Name"
+                SelectedItem="{Binding SelectedShapeLayer}"
+                ItemsSource="{Binding Layers}"/>
+
+
             <TextBlock Margin="2" Text="Scale rate" />
 
             <TextBox

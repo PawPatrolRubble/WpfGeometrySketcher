@@ -14,6 +14,7 @@ namespace Lan.Shapes.Styler
         Pen SketchPen { get; }
         Brush FillColor { get; }
         IShapeStyler Clone();
+        ShapeStylerParameter ToStylerParameter();
     }
     
 }

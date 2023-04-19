@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,13 +8,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Lan.Shapes
 {
     public class ShapeLayerManager : DependencyObject, IShapeLayerManager, INotifyPropertyChanged
     {
+
+        #region fields
+
+        private string _path;
+
+        #endregion
+
         #region properties
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,20 +37,30 @@ namespace Lan.Shapes
             }
         }
 
-        public void SaveLayerConfigurations()
+        public void SaveLayerConfigurations(string filePath)
         {
-            // throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                _path = filePath;
+            }
+
+            var serialized = JsonConvert.SerializeObject(Layers.Select(x=>x.ToShapeLayerParameter()).ToList());
+            File.WriteAllText(_path, serialized);
         }
+
 
         public void ReadShapeLayers(string configurationFilePath)
         {
             if (!string.IsNullOrEmpty(configurationFilePath))
             {
+
                 using (var file = new StreamReader(configurationFilePath))
                 {
                     var shapeLayerParameters = JsonConvert.DeserializeObject<List<ShapeLayerParameter>>(file.ReadToEnd());
-                    Layers.AddRange(shapeLayerParameters.Select(x=>new ShapeLayer(x)));
+                    Layers.AddRange(shapeLayerParameters.Select(x => new ShapeLayer(x)));
                 }
+
+                _path = configurationFilePath;
             }
         }
 

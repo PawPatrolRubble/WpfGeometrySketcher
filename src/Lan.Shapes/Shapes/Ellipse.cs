@@ -37,10 +37,10 @@ namespace Lan.Shapes.Shapes
         /// <summary>
         /// left mouse button down event
         /// </summary>
-        /// <param name="newPoint"></param>
-        public override void OnMouseLeftButtonDown(Point newPoint)
+        /// <param name="mousePoint"></param>
+        public override void OnMouseLeftButtonDown(Point mousePoint)
         {
-            base.OnMouseLeftButtonDown(newPoint);
+            base.OnMouseLeftButtonDown(mousePoint);
 
             if (IsGeometryRendered)
             {
@@ -51,7 +51,7 @@ namespace Lan.Shapes.Shapes
             if (!IsGeometryRendered)
             {
                 if (MouseDownPoint != null)
-                    _ellipseGeometry = new EllipseGeometry(new Rect(MouseDownPoint.Value, newPoint));
+                    _ellipseGeometry = new EllipseGeometry(new Rect(MouseDownPoint.Value, mousePoint));
             }
 
         }

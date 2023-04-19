@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -13,8 +14,25 @@ namespace Lan.Shapes
     public abstract class ShapeVisualBase : DrawingVisual
     {
         #region fields
-        public  ShapeState State { get; protected set; }
-        
+
+        private ShapeVisualState _state;
+
+        public ShapeVisualState State
+        {
+            get => _state;
+            set
+            {
+                _state = value; 
+                UpdateVisual();
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsBeingDragged { get; protected set; }
+
         /// <summary>
         /// in this area translation of the shape will be allowed
         /// </summary>
@@ -71,16 +89,20 @@ namespace Lan.Shapes
         /// <summary>
         /// left mouse button down event
         /// </summary>
-        /// <param name="newPoint"></param>
-        public virtual void OnMouseLeftButtonDown(Point newPoint)
+        /// <param name="mousePoint"></param>
+        public virtual void OnMouseLeftButtonDown(Point mousePoint)
         {
-            if (HandleGeometryGroup?.FillContains(newPoint) ?? false)
+            if (HandleGeometryGroup?.FillContains(mousePoint) ?? false)
             {
-                FindSelectedHandle(newPoint);
+                FindSelectedHandle(mousePoint);
+            }
+            else
+            {
+                SelectedDragHandle = null;
             }
 
-            OldPointForTranslate = newPoint;
-            MouseDownPoint ??= newPoint;
+            OldPointForTranslate = mousePoint;
+            MouseDownPoint ??= mousePoint;
         }
 
         /// <summary>
@@ -95,6 +117,7 @@ namespace Lan.Shapes
             }
 
             SelectedDragHandle = null;
+            IsBeingDragged = false;
         }
 
 
@@ -105,6 +128,7 @@ namespace Lan.Shapes
         {
             if (buttonState == MouseButtonState.Released)
             {
+                State = ShapeVisualState.MouseOver;
 
                 if ((HandleGeometryGroup?.FillContains(point) ?? false))
                 {
@@ -123,13 +147,15 @@ namespace Lan.Shapes
                     _canMoveWithHand = false;
                 }
             }
-            else
+            else //when the mouse left button is pressed
             {
+                Debug.WriteLine($"selectedd hanle is null: {SelectedDragHandle ==null}, at date time {DateTime.Now:yyyyMMdd HHmmss_fff}");
                 if (IsGeometryRendered)
                 {
                     //scale operation
                     if (SelectedDragHandle != null)
                     {
+                        IsBeingDragged = true;
                         UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
                         HandleResizing(point);
                         CreateHandles();
@@ -157,8 +183,14 @@ namespace Lan.Shapes
             }
 
 
-
             OldPointForTranslate = point;
+        }
+
+
+        public virtual void OnMouseRightButtonUp(Point mousePosition)
+        {
+            IsGeometryRendered = true;
+            State = ShapeVisualState.Normal;
         }
 
 
@@ -196,7 +228,7 @@ namespace Lan.Shapes
         {
             foreach (var handle in Handles)
             {
-                if (handle.HandleGeometry.FillContains(p))
+                if (handle.HandleGeometry.FillContains(p,10,ToleranceType.Absolute))
                 {
                     return handle;
                 }
