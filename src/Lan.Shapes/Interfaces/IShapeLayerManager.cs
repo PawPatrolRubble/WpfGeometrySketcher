@@ -14,10 +14,12 @@ namespace Lan.Shapes
         /// get all shape layers
         /// </summary>
         ObservableCollection<ShapeLayer> Layers { get; }
-        
+
         /// <summary>
         /// persist any updated data for shape layers read from files 
         /// </summary>
-        void SaveLayerConfigurations();
+        /// <param name="filePath"></param>
+        void SaveLayerConfigurations(string filePath="");
+
     }
 }

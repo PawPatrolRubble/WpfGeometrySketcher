@@ -1,15 +1,37 @@
 #nullable enable
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using Lan.Shapes;
 
 namespace Lan.SketchBoard
 {
     public class SketchBoard : Canvas
     {
+        #region fields
+
+        private ShapeVisualBase? _activeShape;
+        private ShapeVisualBase? ActiveShape
+        {
+            get => _activeShape;
+            set
+            {
+                if (_activeShape != value)
+                {
+                    if (_activeShape != null) _activeShape.State = ShapeVisualState.Normal;
+                }
+                _activeShape = value;
+
+            }
+        }
+
+        #endregion
+
         public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
             "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
             new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
@@ -60,26 +82,28 @@ namespace Lan.SketchBoard
         /// <param name="e"></param>
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
-            SketchBoardDataManager?.FinishCreatingNewGeometry();
+            SketchBoardDataManager?.CurrentGeometry?.OnMouseRightButtonUp(e.GetPosition(this));
+            SketchBoardDataManager?.UnselectGeometry();
+
+            base.OnMouseRightButtonUp(e);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             try
             {
-                Point mousePos = e.GetPosition(this);
-                HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
+                ActiveShape = GetHitTestShape(e.GetPosition(this));
 
-                ShapeVisualBase? shape = null;
-
-                if (hitTestResult != null)
+                if (ActiveShape == null)
                 {
-                    shape = hitTestResult.VisualHit as ShapeVisualBase;
+                    ActiveShape = SketchBoardDataManager?.CurrentGeometry ?? SketchBoardDataManager?.CreateNewGeometry(e.GetPosition(this));
                 }
-                
-                shape ??= SketchBoardDataManager?.CreateNewGeometry(mousePos);
-                shape?.OnMouseLeftButtonDown(e.GetPosition(this));
-                
+
+                //if sketchboard current geometry is not null, it means that it still being sketched
+                //and we need to assign it to active shape
+
+                ActiveShape?.OnMouseLeftButtonDown(e.GetPosition(this));
+
             }
             catch (Exception exception)
             {
@@ -88,20 +112,40 @@ namespace Lan.SketchBoard
         }
 
 
+        private ShapeVisualBase? GetHitTestShape(Point mousePosition)
+        {
+            //Debug.WriteLine($"active: {ActiveShape == null}, active state: {ActiveShape?.State}");
+            if (ActiveShape?.IsBeingDragged ?? false)
+            {
+                return ActiveShape;
+            }
+
+            ShapeVisualBase? shape = null;
+
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePosition);
+
+            if (hitTestResult != null)
+            {
+                shape = hitTestResult.VisualHit as ShapeVisualBase;
+            }
+
+
+            return shape;
+        }
+
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             try
             {
-                Point mousePos = e.GetPosition(this);
-                HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePos);
-
-                if (hitTestResult != null && hitTestResult.VisualHit is ShapeVisualBase visual)
+                if (SketchBoardDataManager?.CurrentGeometry != null)
                 {
-                    visual.OnMouseMove(e.GetPosition(this), e.LeftButton);
+                    SketchBoardDataManager?.CurrentGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                 }
                 else
                 {
-                    SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(mousePos, e.LeftButton);
+                    ActiveShape = GetHitTestShape(e.GetPosition(this));
+                    ActiveShape?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                 }
             }
             catch (Exception exception)
@@ -114,7 +158,14 @@ namespace Lan.SketchBoard
         {
             try
             {
-                SketchBoardDataManager?.MouseUpHandler(e.GetPosition(this));
+                //when the active shape is not a newly created geometry, when mouse left button up 
+                if (ActiveShape?.IsGeometryRendered ?? false)
+                {
+                    SketchBoardDataManager?.UnselectGeometry();
+
+                }
+                ActiveShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+
                 //SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
             }
             catch (Exception exception)

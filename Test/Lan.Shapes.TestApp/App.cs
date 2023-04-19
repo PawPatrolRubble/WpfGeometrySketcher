@@ -1,6 +1,8 @@
 using System;
 using System.Windows;
+using Lan.ImageViewer;
 using Lan.SketchBoard;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -15,16 +17,32 @@ namespace Lan.Shapes.App
         protected override void OnStartup(StartupEventArgs e)
         {
             ConfigServices();
+
+            //initialize shape layer data
+            _serviceProvider.GetService<IShapeLayerManager>().ReadShapeLayers("ShapeLayers.json");
+            _serviceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            
             mainWindow.Show();
-        }
+        }   
 
         private void ConfigServices()
         {
+
+            //var config = new ConfigurationBuilder()
+            //    .SetBasePath(Environment.CurrentDirectory)
+            //    .AddJsonFile("ShapeLayers.json").Build();
+
+            //_serviceCollection.AddSingleton(config);
+
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();
+            _serviceCollection.AddSingleton<IGeometryTypeManager, GeometryTypeManager>();
+            _serviceCollection.AddSingleton<IShapeLayerManager, ShapeLayerManager>();
+            _serviceCollection.AddSingleton<IImageViewerViewModel, ImageViewerControlViewModel>();
+            _serviceCollection.AddSingleton<ISketchBoardDataManager, SketchBoardDataManager>();
+
             _serviceProvider = _serviceCollection.BuildServiceProvider();
+            
         }
     }
 

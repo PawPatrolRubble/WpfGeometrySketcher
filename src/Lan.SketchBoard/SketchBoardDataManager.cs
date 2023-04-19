@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
@@ -11,6 +12,8 @@ namespace Lan.SketchBoard
 {
     public class SketchBoardDataManager : ISketchBoardDataManager
     {
+
+
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
@@ -45,34 +48,12 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        public ShapeVisualBase? SelectedGeometry { get; private set; }
+        public ShapeVisualBase? CurrentGeometry { get; private set; }
 
-        /// <summary>
-        /// relate a tool with a shape
-        /// </summary>
-        /// <param name="displayToolName"></param>
-        /// <param name="shapeType"></param>
-        public void RegisterGeometryType(string displayToolName, Type shapeType)
-        {
-            _drawingTools.Add(displayToolName, shapeType);
-        }
 
-        /// <summary>
-        /// return a list of registered drawing tools
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<string> GetRegisteredGeometryTypes()
+        public void SetGeometryType(Type type)
         {
-            return _drawingTools.Keys;
-        }
-
-        /// <summary>
-        /// 设置图层
-        /// </summary>
-        /// <param name="layer"></param>
-        public void SetShapeLayer(ShapeLayer layer)
-        {
-            _currentShapeLayer = layer;
+            _currentGeometryType = type;
         }
 
         /// <summary>
@@ -88,7 +69,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape)
         {
             VisualCollection.Add(shape);
-            SelectedGeometry = shape;
+            CurrentGeometry = shape;
         }
 
         /// <summary>
@@ -99,7 +80,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape, int index)
         {
             VisualCollection.Insert(index, shape);
-            SelectedGeometry = shape;
+            CurrentGeometry = shape;
         }
 
         public void RemoveShape(ShapeVisualBase shape)
@@ -142,7 +123,7 @@ namespace Lan.SketchBoard
         /// select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
-        public void SelectGeometryType(string drawingTool)
+        public void SetGeometryType(string drawingTool)
         {
             Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
 
@@ -162,61 +143,43 @@ namespace Lan.SketchBoard
             }
         }
 
-        private void LocalAddNewGeometry(string drawingTool, ShapeLayer shapeLayer)
-        {
-            if (string.IsNullOrEmpty(drawingTool))
-            {
-                throw new ArgumentNullException(nameof(drawingTool));
-            }
-
-            if (shapeLayer == null)
-            {
-                throw new ArgumentNullException(nameof(shapeLayer));
-            }
-
-
-            if (VisualCollection == null)
-            {
-                throw new NullReferenceException("visual collection must be init first");
-            }
-
-            if (_drawingTools.ContainsKey(drawingTool))
-            {
-                var shape = (ShapeVisualBase)Activator.CreateInstance(_drawingTools[drawingTool])!;
-                shape.ShapeLayer = shapeLayer;
-
-                SelectedGeometry = shape;
-                VisualCollection.Add(shape);
-            }
-        }
-
-
         /// <summary>
-        /// create new geometry with selected tool
+        /// 设置图层
         /// </summary>
-        /// <param name="mousePosition"></param>
-        public void CreateNew(Point mousePosition)
+        /// <param name="layer"></param>
+        public void SetShapeLayer(ShapeLayer layer)
         {
-            SelectedGeometry?.OnMouseLeftButtonDown(mousePosition);
+            _currentShapeLayer = layer;
         }
 
-        public void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas)
-        {
-            SelectedGeometry = shapeSelectedFromCanvas;
-        }
-
-        public void MouseUpHandler(Point mousePosition)
-        {
-            // throw new NotImplementedException();
-        }
 
         public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
         {
+
+            if (_currentGeometryType == null || _currentShapeLayer == null)
+            {
+                return null;
+            }
+
+            var shape = Activator.CreateInstance(_currentGeometryType) as ShapeVisualBase;
+
+            if (shape != null)
+            {
+                shape.ShapeLayer = CurrentShapeLayer;
+                VisualCollection.Add(shape);
+                CurrentGeometry = shape;
+            }
+
+            return shape;
         }
 
-        public void FinishCreatingNewGeometry()
+        /// <summary>
+        /// set current geometry as null
+        /// </summary>
+        public void UnselectGeometry()
         {
-            SelectedGeometry = null;
+            CurrentGeometry = null;
+            _currentGeometryType = null;
         }
     }
 }

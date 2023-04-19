@@ -1,26 +1,24 @@
 ﻿#nullable enable
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Lan.ImageViewer;
+using Lan.Shapes.Shapes;
+using Lan.SketchBoard;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Lan.ImageViewer;
-using Lan.Shapes.Shapes;
-using Lan.Shapes.Styler;
-using Lan.SketchBoard;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 
 namespace Lan.Shapes.App
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
-        private const double _scaleIncremental = 0.1;
-
-        private IShapeStyler _shapeStyler;
+        private readonly IShapeLayerManager _shapeLayerManager;
+        private readonly IGeometryTypeManager _geometryTypeManager;
+        private const double ScaleIncremental = 0.1;
 
         /// <summary>
         /// the sketch boar data manager used to manage sketch board
@@ -31,6 +29,29 @@ namespace Lan.Shapes.App
         /// geometry type list
         /// </summary>
         public IEnumerable<GeometryType> GeometryTypeList { get; set; }
+
+
+        public ObservableCollection<ShapeLayer> Layers { get; set; }
+
+        /// <summary>
+        /// 当前选中的layer
+        /// </summary>
+        //public ShapeLayer SelectedShapeLayer { get; set; }
+
+        private ShapeLayer _selectedShapeLayer;
+
+        public ShapeLayer SelectedShapeLayer
+        {
+            get => _selectedShapeLayer;
+            set
+            {
+                if (SetProperty(ref _selectedShapeLayer, value))
+                {
+                   SketchBoardDataManager.SetShapeLayer(_selectedShapeLayer);
+                }
+            }
+        }
+
 
 
         private GeometryType? _selectedGeometryType;
@@ -46,7 +67,7 @@ namespace Lan.Shapes.App
                 if (SetProperty(ref _selectedGeometryType, value))
                 {
                     if (_selectedGeometryType != null)
-                        SketchBoardDataManager.SelectGeometryType(_selectedGeometryType.Name);
+                        SketchBoardDataManager.SetGeometryType(_geometryTypeManager.GetGeometryTypeByName(_selectedGeometryType.Name));
 
                 }
 
@@ -68,7 +89,7 @@ namespace Lan.Shapes.App
             {
                 SetProperty(ref _scale, value);
             }
-        }
+        } 
 
         public ICommand ZoomOutCommand { get; set; }
         public ICommand ZoomInCommand { get; set; }
@@ -76,36 +97,36 @@ namespace Lan.Shapes.App
         public ICommand ScaleToFitCommand { get; set; }
 
 
-        public ImageViewerControlViewModel()
+        public ImageViewerControlViewModel(
+            IShapeLayerManager shapeLayerManager, 
+            ISketchBoardDataManager sketchBoardDataManager,
+            IGeometryTypeManager geometryTypeManager)
         {
+
+            SketchBoardDataManager = sketchBoardDataManager;
+            _shapeLayerManager = shapeLayerManager;
+            _geometryTypeManager = geometryTypeManager;
+            
             Scale = 1;
-
-            _shapeStyler = new ShapeStylerFactory().CustomShapeStyler(Brushes.Transparent, Brushes.Red, 5, 15);
-
-            SketchBoardDataManager = new SketchBoardDataManager();
-
-            SketchBoardDataManager.SetShapeLayer(ShapeLayer.CreateLayer(_shapeStyler, 1, "mask", "mask layer"));
-            SketchBoardDataManager.RegisterGeometryType("Rectangle", typeof(Rectangle));
-            SketchBoardDataManager.RegisterGeometryType("Ellipse", typeof(Ellipse));
-            SketchBoardDataManager.RegisterGeometryType(nameof(Polygon), typeof(Polygon));
-
             CreateGeometryTypeList();
 
             Image = CreateEmptyImageSource(1096,1024);
 
             ZoomOutCommand = new RelayCommand(() =>
             {
-                Scale *= (1-_scaleIncremental);
+                Scale *= (1-ScaleIncremental);
             });
+
 
             ZoomInCommand = new RelayCommand(() =>
             {
-                Scale *=(1+ _scaleIncremental);
+                Scale *=(1+ ScaleIncremental);
             });
 
             ScaleToFitCommand = new RelayCommand(() => Scale = -1);
             ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
         }
+
 
 
         private void CreateGeometryTypeList()
@@ -130,8 +151,7 @@ namespace Lan.Shapes.App
             };
 
 
-
-            GeometryTypeList = new List<GeometryType>(SketchBoardDataManager.GetRegisteredGeometryTypes()
+            GeometryTypeList = new List<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, getIconImage(x))));
 
         }
@@ -159,7 +179,6 @@ namespace Lan.Shapes.App
                 stride);
         }
 
-        private Dictionary<string, string> GeometryList= new Dictionary<string, string>();
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -32,6 +33,12 @@ namespace Lan.ImageViewer
 
         double Scale { get; set; }
 
+        ObservableCollection<ShapeLayer> Layers { get; set; }
+
+        /// <summary>
+        /// 当前选中的layer
+        /// </summary>
+        ShapeLayer SelectedShapeLayer { get; set; }
 
         #region commands
 

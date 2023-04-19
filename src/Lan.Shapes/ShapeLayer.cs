@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -25,13 +26,19 @@ namespace Lan.Shapes
         /// <summary>
         /// all shape stylers contained in one layer
         /// </summary>
-        private Dictionary<ShapeState, IShapeStyler> _stylers = new Dictionary<ShapeState, IShapeStyler>();
+        private Dictionary<ShapeVisualState, IShapeStyler> _stylers = new Dictionary<ShapeVisualState, IShapeStyler>();
+
 
         #endregion
 
         
         #region properties
         
+        public Dictionary<ShapeVisualState,IShapeStyler> Stylers
+        {
+            get => _stylers;
+        }
+
 
         /// <summary>
         /// get all shapes contained the layer
@@ -68,8 +75,9 @@ namespace Lan.Shapes
             Name = shapeLayerParameter.Name;
             Description = shapeLayerParameter.Description;
 
-            _stylers = new Dictionary<ShapeState, IShapeStyler>(shapeLayerParameter.StyleSchema.Select(x =>
-                new KeyValuePair<ShapeState, IShapeStyler>(x.Key, new ShapeStyler(x.Value))));
+            _stylers = new Dictionary<ShapeVisualState, IShapeStyler>(shapeLayerParameter.StyleSchema.Select(x =>
+                new KeyValuePair<ShapeVisualState, IShapeStyler>(x.Key, new ShapeStyler(x.Value))));
+
             BorderBackground = shapeLayerParameter.BorderBackground;
             TextForeground = shapeLayerParameter.TextForeground;
         }
@@ -114,7 +122,7 @@ namespace Lan.Shapes
         /// <param name="shapeState"></param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException"> if shapeState is not found</exception>
-        public IShapeStyler GetStyler(ShapeState shapeState) => _stylers[shapeState];
+        public IShapeStyler GetStyler(ShapeVisualState shapeState) => _stylers[shapeState];
 
 
       
@@ -122,7 +130,18 @@ namespace Lan.Shapes
         {
             _shapeVisuals.Add(shape);
         }
-        
-  
+
+        public ShapeLayerParameter ToShapeLayerParameter()
+        {
+            return new ShapeLayerParameter()
+            {
+                LayerId = LayerId,
+                BorderBackground = BorderBackground,
+                Description = Description,
+                Name = Name,
+                StyleSchema = new Dictionary<ShapeVisualState, ShapeStylerParameter>(_stylers.Select(x => new KeyValuePair<ShapeVisualState, ShapeStylerParameter>(x.Key,x.Value.ToStylerParameter())))
+            };
+            //throw new NotImplementedException();
+        }
     }
 }

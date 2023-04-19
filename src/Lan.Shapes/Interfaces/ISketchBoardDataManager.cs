@@ -11,9 +11,11 @@ namespace Lan.SketchBoard
     /// <summary>
     /// provide the functionality for managing geometry data for <see cref="SketchBoard"/>,
     /// which is only responsible for displaying
+    /// doesn't provide any event handling functions
     /// </summary>
     public interface ISketchBoardDataManager
     {
+
         /// <summary>
         /// this is used to hold all shapes
         /// </summary>
@@ -33,20 +35,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        ShapeVisualBase? SelectedGeometry { get; }
-
-        /// <summary>
-        /// relate a tool with a shape
-        /// </summary>
-        /// <param name="displayToolName"></param>
-        /// <param name="shapeType"></param>
-        void RegisterGeometryType(string displayToolName, Type shapeType);
-
-        /// <summary>
-        /// return a list of registered drawing tools
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<string> GetRegisteredGeometryTypes();
+        ShapeVisualBase? CurrentGeometry { get; }
 
 
         /// <summary>
@@ -55,6 +44,7 @@ namespace Lan.SketchBoard
         /// <param name="layer"></param>
         void SetShapeLayer(ShapeLayer layer);
 
+        void SetGeometryType(Type type);
 
         /// <summary>
         /// 当前使用图层
@@ -92,25 +82,6 @@ namespace Lan.SketchBoard
 
         ShapeVisualBase? GetShapeVisual(int index);
 
-        /// <summary>
-        /// select one shape to draw
-        /// </summary>
-        /// <param name="drawingTool"></param>
-        void SelectGeometryType(string drawingTool);
-
-
-        /// <summary>
-        /// select one geometry
-        /// </summary>
-        /// <param name="shapeSelectedFromCanvas"></param>
-        void SetSelectedShape(ShapeVisualBase shapeSelectedFromCanvas);
-
-        /// <summary>
-        /// handle the mouse up event from canvas
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        void MouseUpHandler(Point mousePosition);
-
 
         /// <summary>
         /// create new geometry from mouse down position
@@ -119,10 +90,9 @@ namespace Lan.SketchBoard
         /// <returns>if no geometry type is selected, it will return null</returns>
         ShapeVisualBase? CreateNewGeometry(Point mousePosition);
 
-
         /// <summary>
-        /// use to end the drawing of current geometry, and set current geometry to null
+        /// set current geometry as null
         /// </summary>
-        void FinishCreatingNewGeometry();
+        void UnselectGeometry();
     }
 }

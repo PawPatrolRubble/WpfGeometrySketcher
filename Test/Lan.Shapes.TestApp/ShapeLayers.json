@@ -1,0 +1,27 @@
+[
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#a6f5f5",
+        "StrokeColor": "#0c0d0d",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      },
+      "MouseOver": {
+        "FillColor": "#6bb599",
+        "StrokeColor": "#e00926",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 1,
+    "Name": "default",
+    "Description": "description",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF"
+  }
+]

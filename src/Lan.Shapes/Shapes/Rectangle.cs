@@ -274,7 +274,7 @@ namespace Lan.Shapes.Shapes
 
             var rect = GenerateRect();
             RenderGeometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
-            RenderGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+            RenderGeometryGroup.Children.Add(HandleGeometryGroup);
         }
 
         protected override void CreateHandles()
@@ -313,7 +313,6 @@ namespace Lan.Shapes.Shapes
         {
             throw new NotImplementedException();
         }
-
 
         #endregion
     }
