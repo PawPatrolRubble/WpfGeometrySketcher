@@ -115,11 +115,13 @@ namespace Lan.SketchBoard
         private ShapeVisualBase? GetHitTestShape(Point mousePosition)
         {
             //Debug.WriteLine($"active: {ActiveShape == null}, active state: {ActiveShape?.State}");
-            if (ActiveShape?.IsBeingDragged ?? false)
+            if (ActiveShape?.IsBeingDraggedOrPanMoving ?? false)
             {
+                //Debug.WriteLine($"is being dragged, {ActiveShape?.GetType().Name}");
                 return ActiveShape;
             }
 
+            //Debug.WriteLine($"it is not dragged, active shape: {ActiveShape?.GetType().Name}");
             ShapeVisualBase? shape = null;
 
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePosition);
@@ -145,6 +147,7 @@ namespace Lan.SketchBoard
                 else
                 {
                     ActiveShape = GetHitTestShape(e.GetPosition(this));
+                    Debug.WriteLine($"{ActiveShape?.GetType().Name}");
                     ActiveShape?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                 }
             }
