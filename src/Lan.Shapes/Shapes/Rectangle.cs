@@ -119,6 +119,7 @@ namespace Lan.Shapes.Shapes
         /// <param name="newPoint"></param>
         protected override void HandleTranslate(Point newPoint)
         {
+            IsBeingDraggedOrPanMoving = true;
             if (OldPointForTranslate.HasValue)
             {
                 var matrix = new Matrix();

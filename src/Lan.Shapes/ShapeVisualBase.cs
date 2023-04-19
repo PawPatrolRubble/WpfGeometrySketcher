@@ -29,9 +29,10 @@ namespace Lan.Shapes
 
 
         /// <summary>
-        /// 
+        /// this is used to ensure that during resizing or pan moving, the mouse will always
+        /// focus on the same shape, instead of moved to another one
         /// </summary>
-        public bool IsBeingDragged { get; protected set; }
+        public bool IsBeingDraggedOrPanMoving { get; protected set; }
 
         /// <summary>
         /// in this area translation of the shape will be allowed
@@ -117,7 +118,7 @@ namespace Lan.Shapes
             }
 
             SelectedDragHandle = null;
-            IsBeingDragged = false;
+            IsBeingDraggedOrPanMoving = false;
         }
 
 
@@ -149,13 +150,12 @@ namespace Lan.Shapes
             }
             else //when the mouse left button is pressed
             {
-                Debug.WriteLine($"selectedd hanle is null: {SelectedDragHandle ==null}, at date time {DateTime.Now:yyyyMMdd HHmmss_fff}");
                 if (IsGeometryRendered)
                 {
                     //scale operation
                     if (SelectedDragHandle != null)
                     {
-                        IsBeingDragged = true;
+                        IsBeingDraggedOrPanMoving = true;
                         UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
                         HandleResizing(point);
                         CreateHandles();
