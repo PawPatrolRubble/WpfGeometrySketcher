@@ -23,5 +23,31 @@
     "Description": "description",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF"
+  },
+
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#a6f5f5",
+        "StrokeColor": "#0c0d0d",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      },
+      "MouseOver": {
+        "FillColor": "#2c0ec2",
+        "StrokeColor": "#e00926",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 2,
+    "Name": "layer2",
+    "Description": "description",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF"
   }
 ]

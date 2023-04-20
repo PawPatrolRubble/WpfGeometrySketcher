@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using Lan.ImageViewer;
+using Lan.Shapes.Custom;
 using Lan.SketchBoard;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ namespace Lan.Shapes.App
             //    .AddJsonFile("ShapeLayers.json").Build();
 
             //_serviceCollection.AddSingleton(config);
+
+            var shape = new StrokeWidenedCircle();
 
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();
