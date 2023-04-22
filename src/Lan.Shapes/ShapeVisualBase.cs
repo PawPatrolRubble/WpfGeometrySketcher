@@ -122,6 +122,12 @@ namespace Lan.Shapes
         }
 
 
+        protected double GetDistanceBetweenTwoPoint(Point p1, Point p2)
+        {
+            return (p2 - p1).Length;
+        }
+
+
         /// <summary>
         /// 鼠标点击
         /// </summary>

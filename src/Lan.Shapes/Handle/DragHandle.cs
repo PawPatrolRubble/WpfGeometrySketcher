@@ -25,7 +25,7 @@ namespace Lan.Shapes.Handle
         public Point Location
         {
             get => _location;
-            internal set
+            set
             {
                 _location = value;
                 if (HandleGeometry != null)
