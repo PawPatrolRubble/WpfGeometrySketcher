@@ -12,8 +12,14 @@ namespace Lan.Shapes.Custom
 
         #region fields
 
-        private readonly RectangleGeometry _verticalRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
-        private readonly RectangleGeometry _horizontalRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _verticalMiddleRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _verticalInnerRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _verticalOuterRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        
+        private readonly RectangleGeometry _horizontalMiddleRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _horizontalInnerRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _horizontalOuterRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        
         private readonly CombinedGeometry _combinedGeometry;
 
         #endregion
@@ -21,7 +27,7 @@ namespace Lan.Shapes.Custom
 
         #region properties
 
-        private Point TopLeft
+        private Point VerticalTopLeft
         {
             get => _topLeft;
             set
@@ -32,16 +38,14 @@ namespace Lan.Shapes.Custom
             }
         }
 
-        private void UpdateTopLeftLocationForGeometry(Point topLeft)
-        {
-            _verticalRectangleGeometry.Rect = new Rect(topLeft, new Size());
-            _horizontalRectangleGeometry.Rect = new Rect(topLeft, new Size());
-        }
+        public Point VerticalBottomRight { get; set; }
+
+
 
         private Point _bottomRight;
         private Point _topLeft;
 
-        public Point BottomRight
+        public Point HorizontalBottomRight
         {
             get => _bottomRight;
             set
@@ -51,9 +55,18 @@ namespace Lan.Shapes.Custom
             }
         }
 
+        public Point HorizontalTopLeft { get; set; }
+
+
+
+        private void UpdateTopLeftLocationForGeometry(Point topLeft) {
+            _verticalRectangleGeometry.Rect = new Rect(topLeft, new Size());
+            _horizontalRectangleGeometry.Rect = new Rect(topLeft, new Size());
+        }
+
         private void UpdateBottomRightForGeometry(Point bottomRight)
         {
-            _verticalRectangleGeometry.Rect = new Rect(TopLeft, new Size());
+            _verticalRectangleGeometry.Rect = new Rect(VerticalTopLeft, new Size());
             _horizontalRectangleGeometry.Rect = new Rect(topl, new Size());
         }
 
