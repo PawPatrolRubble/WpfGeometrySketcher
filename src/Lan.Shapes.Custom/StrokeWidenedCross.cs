@@ -12,11 +12,63 @@ namespace Lan.Shapes.Custom
 
         #region fields
 
-        private Dictionary<int, Point> _points = new Dictionary<int, Point>();
-        private readonly PathGeometry _pathGeometry;
-        private readonly PathFigureCollection _pathFigureCollection;
-        private readonly PathFigure _pathFigure = new PathFigure();
-        private const double Tolerance = 30;
+        private readonly RectangleGeometry _verticalMiddleRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _verticalInnerRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _verticalOuterRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
+        
+        private readonly RectangleGeometry _horizontalMiddleRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _horizontalInnerRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        private readonly RectangleGeometry _horizontalOuterRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
+        
+        private readonly CombinedGeometry _combinedGeometry;
+
+        #endregion
+
+
+        #region properties
+
+        private Point VerticalTopLeft
+        {
+            get => _topLeft;
+            set
+            {
+                _topLeft = value;
+                UpdateTopLeftLocationForGeometry( _topLeft);
+                UpdateVisual();
+            }
+        }
+
+        public Point VerticalBottomRight { get; set; }
+
+
+
+        private Point _bottomRight;
+        private Point _topLeft;
+
+        public Point HorizontalBottomRight
+        {
+            get => _bottomRight;
+            set
+            {
+                _bottomRight = value;
+                UpdateBottomRightForGeometry( _bottomRight);
+            }
+        }
+
+        public Point HorizontalTopLeft { get; set; }
+
+
+
+        private void UpdateTopLeftLocationForGeometry(Point topLeft) {
+            _verticalRectangleGeometry.Rect = new Rect(topLeft, new Size());
+            _horizontalRectangleGeometry.Rect = new Rect(topLeft, new Size());
+        }
+
+        private void UpdateBottomRightForGeometry(Point bottomRight)
+        {
+            _verticalRectangleGeometry.Rect = new Rect(VerticalTopLeft, new Size());
+            _horizontalRectangleGeometry.Rect = new Rect(topl, new Size());
+        }
 
         #endregion
 
@@ -24,8 +76,8 @@ namespace Lan.Shapes.Custom
 
         public StrokeWidenedCross()
         {
-            _pathGeometry = new PathGeometry();
-            _pathFigureCollection = _pathGeometry.Figures;
+            _combinedGeometry = new CombinedGeometry(GeometryCombineMode.Union, _verticalRectangleGeometry,_horizontalRectangleGeometry);
+            RenderGeometryGroup.Children.Add(_combinedGeometry);
         }
 
         #endregion
@@ -47,25 +99,7 @@ namespace Lan.Shapes.Custom
         {
             if (!IsGeometryRendered)
             {
-                if (_points.Count > 0)
-                {
-                    //horizontal extension
-                    if (_points.Count % 2 == 0)
-                    {
-                        _pathFigure.Segments.Add(new LineSegment(new Point(mousePoint.X, _points.Last().Value.Y), true));
-                    }
-                    else
-                    {
-                        _pathFigure.Segments.Add(new LineSegment(new Point(_points.Last().Value.X, mousePoint.Y), true));
-                    }
-                }
-                else
-                {
-                    _pathFigure.StartPoint = mousePoint;
-                    _pathFigureCollection.Add(_pathFigure);
-                    RenderGeometryGroup.Children.Add(_pathGeometry);
-                }
-                _points.Add(_points.Count, mousePoint);
+               
             }
             UpdateVisual();
         }
