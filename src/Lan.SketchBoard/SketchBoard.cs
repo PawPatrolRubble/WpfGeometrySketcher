@@ -103,7 +103,6 @@ namespace Lan.SketchBoard
                 //and we need to assign it to active shape
 
                 ActiveShape?.OnMouseLeftButtonDown(e.GetPosition(this));
-
             }
             catch (Exception exception)
             {

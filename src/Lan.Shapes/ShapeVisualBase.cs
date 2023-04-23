@@ -242,6 +242,14 @@ namespace Lan.Shapes
             SelectedDragHandle = FindDragHandleMouseOver(p);
         }
 
+        protected DragHandle CreateDragHandle(Point location, int id)
+        {
+            if (ShapeStyler == null)
+            {
+                throw new Exception("Style cannot be null");
+            }
+            return new DragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), location, 10, id);
+        }
 
         protected DragHandle? SelectedDragHandle { get; set; }
 
