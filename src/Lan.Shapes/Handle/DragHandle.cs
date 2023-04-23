@@ -15,22 +15,23 @@ namespace Lan.Shapes.Handle
             Location = location;
             DetectionRange = detectionRange;
             Id = id;
-            HandleGeometry = new EllipseGeometry(Location, HandleSize.Width, HandleSize.Height);
+            HandleGeometry = new RectangleGeometry( new Rect(location.X - handleSize.Width/2, location.Y- handleSize.Height/2, handleSize.Width, handleSize.Height));
         }
 
         public double DetectionRange { get; }
         public Size HandleSize { get; }
+
         private Point _location;
 
         public Point Location
         {
             get => _location;
-            internal set
+            set
             {
                 _location = value;
                 if (HandleGeometry != null)
                 {
-                    ((EllipseGeometry)HandleGeometry).Center = value;
+                    ((RectangleGeometry)HandleGeometry).Rect = new Rect(_location, HandleSize);
                 }
             }
         }
