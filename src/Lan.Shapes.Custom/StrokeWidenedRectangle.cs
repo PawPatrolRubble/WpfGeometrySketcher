@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Lan.Shapes.Shapes;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Handle;
+
 
 namespace Lan.Shapes.Custom
 {
@@ -12,10 +16,81 @@ namespace Lan.Shapes.Custom
 
         #region fields
 
+        private readonly RectangleGeometry _outerRectangleGeometry = new RectangleGeometry();
+        private readonly RectangleGeometry _middleRectangleGeometry = new RectangleGeometry();
+        private readonly RectangleGeometry _innerRectangleGeometry = new RectangleGeometry();
+
+        private readonly Pen _middleGeometryPen = new Pen(Brushes.Red, 1);
+        private readonly CombinedGeometry _combinedGeometry;
+        private Vector _offsetVector;
+        private Dictionary<DragLocation, DragHandle> _dragHandleDict;
+
+        private readonly DragHandle _distanceResizeHandle = new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
+
+        private GeometryCombineMode _combinationMode = GeometryCombineMode.Xor;
+
+        #endregion
+
+
+        #region properties
+
+        private Point _topLeft;
+
+        public Point TopLeft
+        {
+            get => _topLeft;
+            set
+            {
+                _topLeft = value;
+                if (_topLeft != default)
+                {
+                    if (!IsGeometryRendered)
+                    {
+                        CreateGeometry(_topLeft);
+                    }
+                    else
+                    {
+                        ResizeByCornerPoint(DragLocation.TopLeft, _topLeft);
+                    }
+
+                    UpdateVisual();
+                }
+            }
+        }
+
+
+
+        private Point _bottomRight;
+
+        public Point BottomRight
+        {
+            get => _bottomRight;
+            set
+            {
+                _bottomRight = value;
+                if (_bottomRight != default)
+                {
+                    ResizeByCornerPoint(DragLocation.BottomRight, _bottomRight);
+                    UpdateVisual();
+                }
+            }
+        }
+
+
         private double _distance = 50;
-        private RectangleGeometry _outerRectangleGeometry = new RectangleGeometry();
-        private RectangleGeometry _middleRectangleGeometry = new RectangleGeometry();
-        private RectangleGeometry _innerRectangleGeometry = new RectangleGeometry();
+        public double Distance
+        {
+            get => _distance;
+            set
+            {
+                _distance = value;
+                _offsetVector.X = _distance / 2;
+                _offsetVector.Y = _distance / 2;
+
+                ChangeDistance();
+                UpdateVisual();
+            }
+        }
 
 
 
@@ -24,13 +99,26 @@ namespace Lan.Shapes.Custom
 
         #region constructor
 
-        public StrokeWidenedRectangle()
+
+
+        public StrokeWidenedRectangle() : this(GeometryCombineMode.Exclude)
         {
-            RenderGeometryGroup.Children.Add(_outerRectangleGeometry);
-            RenderGeometryGroup.Children.Add(_middleRectangleGeometry);
-            RenderGeometryGroup.Children.Add(_innerRectangleGeometry);
+
         }
+
+        public StrokeWidenedRectangle(GeometryCombineMode mode)
+        {
+            _combinationMode = mode;
+            _combinedGeometry =
+                new CombinedGeometry(_combinationMode, _outerRectangleGeometry, _innerRectangleGeometry);
+
+            RenderGeometryGroup.Children.Add(_combinedGeometry);
+
+            Distance = 30;
+        }
+
         #endregion
+
 
         /// <summary>
         /// 
@@ -47,9 +135,6 @@ namespace Lan.Shapes.Custom
 
 
 
-        private Point _rectStartPosition;
-        private Point OuterStartPosition => _rectStartPosition - new Vector(_distance / 2, _distance / 2);
-        private Point InnerStartPosition => _rectStartPosition + new Vector(_distance / 2, _distance / 2);
 
         /// <summary>
         /// left mouse button down event
@@ -59,29 +144,95 @@ namespace Lan.Shapes.Custom
         {
             if (!IsGeometryRendered)
             {
-                _rectStartPosition = mousePoint;
-                _middleRectangleGeometry.Rect = new Rect(mousePoint,new Size(50,50));
-                _outerRectangleGeometry.Rect = new Rect(OuterStartPosition,new Size(10+_distance,10+_distance));
-                _innerRectangleGeometry.Rect = new Rect(InnerStartPosition,new Size(10,10));
-
-                UpdateVisual();
+                TopLeft = mousePoint;
             }
+            else
+            {
+                FindSelectedHandle(mousePoint);
+                OldPointForTranslate = mousePoint;
+            }
+
+            MouseDownPoint = mousePoint;
         }
+
 
         /// <summary>
         /// 鼠标点击
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-            if (IsGeometryRendered)
+            if (!IsGeometryRendered)
             {
+                if (buttonState == MouseButtonState.Pressed)
+                {
+                    BottomRight = point;
+                }
             }
             else
             {
-                _middleRectangleGeometry.Rect = new Rect(_rectStartPosition, point - _rectStartPosition);
-                _innerRectangleGeometry.Rect = new Rect(InnerStartPosition, point - InnerStartPosition-new Vector(_distance/2, _distance/2));
-                _outerRectangleGeometry.Rect = new Rect(OuterStartPosition, point - OuterStartPosition+ new Vector(_distance/2,_distance/2));
-                UpdateVisual();
+                if (buttonState == MouseButtonState.Pressed)
+                {
+
+                    IsBeingDraggedOrPanMoving = true;
+
+                    if (SelectedDragHandle != null)
+                    {
+
+                        if (SelectedDragHandle.Id == 99)
+                        {
+                            if (OldPointForTranslate != null)
+                            {
+                                Distance += (point - OldPointForTranslate.Value).Y;
+                                Console.WriteLine($"distance: {Distance}");
+                                OldPointForTranslate = point;
+                            }
+                        }
+                        else
+                        {
+                            switch ((DragLocation)SelectedDragHandle.Id)
+                            {
+                                case DragLocation.TopLeft:
+                                    TopLeft = point;
+
+                                    break;
+                                case DragLocation.TopMiddle:
+                                    break;
+                                case DragLocation.TopRight:
+                                    BottomRight = new Point(point.X, BottomRight.Y);
+                                    TopLeft = new Point(TopLeft.X, point.Y);
+                                    break;
+                                case DragLocation.RightMiddle:
+                                    break;
+                                case DragLocation.BottomRight:
+                                    BottomRight = point;
+                                    break;
+                                case DragLocation.BottomMiddle:
+                                    break;
+                                case DragLocation.BottomLeft:
+                                    TopLeft = new Point(point.X, TopLeft.Y);
+                                    BottomRight = new Point(BottomRight.X, point.Y);
+
+                                    break;
+                                case DragLocation.LeftMiddle:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+
+                        }
+                    }
+                    else
+                    {
+
+                        //handle translate
+                        if (OldPointForTranslate != null)
+                        {
+                            TopLeft += point - OldPointForTranslate.Value;
+                            BottomRight += point - OldPointForTranslate.Value;
+                            OldPointForTranslate = point;
+                        }
+                    }
+                }
             }
         }
 
@@ -94,6 +245,78 @@ namespace Lan.Shapes.Custom
         protected override void HandleResizing(Point point)
         {
             throw new NotImplementedException();
+        }
+
+        public override void FindSelectedHandle(Point p)
+        {
+            if (_distanceResizeHandle.FillContains(p))
+            {
+                SelectedDragHandle = _distanceResizeHandle;
+                return;
+            }
+            base.FindSelectedHandle(p);
+        }
+
+        private void CreateGeometry(Point topLeft)
+        {
+            _middleRectangleGeometry.Rect = new Rect(topLeft, new Size());
+            _innerRectangleGeometry.Rect = new Rect(topLeft - _offsetVector, new Size());
+            _outerRectangleGeometry.Rect = new Rect(topLeft + _offsetVector, new Size());
+        }
+
+
+        /// <summary>
+        /// it will affect the topleft and bottom right on both inner and outer geometry
+        /// </summary>
+        private void ChangeDistance()
+        {
+            ResizeByCornerPoint(DragLocation.TopLeft, TopLeft);
+            ResizeByCornerPoint(DragLocation.BottomRight, BottomRight);
+        }
+
+
+        private void ResizeByCornerPoint(DragLocation location, Point point)
+        {
+            switch (location)
+            {
+                case DragLocation.TopLeft:
+                    _middleRectangleGeometry.Rect = new Rect(point, BottomRight);
+                    _outerRectangleGeometry.Rect = new Rect(point - _offsetVector, BottomRight + _offsetVector);
+                    _innerRectangleGeometry.Rect = new Rect(point + _offsetVector, BottomRight - _offsetVector);
+                    break;
+                case DragLocation.TopMiddle:
+                    break;
+                case DragLocation.TopRight:
+                    break;
+                case DragLocation.RightMiddle:
+                    break;
+                case DragLocation.BottomRight:
+                    _middleRectangleGeometry.Rect = new Rect(TopLeft, point);
+                    _outerRectangleGeometry.Rect = new Rect(TopLeft - _offsetVector, point + _offsetVector);
+                    _innerRectangleGeometry.Rect = new Rect(TopLeft + _offsetVector, point - _offsetVector);
+                    break;
+                case DragLocation.BottomMiddle:
+                    break;
+                case DragLocation.BottomLeft:
+                    break;
+                case DragLocation.LeftMiddle:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(location), location, null);
+            }
+
+            if (Handles.Count == 0)
+            {
+                CreateHandles();
+            }
+
+            //update location of handle
+            _distanceResizeHandle.GeometryCenter = _outerRectangleGeometry.Rect.Location + new Vector(_outerRectangleGeometry.Rect.Width / 2, 0);
+
+            _dragHandleDict[DragLocation.TopLeft].GeometryCenter = TopLeft;
+            _dragHandleDict[DragLocation.TopRight].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
+            _dragHandleDict[DragLocation.BottomRight].GeometryCenter = BottomRight;
+            _dragHandleDict[DragLocation.BottomLeft].GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
         }
 
         /// <summary>
@@ -114,12 +337,40 @@ namespace Lan.Shapes.Custom
 
         protected override void CreateHandles()
         {
-            
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopLeft));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopRight));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomLeft));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomRight));
+
+            _dragHandleDict = Handles.ToDictionary(x => (DragLocation)x.Id);
         }
 
         protected override void HandleTranslate(Point newPoint)
         {
             throw new NotImplementedException();
         }
+
+        #region local field
+
+        public override void UpdateVisual()
+        {
+            var renderContext = RenderOpen();
+            if (ShapeStyler != null)
+            {
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _distanceResizeHandle.HandleGeometry);
+            }
+
+            renderContext.DrawGeometry(Brushes.Transparent, _middleGeometryPen, _middleRectangleGeometry);
+
+            foreach (var dragHandle in Handles)
+            {
+                renderContext.DrawGeometry(Brushes.Transparent, _middleGeometryPen, dragHandle.HandleGeometry);
+            }
+
+            renderContext.Close();
+        }
+
+        #endregion
     }
 }
