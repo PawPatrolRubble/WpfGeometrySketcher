@@ -129,7 +129,7 @@ namespace Lan.Shapes
 
 
         /// <summary>
-        /// 鼠标点击
+        /// 鼠标点击移动
         /// </summary>
         public virtual void OnMouseMove(Point point, MouseButtonState buttonState)
         {
@@ -234,7 +234,7 @@ namespace Lan.Shapes
         {
             foreach (var handle in Handles)
             {
-                if (handle.HandleGeometry.FillContains(p,10,ToleranceType.Absolute))
+                if (handle.FillContains(p))
                 {
                     return handle;
                 }
@@ -248,13 +248,13 @@ namespace Lan.Shapes
             SelectedDragHandle = FindDragHandleMouseOver(p);
         }
 
-        protected DragHandle CreateDragHandle(Point location, int id)
+        protected DragHandle CreateRectDragHandle(Point location, int id)
         {
             if (ShapeStyler == null)
             {
                 throw new Exception("Style cannot be null");
             }
-            return new DragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), location, 10, id);
+            return new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), location, 10, id);
         }
 
         protected DragHandle? SelectedDragHandle { get; set; }

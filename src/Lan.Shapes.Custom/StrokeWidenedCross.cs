@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.Custom
 {
@@ -12,62 +13,86 @@ namespace Lan.Shapes.Custom
 
         #region fields
 
-        private readonly RectangleGeometry _verticalMiddleRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
-        private readonly RectangleGeometry _verticalInnerRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
-        private readonly RectangleGeometry _verticalOuterRectangleGeometry =new RectangleGeometry(new Rect(new Size()));
-        
-        private readonly RectangleGeometry _horizontalMiddleRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
-        private readonly RectangleGeometry _horizontalInnerRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
-        private readonly RectangleGeometry _horizontalOuterRectangleGeometry= new RectangleGeometry(new Rect(new Size()));
-        
-        private readonly CombinedGeometry _combinedGeometry;
+        private readonly FilledCross _middleCross = new FilledCross();
+        private readonly FilledCross _outerCross = new FilledCross();
+        private readonly FilledCross _innerCross = new FilledCross();
 
+        private readonly Pen _middlePen = new Pen(Brushes.Red, 1);
+        private Vector _halfDistanceVector;
         #endregion
 
 
         #region properties
 
+        private Point _verticalTopLeft;
         private Point VerticalTopLeft
         {
-            get => _topLeft;
+            get => _verticalTopLeft;
             set
             {
-                _topLeft = value;
-                UpdateTopLeftLocationForGeometry( _topLeft);
-                UpdateVisual();
+                _verticalTopLeft = value;
+                UpdateTopLeftLocationForGeometry(_verticalTopLeft);
             }
         }
 
-        public Point VerticalBottomRight { get; set; }
+        private Point _verticalBottomRight;
+        public Point VerticalBottomRight
+        {
+            get => _verticalBottomRight;
+            set
+            {
+                _verticalBottomRight = value;
+                UpdateBottomRightForGeometry(_horizontalBottomRight);
+            }
+        }
 
 
-
-        private Point _bottomRight;
-        private Point _topLeft;
-
+        private Point _horizontalBottomRight;
         public Point HorizontalBottomRight
         {
-            get => _bottomRight;
+            get => _horizontalBottomRight;
             set
             {
-                _bottomRight = value;
-                UpdateBottomRightForGeometry( _bottomRight);
+                _horizontalBottomRight = value;
             }
         }
 
-        public Point HorizontalTopLeft { get; set; }
+        private Point _horizontalTopLeft;
+        public Point HorizontalTopLeft
+        {
+            get => _horizontalTopLeft;
+            set => _horizontalTopLeft = value;
+        }
 
 
+        private double _distance;
 
-        private void UpdateTopLeftLocationForGeometry(Point topLeft) {
-            _verticalRectangleGeometry.Rect = new Rect(topLeft, new Size());
-            _horizontalRectangleGeometry.Rect = new Rect(topLeft, new Size());
+        public double Distance
+        {
+            get => _distance;
+            set
+            {
+                _distance = value;
+
+                _halfDistanceVector.X = value / 2;
+                _halfDistanceVector.Y = value / 2;
+            }
+        }
+
+
+        private void UpdateTopLeftLocationForGeometry(Point topLeft)
+        {
+            //_middleCross.OnMouseLeftButtonDown();
+            //_middleCross.TopLeft = topLeft;
+            //_outerCross.TopLeft = topLeft - _halfDistanceVector;
+            //_innerCross.TopLeft = topLeft + _halfDistanceVector;
         }
 
         private void UpdateBottomRightForGeometry(Point bottomRight)
         {
-            _verticalRectangleGeometry.Rect = new Rect(VerticalTopLeft, new Size());
-            _horizontalRectangleGeometry.Rect = new Rect(topl, new Size());
+            //    _middleCross.BottomRight = bottomRight;
+            //    _outerCross.BottomRight = bottomRight + _halfDistanceVector;
+            //    _innerCross.BottomRight= bottomRight - _halfDistanceVector;
         }
 
         #endregion
@@ -76,8 +101,11 @@ namespace Lan.Shapes.Custom
 
         public StrokeWidenedCross()
         {
-            _combinedGeometry = new CombinedGeometry(GeometryCombineMode.Union, _verticalRectangleGeometry,_horizontalRectangleGeometry);
-            RenderGeometryGroup.Children.Add(_combinedGeometry);
+            _halfDistanceVector = new Vector();
+            Distance = 20;
+            _middlePen.DashStyle = DashStyles.DashDot;
+
+            RenderGeometryGroup.Children.Add(new CombinedGeometry(GeometryCombineMode.Xor,_outerCross.RenderGeometry,_innerCross.RenderGeometry));
         }
 
         #endregion
@@ -88,7 +116,10 @@ namespace Lan.Shapes.Custom
         /// <param name="newPoint"></param>
         public override void OnMouseLeftButtonUp(Point newPoint)
         {
-
+            base.OnMouseLeftButtonUp(newPoint);
+            _middleCross.OnMouseLeftButtonUp(newPoint);
+            _innerCross.OnMouseLeftButtonUp(newPoint);
+            _outerCross.OnMouseLeftButtonUp(newPoint);
         }
 
         /// <summary>
@@ -99,23 +130,47 @@ namespace Lan.Shapes.Custom
         {
             if (!IsGeometryRendered)
             {
-               
+
+                _outerCross.OnMouseLeftButtonDown(mousePoint - _halfDistanceVector);
+                _innerCross.OnMouseLeftButtonDown(mousePoint + _halfDistanceVector);
+                _middleCross.OnMouseLeftButtonDown(mousePoint);
+                //UpdateVisual();
             }
-            UpdateVisual();
         }
 
 
         /// <summary>
-        /// 鼠标点击
+        /// 鼠标点击移动
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
+            if (!IsGeometryRendered)
+            {
+                if (buttonState == MouseButtonState.Pressed)
+                {
+                    Console.WriteLine($"point in cross: {point}");
+                    //VerticalBottomRight = point;
+                    _middleCross.OnMouseMove(point, buttonState);
+                    _outerCross.OnMouseMove(point + _halfDistanceVector, buttonState);
+                    if ((point - _innerCross.TopLeft).X > Distance && (point - _innerCross.TopLeft).Y > Distance)
+                    {
+                        _innerCross.OnMouseMove(point - _halfDistanceVector, buttonState);
+                    }
+                    UpdateVisual();
+                }
+            }
         }
+
+
+        private readonly Rect _boundsRect;
 
         /// <summary>
         /// 
         /// </summary>
-        public override Rect BoundsRect { get; }
+        public override Rect BoundsRect
+        {
+            get => _boundsRect;
+        }
 
         /// <summary>
         /// add geometries to group
@@ -159,6 +214,26 @@ namespace Lan.Shapes.Custom
         protected override void HandleTranslate(Point newPoint)
         {
             throw new NotImplementedException();
+        }
+
+
+        public override void UpdateVisual()
+        {
+            var renderContext = RenderOpen();
+            if (ShapeStyler != null)
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometryGroup);
+
+
+            renderContext.DrawGeometry(Brushes.Transparent, _middlePen, _middleCross.RenderGeometry);
+
+            //var outerPen = new Pen(Brushes.Blue, 1);
+            //renderContext.DrawGeometry(Brushes.Transparent, outerPen, _outerCross.RenderGeometry);
+
+            //var innerPen = new Pen(Brushes.Green, 1);
+
+            //renderContext.DrawGeometry(Brushes.Transparent, innerPen, _innerCross.RenderGeometry);
+            renderContext.Close();
+
         }
     }
 }

@@ -160,7 +160,7 @@ namespace Lan.Shapes.Shapes {
                     _pathFigure.StartPoint = point;
                 }
 
-                SelectedDragHandle.Location = point;
+                SelectedDragHandle.GeometryCenter = point;
 
                 UpdateVisual();
             }
@@ -200,7 +200,7 @@ namespace Lan.Shapes.Shapes {
                 }
 
                 _pathFigure.StartPoint = matrix.Transform(_pathFigure.StartPoint);
-                Handles.ForEach(x => x.Location = tans.Transform(x.Location));
+                Handles.ForEach(x => x.GeometryCenter = tans.Transform(x.GeometryCenter));
             }
 
             OldPointForTranslate = newPoint;

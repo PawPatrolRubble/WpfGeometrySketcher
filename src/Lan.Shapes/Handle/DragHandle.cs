@@ -1,41 +1,50 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
 namespace Lan.Shapes.Handle
 {
-    [DebuggerDisplay("{Location}")]
-    public class DragHandle
+    [DebuggerDisplay("{GeometryCenter}")]
+    public abstract class DragHandle
     {
         public int Id { get; }
-        public DragHandle(Size handleSize, Point location, double detectionRange, int id)
+
+        protected DragHandle(Size handleSize, Point geometryCenter, double detectionRange, int id)
         {
             HandleSize = handleSize;
-            Location = location;
+            GeometryCenter = geometryCenter;
             DetectionRange = detectionRange;
             Id = id;
-            HandleGeometry = new RectangleGeometry( new Rect(location.X - handleSize.Width/2, location.Y- handleSize.Height/2, handleSize.Width, handleSize.Height));
         }
 
         public double DetectionRange { get; }
+
         public Size HandleSize { get; }
 
-        private Point _location;
 
-        public Point Location
+        private Point _geometryCenter;
+        public Point GeometryCenter
         {
-            get => _location;
+            get => _geometryCenter;
             set
             {
-                _location = value;
+                _geometryCenter = value;
                 if (HandleGeometry != null)
                 {
-                    ((RectangleGeometry)HandleGeometry).Rect = new Rect(_location, HandleSize);
+                    SetCenter(_geometryCenter);
                 }
             }
         }
 
-        public virtual Geometry HandleGeometry { get; }
+        public abstract Geometry? HandleGeometry { get; }
+
+        protected abstract void SetCenter(Point center);
+
+        public virtual bool FillContains(Point checkPoint)
+        {
+            return HandleGeometry?.FillContains(checkPoint, DetectionRange, ToleranceType.Absolute) ?? false;
+        }
     }
 }

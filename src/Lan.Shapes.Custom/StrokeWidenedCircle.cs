@@ -71,8 +71,8 @@ namespace Lan.Shapes.Custom {
             _outerGeometry.RadiusX = radius + Distance / 2;
             _outerGeometry.RadiusY = radius + Distance / 2;
 
-            _resizeHandle.Location = Center + new Vector(Radius, 0);
-            _distanceAdjustmentHandle.Location = Center + new Vector(Radius + Distance / 2, 0);
+            _resizeHandle.GeometryCenter = Center + new Vector(Radius, 0);
+            _distanceAdjustmentHandle.GeometryCenter = Center + new Vector(Radius + Distance / 2, 0);
         }
 
         #endregion
@@ -203,8 +203,8 @@ namespace Lan.Shapes.Custom {
             if (OldPointForTranslate.HasValue)
             {
                 Center += (newPoint - OldPointForTranslate.Value);
-                _resizeHandle.Location += (newPoint - OldPointForTranslate.Value);
-                _distanceAdjustmentHandle.Location += (newPoint - OldPointForTranslate.Value);
+                _resizeHandle.GeometryCenter += (newPoint - OldPointForTranslate.Value);
+                _distanceAdjustmentHandle.GeometryCenter += (newPoint - OldPointForTranslate.Value);
                 OldPointForTranslate = newPoint;
             }
         }
