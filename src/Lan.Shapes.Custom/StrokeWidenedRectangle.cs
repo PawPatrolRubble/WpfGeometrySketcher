@@ -1,66 +1,33 @@
-﻿using Lan.Shapes.Shapes;
+﻿#region
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Shapes;
 
+#endregion
 
 namespace Lan.Shapes.Custom
 {
     public class StrokeWidenedRectangle : ShapeVisualBase
     {
+        #region my fields
 
-        #region fields
-
-        private readonly RectangleGeometry _outerRectangleGeometry = new RectangleGeometry();
-        private readonly RectangleGeometry _middleRectangleGeometry = new RectangleGeometry();
-        private readonly RectangleGeometry _innerRectangleGeometry = new RectangleGeometry();
-
-        private readonly Pen _middleGeometryPen = new Pen(Brushes.Red, 1);
-        private readonly CombinedGeometry _combinedGeometry;
-        private Vector _offsetVector;
-        private Dictionary<DragLocation, DragHandle> _dragHandleDict;
-
-        private readonly DragHandle _distanceResizeHandle = new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
-
-        private GeometryCombineMode _combinationMode = GeometryCombineMode.Xor;
-
-        #endregion
+        private Point _bottomRight;
 
 
-        #region properties
+        private double _distance = 50;
+
 
         private Point _topLeft;
 
-        public Point TopLeft
-        {
-            get => _topLeft;
-            set
-            {
-                _topLeft = value;
-                if (_topLeft != default)
-                {
-                    if (!IsGeometryRendered)
-                    {
-                        CreateGeometry(_topLeft);
-                    }
-                    else
-                    {
-                        ResizeByCornerPoint(DragLocation.TopLeft, _topLeft);
-                    }
+        #endregion
 
-                    UpdateVisual();
-                }
-            }
-        }
-
-
-
-        private Point _bottomRight;
+        #region Propeties
 
         public Point BottomRight
         {
@@ -76,8 +43,11 @@ namespace Lan.Shapes.Custom
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public override Rect BoundsRect { get; }
 
-        private double _distance = 50;
         public double Distance
         {
             get => _distance;
@@ -92,48 +62,87 @@ namespace Lan.Shapes.Custom
             }
         }
 
-
-
-        #endregion
-
-
-        #region constructor
-
-
-
-        public StrokeWidenedRectangle() : this(GeometryCombineMode.Exclude)
+        public Point TopLeft
         {
+            get => _topLeft;
+            set
+            {
+                _topLeft = value;
+                if (_topLeft != default)
+                {
+                    if (!IsGeometryRendered)
+                        CreateGeometry(_topLeft);
+                    else
+                        ResizeByCornerPoint(DragLocation.TopLeft, _topLeft);
 
-        }
-
-        public StrokeWidenedRectangle(GeometryCombineMode mode)
-        {
-            _combinationMode = mode;
-            _combinedGeometry =
-                new CombinedGeometry(_combinationMode, _outerRectangleGeometry, _innerRectangleGeometry);
-
-            RenderGeometryGroup.Children.Add(_combinedGeometry);
-
-            Distance = 30;
+                    UpdateVisual();
+                }
+            }
         }
 
         #endregion
 
+        #region others
 
         /// <summary>
-        /// 
+        /// it will affect the topleft and bottom right on both inner and outer geometry
         /// </summary>
-        public override Rect BoundsRect { get; }
+        private void ChangeDistance()
+        {
+            ResizeByCornerPoint(DragLocation.TopLeft, TopLeft);
+            ResizeByCornerPoint(DragLocation.BottomRight, BottomRight);
+        }
 
-        /// <summary>
-        /// add geometries to group
-        /// </summary>
-        protected override void UpdateGeometryGroup()
+        private void CreateGeometry(Point topLeft)
+        {
+            _middleRectangleGeometry.Rect = new Rect(topLeft, new Size());
+            _innerRectangleGeometry.Rect = new Rect(topLeft - _offsetVector, new Size());
+            _outerRectangleGeometry.Rect = new Rect(topLeft + _offsetVector, new Size());
+        }
+
+        protected override void CreateHandles()
+        {
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopLeft));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopRight));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomLeft));
+            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomRight));
+
+            _dragHandleDict = Handles.ToDictionary(x => (DragLocation)x.Id);
+        }
+
+
+        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
+        {
+        }
+
+        public override void FindSelectedHandle(Point p)
+        {
+            if (_distanceResizeHandle.FillContains(p))
+            {
+                SelectedDragHandle = _distanceResizeHandle;
+                return;
+            }
+
+            base.FindSelectedHandle(p);
+        }
+
+        protected override void HandleResizing(Point point)
         {
             throw new NotImplementedException();
         }
 
+        protected override void HandleTranslate(Point newPoint)
+        {
+            throw new NotImplementedException();
+        }
 
+        /// <summary>
+        /// 未选择状态
+        /// </summary>
+        public override void OnDeselected()
+        {
+            throw new NotImplementedException();
+        }
 
 
         /// <summary>
@@ -163,21 +172,16 @@ namespace Lan.Shapes.Custom
         {
             if (!IsGeometryRendered)
             {
-                if (buttonState == MouseButtonState.Pressed)
-                {
-                    BottomRight = point;
-                }
+                if (buttonState == MouseButtonState.Pressed) BottomRight = point;
             }
             else
             {
                 if (buttonState == MouseButtonState.Pressed)
                 {
-
                     IsBeingDraggedOrPanMoving = true;
 
                     if (SelectedDragHandle != null)
                     {
-
                         if (SelectedDragHandle.Id == 99)
                         {
                             if (OldPointForTranslate != null)
@@ -218,12 +222,10 @@ namespace Lan.Shapes.Custom
                                 default:
                                     throw new ArgumentOutOfRangeException();
                             }
-
                         }
                     }
                     else
                     {
-
                         //handle translate
                         if (OldPointForTranslate != null)
                         {
@@ -236,44 +238,13 @@ namespace Lan.Shapes.Custom
             }
         }
 
-
-
-        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
-        {
-        }
-
-        protected override void HandleResizing(Point point)
+        /// <summary>
+        /// 选择时
+        /// </summary>
+        public override void OnSelected()
         {
             throw new NotImplementedException();
         }
-
-        public override void FindSelectedHandle(Point p)
-        {
-            if (_distanceResizeHandle.FillContains(p))
-            {
-                SelectedDragHandle = _distanceResizeHandle;
-                return;
-            }
-            base.FindSelectedHandle(p);
-        }
-
-        private void CreateGeometry(Point topLeft)
-        {
-            _middleRectangleGeometry.Rect = new Rect(topLeft, new Size());
-            _innerRectangleGeometry.Rect = new Rect(topLeft - _offsetVector, new Size());
-            _outerRectangleGeometry.Rect = new Rect(topLeft + _offsetVector, new Size());
-        }
-
-
-        /// <summary>
-        /// it will affect the topleft and bottom right on both inner and outer geometry
-        /// </summary>
-        private void ChangeDistance()
-        {
-            ResizeByCornerPoint(DragLocation.TopLeft, TopLeft);
-            ResizeByCornerPoint(DragLocation.BottomRight, BottomRight);
-        }
-
 
         private void ResizeByCornerPoint(DragLocation location, Point point)
         {
@@ -301,17 +272,20 @@ namespace Lan.Shapes.Custom
                     break;
                 case DragLocation.LeftMiddle:
                     break;
+                case DragLocation.HorizontalTopLeft:
+
+                    break;
+                case DragLocation.HorizontalBottomRight:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(location), location, null);
             }
 
-            if (Handles.Count == 0)
-            {
-                CreateHandles();
-            }
+            if (Handles.Count == 0) CreateHandles();
 
             //update location of handle
-            _distanceResizeHandle.GeometryCenter = _outerRectangleGeometry.Rect.Location + new Vector(_outerRectangleGeometry.Rect.Width / 2, 0);
+            _distanceResizeHandle.GeometryCenter = _outerRectangleGeometry.Rect.Location +
+                                                   new Vector(_outerRectangleGeometry.Rect.Width / 2, 0);
 
             _dragHandleDict[DragLocation.TopLeft].GeometryCenter = TopLeft;
             _dragHandleDict[DragLocation.TopRight].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
@@ -319,33 +293,11 @@ namespace Lan.Shapes.Custom
             _dragHandleDict[DragLocation.BottomLeft].GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
         }
 
-        /// <summary>
-        /// 选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
-        /// 未选择状态
+        /// add geometries to group
         /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void CreateHandles()
-        {
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopLeft));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopRight));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomLeft));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomRight));
-
-            _dragHandleDict = Handles.ToDictionary(x => (DragLocation)x.Id);
-        }
-
-        protected override void HandleTranslate(Point newPoint)
+        protected override void UpdateGeometryGroup()
         {
             throw new NotImplementedException();
         }
@@ -358,17 +310,54 @@ namespace Lan.Shapes.Custom
             if (ShapeStyler != null)
             {
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
-                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _distanceResizeHandle.HandleGeometry);
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen,
+                    _distanceResizeHandle.HandleGeometry);
             }
 
             renderContext.DrawGeometry(Brushes.Transparent, _middleGeometryPen, _middleRectangleGeometry);
 
             foreach (var dragHandle in Handles)
-            {
                 renderContext.DrawGeometry(Brushes.Transparent, _middleGeometryPen, dragHandle.HandleGeometry);
-            }
 
             renderContext.Close();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region fields
+
+        private readonly RectangleGeometry _outerRectangleGeometry = new RectangleGeometry();
+        private readonly RectangleGeometry _middleRectangleGeometry = new RectangleGeometry();
+        private readonly RectangleGeometry _innerRectangleGeometry = new RectangleGeometry();
+
+        private readonly Pen _middleGeometryPen = new Pen(Brushes.Red, 1);
+        private readonly CombinedGeometry _combinedGeometry;
+        private Vector _offsetVector;
+        private Dictionary<DragLocation, DragHandle> _dragHandleDict;
+
+        private readonly DragHandle _distanceResizeHandle = new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
+        private readonly GeometryCombineMode _combinationMode = GeometryCombineMode.Xor;
+
+        #endregion
+
+
+        #region constructor
+
+        public StrokeWidenedRectangle() : this(GeometryCombineMode.Exclude)
+        {
+        }
+
+        public StrokeWidenedRectangle(GeometryCombineMode mode)
+        {
+            _combinationMode = mode;
+            _combinedGeometry =
+                new CombinedGeometry(_combinationMode, _outerRectangleGeometry, _innerRectangleGeometry);
+
+            RenderGeometryGroup.Children.Add(_combinedGeometry);
+
+            Distance = 30;
         }
 
         #endregion
