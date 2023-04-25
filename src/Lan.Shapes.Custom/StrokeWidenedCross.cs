@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Handle;
 using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.Custom
@@ -19,6 +20,7 @@ namespace Lan.Shapes.Custom
 
         private readonly Pen _middlePen = new Pen(Brushes.Red, 1);
         private Vector _halfDistanceVector;
+
         #endregion
 
 
@@ -42,7 +44,7 @@ namespace Lan.Shapes.Custom
             set
             {
                 _verticalBottomRight = value;
-                UpdateBottomRightForGeometry(_horizontalBottomRight);
+                UpdateBottomRightForGeometry(_verticalBottomRight);
             }
         }
 
@@ -76,6 +78,13 @@ namespace Lan.Shapes.Custom
 
                 _halfDistanceVector.X = value / 2;
                 _halfDistanceVector.Y = value / 2;
+
+                if (_distance>0)
+                {
+                    UpdateTopLeftLocationForGeometry(_middleCross.VerticalTopLeft);
+                    UpdateBottomRightForGeometry(_middleCross.VerticalBottomRight);
+                }
+
             }
         }
 
@@ -83,16 +92,24 @@ namespace Lan.Shapes.Custom
         private void UpdateTopLeftLocationForGeometry(Point topLeft)
         {
             //_middleCross.OnMouseLeftButtonDown();
-            //_middleCross.TopLeft = topLeft;
-            //_outerCross.TopLeft = topLeft - _halfDistanceVector;
-            //_innerCross.TopLeft = topLeft + _halfDistanceVector;
+            _middleCross.VerticalTopLeft = topLeft;
+            _outerCross.VerticalTopLeft = topLeft - _halfDistanceVector;
+            _innerCross.VerticalTopLeft = topLeft + _halfDistanceVector;
         }
 
         private void UpdateBottomRightForGeometry(Point bottomRight)
         {
-            //    _middleCross.BottomRight = bottomRight;
-            //    _outerCross.BottomRight = bottomRight + _halfDistanceVector;
-            //    _innerCross.BottomRight= bottomRight - _halfDistanceVector;
+            //_middleCross.OnMouseMove(point, buttonState);
+            //_outerCross.OnMouseMove(point + _halfDistanceVector, buttonState);
+            _middleCross.VerticalBottomRight = bottomRight;
+            _outerCross.VerticalBottomRight = bottomRight + _halfDistanceVector;
+
+            if ((bottomRight - _innerCross.VerticalTopLeft).X > Distance && (bottomRight - _innerCross.VerticalTopLeft).Y > Distance)
+            {
+                //_innerCross.OnMouseMove(bottomRight - _halfDistanceVector, buttonState);
+                _innerCross.VerticalBottomRight = bottomRight - _halfDistanceVector;
+            }
+
         }
 
         #endregion
@@ -104,8 +121,7 @@ namespace Lan.Shapes.Custom
             _halfDistanceVector = new Vector();
             Distance = 20;
             _middlePen.DashStyle = DashStyles.DashDot;
-
-            RenderGeometryGroup.Children.Add(new CombinedGeometry(GeometryCombineMode.Xor,_outerCross.RenderGeometry,_innerCross.RenderGeometry));
+            RenderGeometryGroup.Children.Add(new CombinedGeometry(GeometryCombineMode.Xor, _outerCross.RenderGeometry, _innerCross.RenderGeometry));
         }
 
         #endregion
@@ -130,12 +146,18 @@ namespace Lan.Shapes.Custom
         {
             if (!IsGeometryRendered)
             {
-
-                _outerCross.OnMouseLeftButtonDown(mousePoint - _halfDistanceVector);
-                _innerCross.OnMouseLeftButtonDown(mousePoint + _halfDistanceVector);
-                _middleCross.OnMouseLeftButtonDown(mousePoint);
+                VerticalTopLeft = mousePoint;
+                //_outerCross.OnMouseLeftButtonDown(mousePoint - _halfDistanceVector);
+                //_innerCross.OnMouseLeftButtonDown(mousePoint + _halfDistanceVector);
+                //_middleCross.OnMouseLeftButtonDown(mousePoint);
                 //UpdateVisual();
             }
+            else
+            {
+                OldPointForTranslate = mousePoint;
+                FindSelectedHandle(mousePoint);
+            }
+
         }
 
 
@@ -144,19 +166,59 @@ namespace Lan.Shapes.Custom
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-            if (!IsGeometryRendered)
+
+            if (buttonState == MouseButtonState.Pressed)
             {
-                if (buttonState == MouseButtonState.Pressed)
+                if (!IsGeometryRendered)
                 {
-                    Console.WriteLine($"point in cross: {point}");
-                    //VerticalBottomRight = point;
-                    _middleCross.OnMouseMove(point, buttonState);
-                    _outerCross.OnMouseMove(point + _halfDistanceVector, buttonState);
-                    if ((point - _innerCross.TopLeft).X > Distance && (point - _innerCross.TopLeft).Y > Distance)
-                    {
-                        _innerCross.OnMouseMove(point - _halfDistanceVector, buttonState);
-                    }
+                    VerticalBottomRight = point;
+                    CreateHandles();
                     UpdateVisual();
+
+                }
+                else if (SelectedDragHandle != null) //handle resizing
+                {
+                    IsBeingDraggedOrPanMoving = true;
+
+                    switch ((DragLocation)SelectedDragHandle.Id)
+                    {
+                        case DragLocation.TopLeft:
+                            VerticalTopLeft = point;
+                            break;
+                        case DragLocation.TopMiddle:
+                            break;
+                        case DragLocation.TopRight:
+                            break;
+                        case DragLocation.RightMiddle: //change size of stroke width
+                            if (OldPointForTranslate != null)
+                            {
+                                Distance += (point - OldPointForTranslate.Value).X;
+                                OldPointForTranslate = point;
+                            }
+                            break;
+                        case DragLocation.BottomRight:
+                            VerticalBottomRight = point;
+                            break;
+                        case DragLocation.BottomMiddle:
+                            break;
+                        case DragLocation.BottomLeft:
+                            break;
+                        case DragLocation.LeftMiddle:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    UpdateHandleLocations();
+                    UpdateVisual();
+
+                }
+                else //handle translation
+                {
+                    Mouse.SetCursor(Cursors.Hand);
+                    IsBeingDraggedOrPanMoving = true;
+                    HandleTranslate(point);
+                    UpdateVisual();
+
                 }
             }
         }
@@ -206,14 +268,42 @@ namespace Lan.Shapes.Custom
             throw new NotImplementedException();
         }
 
+
+        private Dictionary<DragLocation, DragHandle> _dragHandles;
         protected override void CreateHandles()
         {
-            throw new NotImplementedException();
+            if (Handles.Count == 0)
+            {
+                Handles.Add(new RectDragHandle(10, _middleCross.VerticalTopLeft, (int)DragLocation.TopLeft));
+                Handles.Add(new RectDragHandle(10, _middleCross.VerticalBottomRight, (int)DragLocation.BottomRight));
+                Handles.Add(new RectDragHandle(10, _outerCross.HorizontalBottomRight, (int)DragLocation.RightMiddle));
+
+                _dragHandles = Handles.ToDictionary(x => (DragLocation)x.Id);
+            }
+            else
+            {
+                UpdateHandleLocations();
+            }
+        }
+
+        private void UpdateHandleLocations()
+        {
+            _dragHandles[DragLocation.TopLeft].GeometryCenter = _middleCross.VerticalTopLeft;
+            _dragHandles[DragLocation.BottomRight].GeometryCenter = _middleCross.VerticalBottomRight;
+            _dragHandles[DragLocation.RightMiddle].GeometryCenter = _outerCross.HorizontalBottomRight;
         }
 
         protected override void HandleTranslate(Point newPoint)
         {
-            throw new NotImplementedException();
+            if (OldPointForTranslate.HasValue)
+            {
+                VerticalTopLeft += (newPoint - OldPointForTranslate.Value);
+                VerticalBottomRight += (newPoint - OldPointForTranslate.Value);
+
+                Handles.ForEach(x => x.GeometryCenter += (newPoint - OldPointForTranslate.Value));
+
+                OldPointForTranslate = newPoint;
+            }
         }
 
 
@@ -223,17 +313,16 @@ namespace Lan.Shapes.Custom
             if (ShapeStyler != null)
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometryGroup);
 
-
+            //middle cross style
             renderContext.DrawGeometry(Brushes.Transparent, _middlePen, _middleCross.RenderGeometry);
 
-            //var outerPen = new Pen(Brushes.Blue, 1);
-            //renderContext.DrawGeometry(Brushes.Transparent, outerPen, _outerCross.RenderGeometry);
+            foreach (var dragHandle in Handles)
+            {
+                renderContext.DrawGeometry(Brushes.Transparent, _middlePen, dragHandle.HandleGeometry);
+            }
 
-            //var innerPen = new Pen(Brushes.Green, 1);
-
-            //renderContext.DrawGeometry(Brushes.Transparent, innerPen, _innerCross.RenderGeometry);
             renderContext.Close();
-
         }
+
     }
 }

@@ -7,6 +7,7 @@ using Lan.SketchBoard;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -110,7 +111,8 @@ namespace Lan.Shapes.App
             Scale = 1;
             CreateGeometryTypeList();
 
-            Image = CreateEmptyImageSource(1096,1024);
+            //Image = CreateEmptyImageSource(1096, 1024);
+            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "roi.png") );
 
             ZoomOutCommand = new RelayCommand(() =>
             {
@@ -153,6 +155,17 @@ namespace Lan.Shapes.App
 
             GeometryTypeList = new List<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, getIconImage(x))));
+
+        }
+
+        private ImageSource ImageFromFile(string filePath)
+        {
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri(filePath);
+            image.EndInit();
+            image.Freeze();
+            return image;
 
         }
 

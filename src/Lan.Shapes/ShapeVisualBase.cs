@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -60,7 +61,6 @@ namespace Lan.Shapes
         /// list of handles for drag and resizing
         /// </summary>
         protected List<DragHandle> Handles = new List<DragHandle>();
-
 
 
         private bool _canMoveWithHand;
@@ -203,9 +203,15 @@ namespace Lan.Shapes
         /// <summary>
         /// add geometries to group
         /// </summary>
-        protected abstract void UpdateGeometryGroup();
+        protected virtual void UpdateGeometryGroup()
+        {
+            throw new NotImplementedException();
+        }
 
-        protected abstract void DrawGeometryInMouseMove(Point oldPoint, Point newPoint);
+        protected virtual void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
+        {
+            throw new NotImplementedException();
+        }
 
         protected abstract void HandleResizing(Point point);
 

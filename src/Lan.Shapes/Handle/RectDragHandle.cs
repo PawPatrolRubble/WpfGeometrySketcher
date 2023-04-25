@@ -14,6 +14,11 @@ namespace Lan.Shapes.Handle
             GeometryCenter = geometryCenter;
         }
 
+        public RectDragHandle(double widthAndHeight, Point center, int id) : this(new Size(widthAndHeight, widthAndHeight), center, 10, id)
+        {
+
+        }
+
 
         public override Geometry HandleGeometry
         {
@@ -23,7 +28,7 @@ namespace Lan.Shapes.Handle
 
         protected override void SetCenter(Point center)
         {
-            _rectangleGeometry.Rect = new Rect(center - new Vector(HandleSize.Width/2, HandleSize.Height/2), HandleSize);
+            _rectangleGeometry.Rect = new Rect(center - new Vector(HandleSize.Width / 2, HandleSize.Height / 2), HandleSize);
         }
     }
 }
