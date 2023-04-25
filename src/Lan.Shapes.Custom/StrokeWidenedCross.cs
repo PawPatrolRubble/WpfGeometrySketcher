@@ -251,7 +251,7 @@ namespace Lan.Shapes.Custom
                             HorizontalTopLeft = point;
                             break;
                         case DragLocation.HorizontalBottomRight:
-                            VerticalBottomRight = point;
+                            HorizontalBottomRight = point;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -297,8 +297,8 @@ namespace Lan.Shapes.Custom
                     break;
                 case DragLocation.HorizontalBottomRight:
                     _middleCross.HorizontalBottomRight = point;
-                    _outerCross.HorizontalTopLeft = point + _halfDistanceVector;
-                    _innerCross.HorizontalTopLeft = point - _halfDistanceVector;
+                    _outerCross.HorizontalBottomRight = point + _halfDistanceVector;
+                    _innerCross.HorizontalBottomRight = point - _halfDistanceVector;
                     break;
             }
         }
