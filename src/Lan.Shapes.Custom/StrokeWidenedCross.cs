@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,67 +9,37 @@ using System.Windows.Media;
 using Lan.Shapes.Handle;
 using Lan.Shapes.Shapes;
 
+#endregion
+
 namespace Lan.Shapes.Custom
 {
     public class StrokeWidenedCross : ShapeVisualBase
     {
+        #region my fields
 
-        #region fields
-
-        private readonly FilledCross _middleCross = new FilledCross();
-        private readonly FilledCross _outerCross = new FilledCross();
         private readonly FilledCross _innerCross = new FilledCross();
-
+        private readonly FilledCross _middleCross = new FilledCross();
         private readonly Pen _middlePen = new Pen(Brushes.Red, 1);
+        private readonly FilledCross _outerCross = new FilledCross();
+        private double _distance;
+        private Dictionary<DragLocation, DragHandle> _dragHandles;
         private Vector _halfDistanceVector;
+        private Point _horizontalBottomRight;
+
+        private Point _horizontalTopLeft;
+
+        private Point _verticalBottomRight;
+
+
+        private Point _verticalTopLeft;
 
         #endregion
 
+        #region Propeties
 
-        #region properties
-
-        private Point _verticalTopLeft;
-        private Point VerticalTopLeft
-        {
-            get => _verticalTopLeft;
-            set
-            {
-                _verticalTopLeft = value;
-                UpdateTopLeftLocationForGeometry(_verticalTopLeft);
-            }
-        }
-
-        private Point _verticalBottomRight;
-        public Point VerticalBottomRight
-        {
-            get => _verticalBottomRight;
-            set
-            {
-                _verticalBottomRight = value;
-                UpdateBottomRightForGeometry(_verticalBottomRight);
-            }
-        }
-
-
-        private Point _horizontalBottomRight;
-        public Point HorizontalBottomRight
-        {
-            get => _horizontalBottomRight;
-            set
-            {
-                _horizontalBottomRight = value;
-            }
-        }
-
-        private Point _horizontalTopLeft;
-        public Point HorizontalTopLeft
-        {
-            get => _horizontalTopLeft;
-            set => _horizontalTopLeft = value;
-        }
-
-
-        private double _distance;
+        /// <summary>
+        /// </summary>
+        public override Rect BoundsRect { get; }
 
         public double Distance
         {
@@ -79,67 +51,127 @@ namespace Lan.Shapes.Custom
                 _halfDistanceVector.X = value / 2;
                 _halfDistanceVector.Y = value / 2;
 
-                if (_distance>0)
+                if (_distance > 0)
                 {
                     UpdateTopLeftLocationForGeometry(_middleCross.VerticalTopLeft);
                     UpdateBottomRightForGeometry(_middleCross.VerticalBottomRight);
                 }
-
             }
         }
 
-
-        private void UpdateTopLeftLocationForGeometry(Point topLeft)
+        public Point HorizontalBottomRight
         {
-            //_middleCross.OnMouseLeftButtonDown();
-            _middleCross.VerticalTopLeft = topLeft;
-            _outerCross.VerticalTopLeft = topLeft - _halfDistanceVector;
-            _innerCross.VerticalTopLeft = topLeft + _halfDistanceVector;
-        }
-
-        private void UpdateBottomRightForGeometry(Point bottomRight)
-        {
-            //_middleCross.OnMouseMove(point, buttonState);
-            //_outerCross.OnMouseMove(point + _halfDistanceVector, buttonState);
-            _middleCross.VerticalBottomRight = bottomRight;
-            _outerCross.VerticalBottomRight = bottomRight + _halfDistanceVector;
-
-            if ((bottomRight - _innerCross.VerticalTopLeft).X > Distance && (bottomRight - _innerCross.VerticalTopLeft).Y > Distance)
+            get => _horizontalBottomRight;
+            set
             {
-                //_innerCross.OnMouseMove(bottomRight - _halfDistanceVector, buttonState);
-                _innerCross.VerticalBottomRight = bottomRight - _halfDistanceVector;
+                _horizontalBottomRight = value;
+                UpdateGeometryOnDragLocationChanges(_horizontalBottomRight, DragLocation.HorizontalBottomRight);
             }
+        }
 
+        public Point HorizontalTopLeft
+        {
+            get => _horizontalTopLeft;
+            set
+            {
+                _horizontalTopLeft = value;
+
+                UpdateGeometryOnDragLocationChanges(_horizontalTopLeft, DragLocation.HorizontalTopLeft);
+            }
+        }
+
+        public Point VerticalBottomRight
+        {
+            get => _verticalBottomRight;
+            set
+            {
+                _verticalBottomRight = value;
+                UpdateBottomRightForGeometry(_verticalBottomRight);
+            }
+        }
+
+        private Point VerticalTopLeft
+        {
+            get => _verticalTopLeft;
+            set
+            {
+                _verticalTopLeft = value;
+                UpdateTopLeftLocationForGeometry(_verticalTopLeft);
+            }
         }
 
         #endregion
 
-        #region ctor
+        #region Constructors
 
         public StrokeWidenedCross()
         {
             _halfDistanceVector = new Vector();
             Distance = 20;
             _middlePen.DashStyle = DashStyles.DashDot;
-            RenderGeometryGroup.Children.Add(new CombinedGeometry(GeometryCombineMode.Xor, _outerCross.RenderGeometry, _innerCross.RenderGeometry));
+            RenderGeometryGroup.Children.Add(new CombinedGeometry(GeometryCombineMode.Xor, _outerCross.RenderGeometry,
+                _innerCross.RenderGeometry));
         }
 
         #endregion
 
-        /// <summary>
-        /// when mouse left button up
-        /// </summary>
-        /// <param name="newPoint"></param>
-        public override void OnMouseLeftButtonUp(Point newPoint)
+        #region others
+
+        protected override void CreateHandles()
         {
-            base.OnMouseLeftButtonUp(newPoint);
-            _middleCross.OnMouseLeftButtonUp(newPoint);
-            _innerCross.OnMouseLeftButtonUp(newPoint);
-            _outerCross.OnMouseLeftButtonUp(newPoint);
+            if (Handles.Count == 0)
+            {
+                Handles.Add(new RectDragHandle(10, _middleCross.VerticalTopLeft, (int)DragLocation.TopLeft));
+                Handles.Add(new RectDragHandle(10, _middleCross.VerticalBottomRight, (int)DragLocation.BottomRight));
+
+                Handles.Add(new RectDragHandle(10, _middleCross.HorizontalTopLeft,
+                    (int)DragLocation.HorizontalTopLeft));
+                Handles.Add(new RectDragHandle(10, _middleCross.HorizontalBottomRight,
+                    (int)DragLocation.HorizontalBottomRight));
+
+                Handles.Add(new RectDragHandle(10, _outerCross.HorizontalBottomRight, (int)DragLocation.RightMiddle));
+
+                _dragHandles = Handles.ToDictionary(x => (DragLocation)x.Id);
+            }
+            else
+            {
+                UpdateHandleLocations();
+            }
+        }
+
+        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void HandleResizing(Point point)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void HandleTranslate(Point newPoint)
+        {
+            if (OldPointForTranslate.HasValue)
+            {
+                VerticalTopLeft += newPoint - OldPointForTranslate.Value;
+                VerticalBottomRight += newPoint - OldPointForTranslate.Value;
+
+                Handles.ForEach(x => x.GeometryCenter += newPoint - OldPointForTranslate.Value);
+
+                OldPointForTranslate = newPoint;
+            }
         }
 
         /// <summary>
-        /// left mouse button down event
+        ///     未选择状态
+        /// </summary>
+        public override void OnDeselected()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     left mouse button down event
         /// </summary>
         /// <param name="mousePoint"></param>
         public override void OnMouseLeftButtonDown(Point mousePoint)
@@ -157,16 +189,26 @@ namespace Lan.Shapes.Custom
                 OldPointForTranslate = mousePoint;
                 FindSelectedHandle(mousePoint);
             }
+        }
 
+        /// <summary>
+        ///     when mouse left button up
+        /// </summary>
+        /// <param name="newPoint"></param>
+        public override void OnMouseLeftButtonUp(Point newPoint)
+        {
+            base.OnMouseLeftButtonUp(newPoint);
+            _middleCross.OnMouseLeftButtonUp(newPoint);
+            _innerCross.OnMouseLeftButtonUp(newPoint);
+            _outerCross.OnMouseLeftButtonUp(newPoint);
         }
 
 
         /// <summary>
-        /// 鼠标点击移动
+        ///     鼠标点击移动
         /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
-
             if (buttonState == MouseButtonState.Pressed)
             {
                 if (!IsGeometryRendered)
@@ -174,7 +216,6 @@ namespace Lan.Shapes.Custom
                     VerticalBottomRight = point;
                     CreateHandles();
                     UpdateVisual();
-
                 }
                 else if (SelectedDragHandle != null) //handle resizing
                 {
@@ -195,6 +236,7 @@ namespace Lan.Shapes.Custom
                                 Distance += (point - OldPointForTranslate.Value).X;
                                 OldPointForTranslate = point;
                             }
+
                             break;
                         case DragLocation.BottomRight:
                             VerticalBottomRight = point;
@@ -205,12 +247,18 @@ namespace Lan.Shapes.Custom
                             break;
                         case DragLocation.LeftMiddle:
                             break;
+                        case DragLocation.HorizontalTopLeft:
+                            HorizontalTopLeft = point;
+                            break;
+                        case DragLocation.HorizontalBottomRight:
+                            VerticalBottomRight = point;
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     UpdateHandleLocations();
                     UpdateVisual();
-
                 }
                 else //handle translation
                 {
@@ -218,42 +266,12 @@ namespace Lan.Shapes.Custom
                     IsBeingDraggedOrPanMoving = true;
                     HandleTranslate(point);
                     UpdateVisual();
-
                 }
             }
         }
 
-
-        private readonly Rect _boundsRect;
-
         /// <summary>
-        /// 
-        /// </summary>
-        public override Rect BoundsRect
-        {
-            get => _boundsRect;
-        }
-
-        /// <summary>
-        /// add geometries to group
-        /// </summary>
-        protected override void UpdateGeometryGroup()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void HandleResizing(Point point)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 选择时
+        ///     选择时
         /// </summary>
         public override void OnSelected()
         {
@@ -261,48 +279,27 @@ namespace Lan.Shapes.Custom
         }
 
         /// <summary>
-        /// 未选择状态
+        ///     add geometries to group
         /// </summary>
-        public override void OnDeselected()
+        protected override void UpdateGeometryGroup()
         {
             throw new NotImplementedException();
         }
 
-
-        private Dictionary<DragLocation, DragHandle> _dragHandles;
-        protected override void CreateHandles()
+        private void UpdateGeometryOnDragLocationChanges(Point point, DragLocation dragLocation)
         {
-            if (Handles.Count == 0)
+            switch (dragLocation)
             {
-                Handles.Add(new RectDragHandle(10, _middleCross.VerticalTopLeft, (int)DragLocation.TopLeft));
-                Handles.Add(new RectDragHandle(10, _middleCross.VerticalBottomRight, (int)DragLocation.BottomRight));
-                Handles.Add(new RectDragHandle(10, _outerCross.HorizontalBottomRight, (int)DragLocation.RightMiddle));
-
-                _dragHandles = Handles.ToDictionary(x => (DragLocation)x.Id);
-            }
-            else
-            {
-                UpdateHandleLocations();
-            }
-        }
-
-        private void UpdateHandleLocations()
-        {
-            _dragHandles[DragLocation.TopLeft].GeometryCenter = _middleCross.VerticalTopLeft;
-            _dragHandles[DragLocation.BottomRight].GeometryCenter = _middleCross.VerticalBottomRight;
-            _dragHandles[DragLocation.RightMiddle].GeometryCenter = _outerCross.HorizontalBottomRight;
-        }
-
-        protected override void HandleTranslate(Point newPoint)
-        {
-            if (OldPointForTranslate.HasValue)
-            {
-                VerticalTopLeft += (newPoint - OldPointForTranslate.Value);
-                VerticalBottomRight += (newPoint - OldPointForTranslate.Value);
-
-                Handles.ForEach(x => x.GeometryCenter += (newPoint - OldPointForTranslate.Value));
-
-                OldPointForTranslate = newPoint;
+                case DragLocation.HorizontalTopLeft:
+                    _middleCross.HorizontalTopLeft = point;
+                    _outerCross.HorizontalTopLeft = point - _halfDistanceVector;
+                    _innerCross.HorizontalTopLeft = point + _halfDistanceVector;
+                    break;
+                case DragLocation.HorizontalBottomRight:
+                    _middleCross.HorizontalBottomRight = point;
+                    _outerCross.HorizontalTopLeft = point + _halfDistanceVector;
+                    _innerCross.HorizontalTopLeft = point - _halfDistanceVector;
+                    break;
             }
         }
 
@@ -317,12 +314,47 @@ namespace Lan.Shapes.Custom
             renderContext.DrawGeometry(Brushes.Transparent, _middlePen, _middleCross.RenderGeometry);
 
             foreach (var dragHandle in Handles)
-            {
                 renderContext.DrawGeometry(Brushes.Transparent, _middlePen, dragHandle.HandleGeometry);
-            }
 
             renderContext.Close();
         }
 
+        #endregion
+
+
+        #region local methods
+
+        private void UpdateHandleLocations()
+        {
+            _dragHandles[DragLocation.TopLeft].GeometryCenter = _middleCross.VerticalTopLeft;
+            _dragHandles[DragLocation.BottomRight].GeometryCenter = _middleCross.VerticalBottomRight;
+            _dragHandles[DragLocation.RightMiddle].GeometryCenter = _outerCross.HorizontalBottomRight;
+            _dragHandles[DragLocation.HorizontalBottomRight].GeometryCenter = _middleCross.HorizontalBottomRight;
+            _dragHandles[DragLocation.HorizontalTopLeft].GeometryCenter = _middleCross.HorizontalTopLeft;
+        }
+
+
+        private void UpdateTopLeftLocationForGeometry(Point topLeft)
+        {
+            //_middleCross.OnMouseLeftButtonDown();
+            _middleCross.VerticalTopLeft = topLeft;
+            _outerCross.VerticalTopLeft = topLeft - _halfDistanceVector;
+            _innerCross.VerticalTopLeft = topLeft + _halfDistanceVector;
+        }
+
+        private void UpdateBottomRightForGeometry(Point bottomRight)
+        {
+            //_middleCross.OnMouseMove(point, buttonState);
+            //_outerCross.OnMouseMove(point + _halfDistanceVector, buttonState);
+            _middleCross.VerticalBottomRight = bottomRight;
+            _outerCross.VerticalBottomRight = bottomRight + _halfDistanceVector;
+
+            if ((bottomRight - _innerCross.VerticalTopLeft).X > Distance &&
+                (bottomRight - _innerCross.VerticalTopLeft).Y > Distance)
+                //_innerCross.OnMouseMove(bottomRight - _halfDistanceVector, buttonState);
+                _innerCross.VerticalBottomRight = bottomRight - _halfDistanceVector;
+        }
+
+        #endregion
     }
 }

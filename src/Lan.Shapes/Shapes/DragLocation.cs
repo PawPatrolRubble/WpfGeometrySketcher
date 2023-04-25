@@ -1,7 +1,7 @@
 ﻿#nullable enable
 namespace Lan.Shapes.Shapes
 {
-    public enum DragLocation:int
+    public enum DragLocation
     {
         TopLeft = 1,
         TopMiddle,
@@ -10,6 +10,8 @@ namespace Lan.Shapes.Shapes
         BottomRight,
         BottomMiddle,
         BottomLeft,
-        LeftMiddle
+        LeftMiddle,
+        HorizontalTopLeft,
+        HorizontalBottomRight
     }
 }
