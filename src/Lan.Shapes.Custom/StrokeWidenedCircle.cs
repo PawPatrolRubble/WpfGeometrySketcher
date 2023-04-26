@@ -6,7 +6,8 @@ using System.Windows.Media;
 using Lan.Shapes.Handle;
 
 namespace Lan.Shapes.Custom {
-    public class StrokeWidenedCircle : ShapeVisualBase {
+    public class StrokeWidenedCircle : ShapeVisualBase 
+    {
         #region fields
 
         private Pen _middleGeometrySketchPen = new Pen(Brushes.Red, 1);
@@ -210,5 +211,7 @@ namespace Lan.Shapes.Custom {
         }
 
         #endregion
+
+    
     }
 }

@@ -10,7 +10,7 @@ using Lan.Shapes.Handle;
 
 namespace Lan.Shapes.Custom
 {
-    public class ThickenedCircle : CustomGeometryBase
+    public class ThickenedCircle : CustomGeometryBase, IDataExport<EllipseData>
     {
         #region fields
 
@@ -247,6 +247,12 @@ namespace Lan.Shapes.Custom
                 OldPointForTranslate = newPoint;
             }
         }
+
+        public EllipseData GetMetaData()
+        {
+            throw new NotImplementedException();
+        }
+
 
         #endregion
     }
