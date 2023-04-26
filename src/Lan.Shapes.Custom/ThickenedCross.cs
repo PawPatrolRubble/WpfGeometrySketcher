@@ -5,10 +5,56 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.Custom
 {
-    public class FilledCross : ShapeVisualBase
+
+    public abstract class CustomGeometryBase : ShapeVisualBase
+    {
+        protected readonly DragHandle DistanceResizeHandle = new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
+
+        protected Pen? Pen;
+        protected const double MaxStrokeThickness = 50;
+        protected readonly Pen DragHandlePen = new Pen(Brushes.Red, 1);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override Rect BoundsRect { get; }
+        protected override void HandleResizing(Point point)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 选择时
+        /// </summary>
+        public override void OnSelected()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 未选择状态
+        /// </summary>
+        public override void OnDeselected()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void CreateHandles()
+        {
+            
+        }
+
+        protected override void HandleTranslate(Point newPoint)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ThickenedCross : CustomGeometryBase
     {
         /// <summary>
         /// </summary>
@@ -73,14 +119,7 @@ namespace Lan.Shapes.Custom
             }
         }
 
-        /// <summary>
-        ///     未选择状态
-        /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
+      
 
         /// <summary>
         ///     left mouse button down event
@@ -152,27 +191,20 @@ namespace Lan.Shapes.Custom
             }
         }
 
-        /// <summary>
-        ///     选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
-        }
-
+   
         public override void UpdateVisual()
         {
             var renderContext = RenderOpen();
 
-            _pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
+            Pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
 
-            if (ShapeStyler != null && _pen != null)
+            if (ShapeStyler != null && Pen != null)
             {
-                _pen.Brush.Opacity = 0.5;
-                renderContext.DrawGeometry(ShapeStyler.FillColor, _pen, RenderGeometry);
+                Pen.Brush.Opacity = 0.5;
+                renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
             }
 
-            renderContext.DrawGeometry(Brushes.LightCoral, _dragHandlePen, RenderGeometryGroup);
+            renderContext.DrawGeometry(Brushes.LightCoral, DragHandlePen, RenderGeometryGroup);
             renderContext.Close();
         }
 
@@ -192,15 +224,11 @@ namespace Lan.Shapes.Custom
 
         #region fields
 
-        private Pen? _pen;
-        private const double MaxStrokeThickness = 50;
 
-        private readonly Pen _dragHandlePen = new Pen(Brushes.Red, 1);
+        private Dictionary<DragLocations, DragHandle> _dragHandles = new Dictionary<DragLocations, DragHandle>();
         private readonly RectangleGeometry _vRectangleGeometry = new RectangleGeometry();
         private readonly RectangleGeometry _hRectangleGeometry = new RectangleGeometry();
         private readonly CombinedGeometry _combinedGeometry;
-        private readonly bool _enableHandleGeneration;
-        private Dictionary<DragLocations, DragHandle> _dragHandles = new Dictionary<DragLocations, DragHandle>();
 
         private readonly bool _isSquare;
         private Point _centerPoint;
@@ -212,10 +240,6 @@ namespace Lan.Shapes.Custom
 
 
         #region properties
-
-        //private Point VerticalCenterPoint => new Point(
-        //    (_vRectangleGeometry.Rect.TopLeft.X + _vRectangleGeometry.Rect.BottomRight.X) / 2,
-        //    (_vRectangleGeometry.Rect.TopLeft.Y + _vRectangleGeometry.Rect.BottomRight.Y) / 2);
 
 
         private Point CenterPoint
@@ -288,15 +312,14 @@ namespace Lan.Shapes.Custom
 
         #region constructor
 
-        public FilledCross(bool enableHandleGeneration, bool isSquare)
+        public ThickenedCross(bool enableHandleGeneration, bool isSquare)
         {
-            _enableHandleGeneration = enableHandleGeneration;
             _isSquare = isSquare;
             _combinedGeometry =
                 new CombinedGeometry(GeometryCombineMode.Union, _hRectangleGeometry, _vRectangleGeometry);
         }
 
-        public FilledCross() : this(true, false)
+        public ThickenedCross() : this(true, false)
         {
         }
 
@@ -307,11 +330,11 @@ namespace Lan.Shapes.Custom
 
         private void ChangeStrokeThickness(double delta)
         {
-            if (_pen != null)
+            if (Pen != null)
             {
-                var original = _pen.Thickness;
+                var original = Pen.Thickness;
                 if (original + delta < 0)
-                    _pen.Thickness = original;
+                    Pen.Thickness = original;
                 else if (original + delta > MaxStrokeThickness)
                 {
                     original = MaxStrokeThickness;
@@ -321,8 +344,7 @@ namespace Lan.Shapes.Custom
                     original += delta;
                 }
 
-                _pen.Thickness = original;
-                Console.WriteLine($"{_pen.Thickness}");
+                Pen.Thickness = original;
             }
         }
 

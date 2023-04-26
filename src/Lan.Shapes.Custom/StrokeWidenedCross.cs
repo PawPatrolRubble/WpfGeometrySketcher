@@ -17,10 +17,10 @@ namespace Lan.Shapes.Custom
     {
         #region my fields
 
-        private readonly FilledCross _innerCross = new FilledCross();
-        private readonly FilledCross _middleCross = new FilledCross();
+        private readonly ThickenedCross _innerCross = new ThickenedCross();
+        private readonly ThickenedCross _middleCross = new ThickenedCross();
         private readonly Pen _middlePen = new Pen(Brushes.Red, 1);
-        private readonly FilledCross _outerCross = new FilledCross();
+        private readonly ThickenedCross _outerCross = new ThickenedCross();
         private double _distance;
         private Dictionary<DragLocation, DragHandle> _dragHandles;
         private Vector _halfDistanceVector;
