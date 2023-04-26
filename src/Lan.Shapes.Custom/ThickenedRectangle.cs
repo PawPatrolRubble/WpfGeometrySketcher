@@ -13,7 +13,7 @@ using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.Custom
 {
-    public class ThickenedRectangle : CustomGeometryBase
+    public class ThickenedRectangle : CustomGeometryBase,IDataExport<PointsData>
     {
         #region fields
 
@@ -310,5 +310,10 @@ namespace Lan.Shapes.Custom
         #endregion
 
         #endregion
+
+        public PointsData GetMetaData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
