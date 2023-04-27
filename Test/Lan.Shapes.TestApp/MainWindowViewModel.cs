@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -37,6 +38,18 @@ namespace Lan.Shapes.App
         private void GetShapeInfoCommandImpl()
         {
 
+        }
+
+        private Point _mouseDblPosition;
+
+        public Point MouseDblPosition
+        {
+            get => _mouseDblPosition;
+            set
+            {
+                SetProperty(ref _mouseDblPosition, value);
+                Console.WriteLine(_mouseDblPosition);
+            }
         }
     }
 }

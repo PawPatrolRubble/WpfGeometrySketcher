@@ -74,6 +74,67 @@
         </Setter>
     </Style>
 
+    <Style TargetType="imageViewer:ImageViewerBasic">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="imageViewer:ImageViewerBasic">
+
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <Canvas
+                            x:Name="containerCanvas"
+                            Panel.ZIndex="3"
+                            ClipToBounds="True"
+                            IsHitTestVisible="True">
+
+                            <TextBlock
+                                x:Name="TbMousePosition"
+                                Canvas.Left="10"
+                                Canvas.Top="15"
+                                Panel.ZIndex="1"
+                                Background="Black"
+                                Foreground="Lime" />
+
+                            <TextBlock
+                                x:Name="TbImageSizeAndScale"
+                                Canvas.Left="10"
+                                Canvas.Top="32" />
+
+
+
+                            <Grid
+                                x:Name="GridContainer"
+                                ClipToBounds="True"
+                                Row="0">
+
+                                <!--<Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <MatrixTransform x:Name="transform" />
+                                        <ScaleTransform x:Name="scaleTransform" />
+                                    </TransformGroup>
+                                </Grid.RenderTransform>-->
+                                <Image
+                                    x:Name="ImageViewer"
+                                    Width="{Binding Source.PixelWidth, RelativeSource={RelativeSource Self}}"
+                                    Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"
+                                    Panel.ZIndex="1"
+                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                    RenderOptions.EdgeMode="Aliased"
+                                    SnapsToDevicePixels="True"
+                                    Source="{TemplateBinding ImageSource}"
+                                    Stretch="Uniform" />
+
+                            </Grid>
+
+                        </Canvas>
+
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="IconButton" TargetType="Button">
 
         <Setter Property="Margin" Value="2" />
