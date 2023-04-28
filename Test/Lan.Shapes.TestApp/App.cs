@@ -35,7 +35,7 @@ namespace Lan.Shapes.App
 
             //_serviceCollection.AddSingleton(config);
 
-            var shape = new StrokeWidenedCircle();
+            var shape = new ThickenedCircle();
 
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();

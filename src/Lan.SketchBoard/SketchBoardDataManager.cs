@@ -26,6 +26,11 @@ namespace Lan.SketchBoard
 
 
         /// <summary>
+        /// bindable collection of shapes
+        /// </summary>
+        public IEnumerable<ShapeVisualBase> Shapes { get; set; }
+
+        /// <summary>
         /// this is used to hold all shapes
         /// </summary>
         public VisualCollection VisualCollection { get; set; } = null!;

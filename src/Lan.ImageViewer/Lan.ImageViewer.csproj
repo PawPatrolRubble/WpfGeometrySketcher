@@ -4,7 +4,7 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.0-preview08</PackageVersion>
+		  <PackageVersion>1.0.1</PackageVersion>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>

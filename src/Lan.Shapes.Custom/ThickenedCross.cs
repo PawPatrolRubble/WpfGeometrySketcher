@@ -1,25 +1,61 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
-using Lan.Shapes.Shapes;
+
+#endregion
 
 namespace Lan.Shapes.Custom
 {
-    public class ThickenedCross : CustomGeometryBase,IDataExport<PointsData>
+    public class ThickenedCross : CustomGeometryBase, IDataExport<PointsData>
     {
-        /// <summary>
-        /// </summary>
-        public override Rect BoundsRect { get; }
+        #region fields
+
+        private readonly CombinedGeometry _combinedGeometry;
+        private readonly RectangleGeometry _hRectangleGeometry = new RectangleGeometry();
+
+        private readonly bool _isSquare;
+        private readonly RectangleGeometry _vRectangleGeometry = new RectangleGeometry();
+        private Point _centerPoint;
+
+
+        private Dictionary<DragLocations, DragHandle> _dragHandles = new Dictionary<DragLocations, DragHandle>();
+        private Point _horizontalTopLeft;
+        private Point _verticalBottomRight;
+        private Point _verticalTopLeft;
+
+        #endregion
+
+        #region Propeties
+
 
         public override Geometry RenderGeometry
         {
             get => _combinedGeometry;
         }
 
+        #endregion
+
+        #region implementations
+
+        public PointsData GetMetaData()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region others
+
+        protected override void OnStrokeThicknessChanges(double strokeThickness)
+        {
+            _dragHandles[DragLocations.ResizeHandle].GeometryCenter = GetResizeHandleLocation();
+        }
 
         protected override void CreateHandles()
         {
@@ -32,6 +68,7 @@ namespace Lan.Shapes.Custom
                 Handles.Add(new RectDragHandle(10, _vRectangleGeometry.Rect.BottomRight,
                     (int)DragLocations.VBottomRight));
                 Handles.Add(new RectDragHandle(10, _vRectangleGeometry.Rect.TopLeft, (int)DragLocations.VTopLeft));
+
                 Handles.Add(new RectDragHandle(10, GetResizeHandleLocation(), (int)DragLocations.ResizeHandle));
 
                 _dragHandles = Handles.ToDictionary(x => (DragLocations)x.Id);
@@ -42,20 +79,10 @@ namespace Lan.Shapes.Custom
 
         private Point GetResizeHandleLocation()
         {
-            if (ShapeStyler != null)
-            {
-                var strokeThickness = ShapeStyler.SketchPen.Thickness;
-                return _vRectangleGeometry.Rect.Location +
-                       new Vector(_vRectangleGeometry.Rect.Width / 2, -strokeThickness / 2);
-            }
-            return _vRectangleGeometry.Rect.Location;
+            return _vRectangleGeometry.Rect.Location +
+                   new Vector(_vRectangleGeometry.Rect.Width / 2, -StrokeThickness / 2);
         }
 
-
-        protected override void HandleResizing(Point point)
-        {
-            throw new NotImplementedException();
-        }
 
         protected override void HandleTranslate(Point newPoint)
         {
@@ -74,7 +101,6 @@ namespace Lan.Shapes.Custom
             }
         }
 
-      
 
         /// <summary>
         ///     left mouse button down event
@@ -128,7 +154,7 @@ namespace Lan.Shapes.Custom
                             if (OldPointForTranslate != null)
                             {
                                 var delta = point - OldPointForTranslate.Value;
-                                ChangeStrokeThickness(-delta.Y);
+                                StrokeThickness += -delta.Y;
                                 OldPointForTranslate = point;
                             }
 
@@ -146,7 +172,7 @@ namespace Lan.Shapes.Custom
             }
         }
 
-   
+
         public override void UpdateVisual()
         {
             var renderContext = RenderOpen();
@@ -156,10 +182,11 @@ namespace Lan.Shapes.Custom
             if (ShapeStyler != null && Pen != null)
             {
                 Pen.Brush.Opacity = 0.5;
+                Pen.Thickness = StrokeThickness;
                 renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
             }
 
-            renderContext.DrawGeometry(Brushes.LightCoral, DragHandlePen, RenderGeometryGroup);
+            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, RenderGeometryGroup);
             renderContext.Close();
         }
 
@@ -177,25 +204,10 @@ namespace Lan.Shapes.Custom
             ResizeHandle
         }
 
-        #region fields
-
-
-        private Dictionary<DragLocations, DragHandle> _dragHandles = new Dictionary<DragLocations, DragHandle>();
-        private readonly RectangleGeometry _vRectangleGeometry = new RectangleGeometry();
-        private readonly RectangleGeometry _hRectangleGeometry = new RectangleGeometry();
-        private readonly CombinedGeometry _combinedGeometry;
-
-        private readonly bool _isSquare;
-        private Point _centerPoint;
-        private Point _verticalTopLeft;
-        private Point _verticalBottomRight;
-        private Point _horizontalTopLeft;
-
         #endregion
 
 
         #region properties
-
 
         private Point CenterPoint
         {
@@ -283,25 +295,6 @@ namespace Lan.Shapes.Custom
 
         #region local methods
 
-        private void ChangeStrokeThickness(double delta)
-        {
-            if (Pen != null)
-            {
-                var original = Pen.Thickness;
-                if (original + delta < 0)
-                    Pen.Thickness = original;
-                else if (original + delta > MaxStrokeThickness)
-                {
-                    original = MaxStrokeThickness;
-                }
-                else
-                {
-                    original += delta;
-                }
-
-                Pen.Thickness = original;
-            }
-        }
 
 
         private void UpdateCenter()
@@ -449,10 +442,5 @@ namespace Lan.Shapes.Custom
         }
 
         #endregion
-
-        public PointsData GetMetaData()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

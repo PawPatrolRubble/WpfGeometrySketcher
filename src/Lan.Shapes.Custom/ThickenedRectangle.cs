@@ -13,23 +13,16 @@ using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.Custom
 {
-    public class ThickenedRectangle : CustomGeometryBase,IDataExport<PointsData>
+    public class ThickenedRectangle : CustomGeometryBase, IDataExport<PointsData>
     {
         #region fields
-
 
         private readonly RectangleGeometry _middleRectangleGeometry = new RectangleGeometry();
 
         private Point _bottomRight;
 
         private Dictionary<DragLocation, DragHandle> _dragHandleDict;
-
         private Vector _offsetVector;
-
-
-        private double _strokeThickness = 30;
-
-
         private Point _topLeft;
 
         #endregion
@@ -47,28 +40,6 @@ namespace Lan.Shapes.Custom
                     ResizeByCornerPoint(DragLocation.BottomRight, _bottomRight);
                     UpdateVisual();
                 }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override Rect BoundsRect { get; }
-
-        public double StrokeThickness
-        {
-            get => _strokeThickness;
-            set
-            {
-                _strokeThickness = value;
-                _strokeThickness = Math.Min(MaxStrokeThickness, _strokeThickness);
-                _strokeThickness = Math.Max(0, _strokeThickness);
-
-                _offsetVector.X = _strokeThickness / 2;
-                _offsetVector.Y = _strokeThickness / 2;
-
-                ChangeDistance();
-                UpdateVisual();
             }
         }
 
@@ -96,23 +67,21 @@ namespace Lan.Shapes.Custom
 
         public ThickenedRectangle()
         {
-            StrokeThickness = 15;
             RenderGeometryGroup.Children.Add(_middleRectangleGeometry);
         }
 
         #endregion
 
-        #region others
+        #region implementations
 
-        /// <summary>
-        /// it will affect the topleft and bottom right on both inner and outer geometry
-        /// </summary>
-        private void ChangeDistance()
+        public PointsData GetMetaData()
         {
-            ResizeByCornerPoint(DragLocation.TopLeft, TopLeft);
-            ResizeByCornerPoint(DragLocation.BottomRight, BottomRight);
-            if (Pen != null) Pen.Thickness = StrokeThickness;
+            throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region others
 
         private void CreateGeometry(Point topLeft)
         {
@@ -197,27 +166,17 @@ namespace Lan.Shapes.Custom
                             {
                                 case DragLocation.TopLeft:
                                     TopLeft = point;
-
-                                    break;
-                                case DragLocation.TopMiddle:
                                     break;
                                 case DragLocation.TopRight:
                                     BottomRight = new Point(point.X, BottomRight.Y);
                                     TopLeft = new Point(TopLeft.X, point.Y);
                                     break;
-                                case DragLocation.RightMiddle:
-                                    break;
                                 case DragLocation.BottomRight:
                                     BottomRight = point;
-                                    break;
-                                case DragLocation.BottomMiddle:
                                     break;
                                 case DragLocation.BottomLeft:
                                     TopLeft = new Point(point.X, TopLeft.Y);
                                     BottomRight = new Point(BottomRight.X, point.Y);
-
-                                    break;
-                                case DragLocation.LeftMiddle:
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();
@@ -229,6 +188,7 @@ namespace Lan.Shapes.Custom
                         //handle translate
                         if (OldPointForTranslate != null)
                         {
+                            SetMouseCursorToHand();
                             TopLeft += point - OldPointForTranslate.Value;
                             BottomRight += point - OldPointForTranslate.Value;
                             OldPointForTranslate = point;
@@ -239,34 +199,29 @@ namespace Lan.Shapes.Custom
         }
 
 
+        protected override void OnStrokeThicknessChanges(double strokeThickness)
+        {
+            _offsetVector.X = StrokeThickness / 2;
+            _offsetVector.Y = StrokeThickness / 2;
+
+            //update location of handle
+            DistanceResizeHandle.GeometryCenter = _middleRectangleGeometry.Rect.Location +
+                                                  new Vector(_middleRectangleGeometry.Rect.Width / 2,
+                                                      -StrokeThickness / 2);
+
+            UpdateVisual();
+        }
+
+
         private void ResizeByCornerPoint(DragLocation location, Point point)
         {
             switch (location)
             {
                 case DragLocation.TopLeft:
                     _middleRectangleGeometry.Rect = new Rect(point, BottomRight);
-
-                    break;
-                case DragLocation.TopMiddle:
-                    break;
-                case DragLocation.TopRight:
-                    break;
-                case DragLocation.RightMiddle:
                     break;
                 case DragLocation.BottomRight:
                     _middleRectangleGeometry.Rect = new Rect(TopLeft, point);
-
-                    break;
-                case DragLocation.BottomMiddle:
-                    break;
-                case DragLocation.BottomLeft:
-                    break;
-                case DragLocation.LeftMiddle:
-                    break;
-                case DragLocation.HorizontalTopLeft:
-
-                    break;
-                case DragLocation.HorizontalBottomRight:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(location), location, null);
@@ -276,8 +231,8 @@ namespace Lan.Shapes.Custom
 
             //update location of handle
             DistanceResizeHandle.GeometryCenter = _middleRectangleGeometry.Rect.Location +
-                                                   new Vector(_middleRectangleGeometry.Rect.Width / 2,
-                                                       -StrokeThickness / 2);
+                                                  new Vector(_middleRectangleGeometry.Rect.Width / 2,
+                                                      -StrokeThickness / 2);
 
             _dragHandleDict[DragLocation.TopLeft].GeometryCenter = TopLeft;
             _dragHandleDict[DragLocation.TopRight].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
@@ -296,13 +251,14 @@ namespace Lan.Shapes.Custom
             if (ShapeStyler != null && Pen != null)
             {
                 Pen.Brush.Opacity = 0.5;
+                Pen.Thickness = StrokeThickness;
                 renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
             }
 
-            renderContext.DrawGeometry(Brushes.Aquamarine, DragHandlePen, DistanceResizeHandle.HandleGeometry);
+            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, DistanceResizeHandle.HandleGeometry);
 
             foreach (var dragHandle in Handles)
-                renderContext.DrawGeometry(Brushes.Aquamarine, DragHandlePen, dragHandle.HandleGeometry);
+                renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, dragHandle.HandleGeometry);
 
             renderContext.Close();
         }
@@ -310,10 +266,5 @@ namespace Lan.Shapes.Custom
         #endregion
 
         #endregion
-
-        public PointsData GetMetaData()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

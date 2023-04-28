@@ -1,13 +1,16 @@
 #nullable enable
+
+#region
+
 using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Lan.Shapes;
+
+#endregion
 
 namespace Lan.SketchBoard
 {
@@ -15,56 +18,80 @@ namespace Lan.SketchBoard
     {
         #region fields
 
+        public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
+            "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
+            new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
+
+
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register(
+            "Image", typeof(ImageSource), typeof(SketchBoard), new PropertyMetadata(default(ImageSource)));
+
         private ShapeVisualBase? _activeShape;
+
+        #endregion
+
+        #region Propeties
+
         private ShapeVisualBase? ActiveShape
         {
             get => _activeShape;
             set
             {
                 if (_activeShape != value)
-                {
-                    if (_activeShape != null) _activeShape.State = ShapeVisualState.Normal;
-                }
+                    if (_activeShape != null)
+                        _activeShape.State = ShapeVisualState.Normal;
                 _activeShape = value;
-
             }
+        }
+
+        public ImageSource Image
+        {
+            get => (ImageSource)GetValue(ImageProperty);
+            set => SetValue(ImageProperty, value);
+        }
+
+        public ISketchBoardDataManager? SketchBoardDataManager
+        {
+            get => (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty);
+            set => SetValue(SketchBoardDataManagerProperty, value);
         }
 
         #endregion
 
-        public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
-            "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(SketchBoard),
-            new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardDataManagerChangedCallBack));
+
+        public SketchBoard()
+        {
+            Loaded += (s, e) =>
+            {
+                if (Application.Current.MainWindow != null)
+                    Application.Current.MainWindow.KeyDown += (s, e) =>
+                    {
+                        if (e.Key == Key.Delete && ActiveShape!=null)
+                        {
+                            SketchBoardDataManager?.RemoveShape(ActiveShape);
+                        }
+                    };
+            };
+        }
+
+        #region others
 
         private static void OnSketchBoardDataManagerChangedCallBack(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
             if (d is SketchBoard sketchBoard && e.NewValue is ISketchBoardDataManager dataManager)
-            {
                 dataManager.VisualCollection = new VisualCollection(sketchBoard);
-            }
         }
 
-        public ISketchBoardDataManager? SketchBoardDataManager
-        {
-            get { return (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty); }
-            set { SetValue(SketchBoardDataManagerProperty, value); }
-        }
-
-
-        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register(
-            "Image", typeof(ImageSource), typeof(SketchBoard), new PropertyMetadata(default(ImageSource)));
-
-        public ImageSource Image
-        {
-            get { return (ImageSource)GetValue(ImageProperty); }
-            set { SetValue(ImageProperty, value); }
-        }
+        #endregion
 
 
         #region overrides
 
-        protected override int VisualChildrenCount => SketchBoardDataManager?.VisualCollection.Count ?? 0;
+        protected override int VisualChildrenCount
+        {
+            get => SketchBoardDataManager?.VisualCollection.Count ?? 0;
+        }
 
         protected override Visual GetVisualChild(int index)
         {
@@ -95,9 +122,8 @@ namespace Lan.SketchBoard
                 ActiveShape = GetHitTestShape(e.GetPosition(this));
 
                 if (ActiveShape == null)
-                {
-                    ActiveShape = SketchBoardDataManager?.CurrentGeometry ?? SketchBoardDataManager?.CreateNewGeometry(e.GetPosition(this));
-                }
+                    ActiveShape = SketchBoardDataManager?.CurrentGeometry ??
+                                  SketchBoardDataManager?.CreateNewGeometry(e.GetPosition(this));
 
                 //if sketchboard current geometry is not null, it means that it still being sketched
                 //and we need to assign it to active shape
@@ -115,20 +141,15 @@ namespace Lan.SketchBoard
         {
             //Debug.WriteLine($"active: {ActiveShape == null}, active state: {ActiveShape?.State}");
             if (ActiveShape?.IsBeingDraggedOrPanMoving ?? false)
-            {
                 //Debug.WriteLine($"is being dragged, {ActiveShape?.GetType().Name}");
                 return ActiveShape;
-            }
 
             //Debug.WriteLine($"it is not dragged, active shape: {ActiveShape?.GetType().Name}");
             ShapeVisualBase? shape = null;
 
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, mousePosition);
+            var hitTestResult = VisualTreeHelper.HitTest(this, mousePosition);
 
-            if (hitTestResult != null)
-            {
-                shape = hitTestResult.VisualHit as ShapeVisualBase;
-            }
+            if (hitTestResult != null) shape = hitTestResult.VisualHit as ShapeVisualBase;
 
 
             return shape;
@@ -161,11 +182,7 @@ namespace Lan.SketchBoard
             try
             {
                 //when the active shape is not a newly created geometry, when mouse left button up 
-                if (ActiveShape?.IsGeometryRendered ?? false)
-                {
-                    SketchBoardDataManager?.UnselectGeometry();
-
-                }
+                if (ActiveShape?.IsGeometryRendered ?? false) SketchBoardDataManager?.UnselectGeometry();
                 ActiveShape?.OnMouseLeftButtonUp(e.GetPosition(this));
 
                 //SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
