@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -14,14 +15,11 @@ namespace Lan.Shapes.Custom
     {
         #region fields
 
-        private readonly Rect _boundsRect;
         private readonly DragHandle _resizeHandle;
 
         private Point _center;
-        private double _strokeThickness;
 
         private readonly EllipseGeometry _middleEllipseGeometry = new EllipseGeometry();
-        private readonly Pen _middleGeometrySketchPen = new Pen(Brushes.Red, 1);
         private double _radius;
 
         #endregion
@@ -32,12 +30,8 @@ namespace Lan.Shapes.Custom
 
         public ThickenedCircle()
         {
-            StrokeThickness = 30;
             RenderGeometryGroup.Children.Add(_middleEllipseGeometry);
-
             _resizeHandle = new RectDragHandle(10, Center + new Vector(Radius, 0), 1);
-
-            _middleGeometrySketchPen.DashStyle = DashStyles.Dash;
         }
 
         #endregion
@@ -46,19 +40,14 @@ namespace Lan.Shapes.Custom
 
         #region properties
 
-        private double StrokeThickness
+
+        protected override void OnStrokeThicknessChanges(double strokeThickness)
         {
-            get => _strokeThickness;
-            set
+            //update handle position
+            if (Radius > 0)
             {
-                _strokeThickness = value;
-                _strokeThickness = Math.Min(MaxStrokeThickness, _strokeThickness);
-                _strokeThickness = Math.Max(0, _strokeThickness);
-                if (Radius > 0)
-                {
-                    ResizeGeometry(Radius);
-                    UpdateVisual();
-                }
+                DistanceResizeHandle.GeometryCenter = Center + new Vector(0, -(Radius + StrokeThickness / 2));
+                UpdateVisual();
             }
         }
 
@@ -96,11 +85,7 @@ namespace Lan.Shapes.Custom
             _middleEllipseGeometry.RadiusY = radius;
 
             _resizeHandle.GeometryCenter = Center + new Vector(Radius, 0);
-            DistanceResizeHandle.GeometryCenter = Center + new Vector(Radius + StrokeThickness / 2, 0);
-            if (Pen != null)
-            {
-                Pen.Thickness = StrokeThickness;
-            }
+            DistanceResizeHandle.GeometryCenter = Center + new Vector(0, -(Radius + StrokeThickness / 2));
         }
 
         #endregion
@@ -136,11 +121,11 @@ namespace Lan.Shapes.Custom
                     IsBeingDraggedOrPanMoving = true;
                     switch (SelectedDragHandle.Id)
                     {
-                        case 2:
+                        case 99:
 
                             if (OldPointForTranslate != null)
                             {
-                                StrokeThickness += (point - OldPointForTranslate).Value.X;
+                                StrokeThickness += -(point - OldPointForTranslate).Value.Y;
                                 OldPointForTranslate = point;
                             }
 
@@ -173,30 +158,6 @@ namespace Lan.Shapes.Custom
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override Rect BoundsRect
-        {
-            get => _boundsRect;
-        }
-
-        /// <summary>
-        /// add geometries to group
-        /// </summary>
-        protected override void UpdateGeometryGroup()
-        {
-        }
-
-        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void HandleResizing(Point point)
-        {
-            throw new NotImplementedException();
-        }
 
         public override void UpdateVisual()
         {
@@ -206,41 +167,24 @@ namespace Lan.Shapes.Custom
             if (ShapeStyler != null && Pen != null)
             {
                 Pen.Brush.Opacity = 0.5;
+                Pen.Thickness = StrokeThickness;
                 renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
             }
 
 
-            renderContext.DrawGeometry(Brushes.Aquamarine, _middleGeometrySketchPen, _resizeHandle.HandleGeometry);
-            renderContext.DrawGeometry(Brushes.Aquamarine, _middleGeometrySketchPen,
+            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, _resizeHandle.HandleGeometry);
+            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen,
                 DistanceResizeHandle.HandleGeometry);
 
             renderContext.Close();
         }
 
-        /// <summary>
-        /// 选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 未选择状态
-        /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void CreateHandles()
-        {
-        }
 
         protected override void HandleTranslate(Point newPoint)
         {
             if (OldPointForTranslate.HasValue)
             {
+                SetMouseCursorToHand();
                 Center += newPoint - OldPointForTranslate.Value;
                 _resizeHandle.GeometryCenter += newPoint - OldPointForTranslate.Value;
                 DistanceResizeHandle.GeometryCenter += newPoint - OldPointForTranslate.Value;

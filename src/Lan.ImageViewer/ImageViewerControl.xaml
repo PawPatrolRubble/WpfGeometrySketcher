@@ -107,6 +107,8 @@
 
             <Separator />
 
+            <ListBox ItemsSource="{Binding SketchBoardDataManager.VisualCollection}"></ListBox>
+
         </StackPanel>
 
     </Grid>

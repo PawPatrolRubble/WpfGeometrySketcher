@@ -15,6 +15,10 @@ namespace Lan.SketchBoard
     /// </summary>
     public interface ISketchBoardDataManager
     {
+        /// <summary>
+        /// bindable collection of shapes
+        /// </summary>
+        IEnumerable<ShapeVisualBase> Shapes { get; }
 
         /// <summary>
         /// this is used to hold all shapes

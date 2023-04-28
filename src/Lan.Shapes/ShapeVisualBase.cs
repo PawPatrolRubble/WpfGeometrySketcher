@@ -1,14 +1,12 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 using Lan.Shapes.Handle;
 using Lan.Shapes.Shapes;
 using Lan.Shapes.Styler;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Lan.Shapes
 {
@@ -23,7 +21,7 @@ namespace Lan.Shapes
             get => _state;
             set
             {
-                _state = value; 
+                _state = value;
                 UpdateVisual();
             }
         }
@@ -67,14 +65,14 @@ namespace Lan.Shapes
 
         #endregion
 
-        
+
         public ShapeLayer? ShapeLayer { get; set; }
 
         /// <summary>
         /// set it to be true, if geometry is first Rendered
         /// </summary>
         public bool IsGeometryRendered { get; protected set; }
-        
+
         /// <summary>
         /// the current valid styler should be given from layer base on the shape State
         /// </summary>
@@ -126,6 +124,8 @@ namespace Lan.Shapes
         {
             return (p2 - p1).Length;
         }
+
+        protected Point GetMiddleToTwoPoints(Point p1, Point p2) => new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 
 
         /// <summary>
@@ -270,6 +270,10 @@ namespace Lan.Shapes
 
         protected abstract void HandleTranslate(Point newPoint);
 
+        protected void SetMouseCursorToHand()
+        {
+            Mouse.SetCursor(Cursors.Hand);
+        }
         public void UpdateMouseCursor(DragLocation dragLocation)
         {
             switch (dragLocation)

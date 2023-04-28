@@ -26,13 +26,15 @@
 
         <UniformGrid Columns="1">
 
-            <!--<imageViewer:ImageViewerControl
+            <imageViewer:ImageViewerControl
                 Margin="5"
                 Padding="10"
                 DataContext="{Binding Camera1}"
-                />-->
+                />
 
-            <imageViewer:ImageViewerBasic ImageSource="{Binding Camera1.Image}" MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />
+            <!--<imageViewer:ImageViewerBasic 
+                ImageSource="{Binding Camera1.Image}" 
+                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />-->
 
             <!--<imageViewer:ImageViewerControl
                 Margin="5"
