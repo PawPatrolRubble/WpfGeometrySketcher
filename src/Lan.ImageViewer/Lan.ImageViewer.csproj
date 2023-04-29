@@ -5,6 +5,7 @@
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
 		  <PackageVersion>1.0.1</PackageVersion>
+		  <Description>used to draw roi</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>
