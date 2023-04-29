@@ -20,19 +20,59 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Style.xaml" />
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+
+                                <ContentPresenter />
+
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
-                <Border ToolTip="{Binding Description}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="20"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="{Binding IconData}"
-                            Stretch="Uniform" />
-                        <TextBlock Margin="10,0" Text="{Binding Name}" />
-                    </StackPanel>
-                </Border>
+                <Button
+                    Margin="1"
+                    BorderThickness="1"
+                    Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
+                    CommandParameter="{Binding}">
+                    <Border
+                        x:Name="Container"
+                        Margin="1"
+                        ToolTip="{Binding Description}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Source="{Binding IconData}"
+                                Stretch="Uniform" />
+                            <TextBlock
+                                Width="80"
+                                Margin="5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                </Button>
+                <!--<DataTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter TargetName="Container" Property="Background" Value="red" />
+                    </Trigger>
+                </DataTemplate.Triggers>-->
             </DataTemplate>
         </ResourceDictionary>
 
@@ -44,7 +84,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="280" />
         </Grid.ColumnDefinitions>
 
         <local:ImageViewer
@@ -55,61 +95,105 @@
             Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
-        <StackPanel Grid.Column="1" Margin="5">
+        <Grid Grid.Column="1" Margin="5">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
             <TextBlock Margin="2,2" Text="Geometry Types" />
             <ListBox
+                Grid.Row="1"
                 MinHeight="150"
                 BorderThickness="1"
-                FontSize="20"
+                FontSize="16"
+                ItemContainerStyle="{StaticResource DrawShapeTypeStyle}"
                 ItemTemplate="{StaticResource GeometryTypeTemplate}"
                 ItemsSource="{Binding GeometryTypeList}"
-                SelectedItem="{Binding SelectedGeometryType}" />
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItem="{Binding SelectedGeometryType}"
+                Visibility="Collapsed">
 
-            <Separator />
-
-
-            <TextBlock
-                FontWeight="Bold"
-                Foreground="Red"
-                TextWrapping="Wrap"
-                Text="Select a Layer before start making drawings" />
-
-            <ComboBox 
-                Margin="0 5"
-                DisplayMemberPath="Name"
-                SelectedItem="{Binding SelectedShapeLayer}"
-                ItemsSource="{Binding Layers}"/>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel
+                            Width="350"
+                            FlowDirection="LeftToRight"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
 
-            <TextBlock Margin="2" Text="Scale rate" />
+            </ListBox>
 
-            <TextBox
-                Height="25"
-                Margin="2"
-                VerticalContentAlignment="Center"
-                FontSize="16"
-                Text="{Binding Scale, StringFormat='{}{0:p2}'}" />
-
-
-            <Button
-                local:GeometryIconElement.IconGeometry="{StaticResource ZoomIn}"
-                Command="{Binding ZoomInCommand}"
-                Content="Zoom In"
-                Style="{StaticResource IconButton}" />
-
-            <Button
-                local:GeometryIconElement.IconGeometry="{StaticResource ZoomOut}"
-                Command="{Binding ZoomOutCommand}"
-                Content="Zoom Out"
-                Style="{StaticResource IconButton}" />
+            <ItemsControl
+                Grid.Row="1"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                FontSize="15"
+                ItemTemplate="{StaticResource GeometryTypeTemplate}"
+                ItemsSource="{Binding GeometryTypeList}"
+                Visibility="Visible">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
 
 
+            <StackPanel Grid.Row="2">
+                <Separator />
 
-            <Separator />
+                <TextBlock
+                    FontWeight="Bold"
+                    Foreground="Red"
+                    Text="Select a Layer before start making drawings"
+                    TextWrapping="Wrap" />
 
-            <ListBox ItemsSource="{Binding SketchBoardDataManager.VisualCollection}"></ListBox>
+                <ComboBox
+                    Margin="0,5"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Layers}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SelectedShapeLayer}" />
 
-        </StackPanel>
+
+                <TextBlock Margin="2" Text="Scale rate" />
+
+                <TextBox
+                    Height="25"
+                    Margin="2"
+                    VerticalContentAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />
+
+
+                <Button
+                    local:GeometryIconElement.IconGeometry="{StaticResource ZoomIn}"
+                    Command="{Binding ZoomInCommand}"
+                    Content="Zoom In"
+                    Style="{StaticResource IconButton}" />
+
+                <Button
+                    local:GeometryIconElement.IconGeometry="{StaticResource ZoomOut}"
+                    Command="{Binding ZoomOutCommand}"
+                    Content="Zoom Out"
+                    Style="{StaticResource IconButton}" />
+
+                <Separator />
+
+            </StackPanel>
+
+            <ListBox Grid.Row="3" 
+                     SelectedItem="{Binding SketchBoardDataManager.CurrentGeometry, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                     ItemsSource="{Binding SketchBoardDataManager.Shapes}" />
+
+        </Grid>
 
     </Grid>
 

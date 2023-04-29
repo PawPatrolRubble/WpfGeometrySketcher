@@ -23,6 +23,8 @@ namespace Lan.Shapes.App
             _shapeLayerManager = shapeLayerManager;
             
             Camera1.Layers = _shapeLayerManager.Layers;
+
+            Camera1.SelectedShapeLayer = Camera1.Layers[0];
             //Camera1 = camera;
             SelectOneShapeCommand = new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand = new RelayCommand(GetShapeInfoCommandImpl);

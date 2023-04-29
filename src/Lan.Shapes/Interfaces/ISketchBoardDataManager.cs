@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
@@ -18,7 +19,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// bindable collection of shapes
         /// </summary>
-        IEnumerable<ShapeVisualBase> Shapes { get; }
+        ObservableCollection<ShapeVisualBase> Shapes { get; }
 
         /// <summary>
         /// this is used to hold all shapes
@@ -39,7 +40,7 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        ShapeVisualBase? CurrentGeometry { get; }
+        ShapeVisualBase? CurrentGeometry { get; set; }
 
 
         /// <summary>

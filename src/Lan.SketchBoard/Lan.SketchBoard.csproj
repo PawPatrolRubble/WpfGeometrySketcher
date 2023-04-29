@@ -8,7 +8,4 @@
 	<ItemGroup>
       <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
 	</ItemGroup>
-
-
-
 </Project>

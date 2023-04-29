@@ -16,7 +16,16 @@
         "DashStyle": "Dot",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
-      }
+      },    
+      
+      "Selected": {
+        "FillColor": "#6bb599",
+        "StrokeColor": "#e00926",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      },
     },
     "LayerId": 1,
     "Name": "default",
@@ -42,7 +51,16 @@
         "DashStyle": "Dot",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
-      }
+      },    
+      
+      "Selected": {
+        "FillColor": "#2c0ec2",
+        "StrokeColor": "#e00926",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      },
     },
     "LayerId": 2,
     "Name": "layer2",
