@@ -13,16 +13,16 @@
         "FillColor": "#6bb599",
         "StrokeColor": "#e00926",
         "StrokeThickness": 1.0,
-        "DashStyle": "Dot",
+        "DashStyle": "Solid",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
-      },    
-      
+      },
+
       "Selected": {
         "FillColor": "#6bb599",
         "StrokeColor": "#e00926",
         "StrokeThickness": 1.0,
-        "DashStyle": "Dot",
+        "DashStyle": "Solid",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
@@ -51,13 +51,13 @@
         "DashStyle": "Dot",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
-      },    
-      
+      },
+
       "Selected": {
         "FillColor": "#2c0ec2",
         "StrokeColor": "#e00926",
         "StrokeThickness": 1.0,
-        "DashStyle": "Dot",
+        "DashStyle": "Solid",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
