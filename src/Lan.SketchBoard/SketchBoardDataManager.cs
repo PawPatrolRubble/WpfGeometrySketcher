@@ -1,21 +1,31 @@
 ﻿#nullable enable
+
+#region
+
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
 using Lan.Shapes.Styler;
 
+#endregion
+
 namespace Lan.SketchBoard
 {
-    public class SketchBoardDataManager : ISketchBoardDataManager
+    public class SketchBoardDataManager : ISketchBoardDataManager, INotifyPropertyChanged
     {
+        #region fields
+
+        private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
 
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
-        private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
         private Type? _currentGeometryType;
 
@@ -24,16 +34,29 @@ namespace Lan.SketchBoard
         /// </summary>
         private ShapeLayer? _currentShapeLayer;
 
+        #endregion
+
+        #region implementations
 
         /// <summary>
         /// bindable collection of shapes
         /// </summary>
-        public IEnumerable<ShapeVisualBase> Shapes { get; set; }
+        public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
+
+        private VisualCollection _visualCollection = null!;
 
         /// <summary>
         /// this is used to hold all shapes
         /// </summary>
-        public VisualCollection VisualCollection { get; set; } = null!;
+        public VisualCollection VisualCollection
+        {
+            get => _visualCollection;
+            set
+            {
+                _visualCollection = value;
+                Shapes = new ObservableCollection<ShapeVisualBase>();
+            }
+        }
 
         /// <summary>
         /// get all shapes defined in canvas
@@ -48,12 +71,30 @@ namespace Lan.SketchBoard
         /// <summary>
         /// shape count
         /// </summary>
-        public int ShapeCount => VisualCollection.Count;
+        public int ShapeCount
+        {
+            get => VisualCollection.Count;
+        }
+
+        private ShapeVisualBase? _currentGeometry;
 
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        public ShapeVisualBase? CurrentGeometry { get; private set; }
+        public ShapeVisualBase? CurrentGeometry
+        {
+            get => _currentGeometry;
+            set
+            {
+                if (_currentGeometry != null)
+                {
+                    _currentGeometry.State = ShapeVisualState.Normal;
+                }
+
+                SetField(ref _currentGeometry, value);
+                if (_currentGeometry != null) _currentGeometry.State = ShapeVisualState.Selected;
+            }
+        }
 
 
         public void SetGeometryType(Type type)
@@ -64,7 +105,10 @@ namespace Lan.SketchBoard
         /// <summary>
         /// 当前使用图层
         /// </summary>
-        public ShapeLayer? CurrentShapeLayer => _currentShapeLayer;
+        public ShapeLayer? CurrentShapeLayer
+        {
+            get => _currentShapeLayer;
+        }
 
 
         /// <summary>
@@ -91,11 +135,13 @@ namespace Lan.SketchBoard
         public void RemoveShape(ShapeVisualBase shape)
         {
             VisualCollection.Remove(shape);
+            Shapes.Remove(shape);
         }
 
         public void RemoveAt(int index)
         {
             VisualCollection.RemoveAt(index);
+            Shapes.RemoveAt(index);
         }
 
 
@@ -125,6 +171,46 @@ namespace Lan.SketchBoard
         }
 
         /// <summary>
+        /// 设置图层
+        /// </summary>
+        /// <param name="layer"></param>
+        public void SetShapeLayer(ShapeLayer layer)
+        {
+            _currentShapeLayer = layer;
+        }
+
+
+        public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
+        {
+            if (_currentGeometryType == null || _currentShapeLayer == null) return null;
+
+            var shape = Activator.CreateInstance(_currentGeometryType) as ShapeVisualBase;
+
+            if (shape != null)
+            {
+                shape.ShapeLayer = CurrentShapeLayer;
+                VisualCollection.Add(shape);
+                CurrentGeometry = shape;
+                Shapes.Add(shape);
+            }
+
+            return shape;
+        }
+
+        /// <summary>
+        /// set current geometry as null
+        /// </summary>
+        public void UnselectGeometry()
+        {
+            CurrentGeometry = null;
+            _currentGeometryType = null;
+        }
+
+        #endregion
+
+        #region others
+
+        /// <summary>
         /// select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
@@ -139,52 +225,26 @@ namespace Lan.SketchBoard
             //todo set current geometry type
             //
             if (_drawingTools.ContainsKey(drawingTool))
-            {
                 _currentGeometryType = _drawingTools[drawingTool];
-            }
             else
-            {
                 throw new Exception("the drawing tool does not exist");
-            }
         }
 
-        /// <summary>
-        /// 设置图层
-        /// </summary>
-        /// <param name="layer"></param>
-        public void SetShapeLayer(ShapeLayer layer)
+        #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            _currentShapeLayer = layer;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
-        public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
-
-            if (_currentGeometryType == null || _currentShapeLayer == null)
-            {
-                return null;
-            }
-
-            var shape = Activator.CreateInstance(_currentGeometryType) as ShapeVisualBase;
-
-            if (shape != null)
-            {
-                shape.ShapeLayer = CurrentShapeLayer;
-                VisualCollection.Add(shape);
-                CurrentGeometry = shape;
-            }
-
-            return shape;
-        }
-
-        /// <summary>
-        /// set current geometry as null
-        /// </summary>
-        public void UnselectGeometry()
-        {
-            CurrentGeometry = null;
-            _currentGeometryType = null;
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

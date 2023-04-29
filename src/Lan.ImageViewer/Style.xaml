@@ -34,6 +34,7 @@
 
                             <Grid
                                 x:Name="GridContainer"
+                                Background="Blue"
                                 ClipToBounds="True"
                                 Row="0">
 
@@ -56,15 +57,16 @@
 
                                 <sketchBoard:SketchBoard
                                     x:Name="SketchBoard"
-                                    Focusable="True"
                                     Width="{Binding Path=Width, ElementName=ImageViewer}"
                                     Height="{Binding ElementName=ImageViewer, Path=Height}"
-                                    Margin="10"
+                                    Margin="2"
                                     Panel.ZIndex="2"
                                     Background="Transparent"
                                     ClipToBounds="True"
+                                    Focusable="True"
                                     SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
                             </Grid>
+
 
                         </Canvas>
 
@@ -165,8 +167,7 @@
                                 Width="24"
                                 Data="{TemplateBinding imageViewer:GeometryIconElement.IconGeometry}"
                                 Fill="Black"
-                                Stretch="Uniform" >
-                            </Path>
+                                Stretch="Uniform" />
                             <ContentPresenter
                                 Grid.Column="1"
                                 HorizontalAlignment="Center"
