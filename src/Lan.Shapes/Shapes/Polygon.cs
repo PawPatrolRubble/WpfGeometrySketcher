@@ -85,7 +85,7 @@ namespace Lan.Shapes.Shapes
                 //add new line geometry
                 //RenderGeometryGroup.Children.Add(new LineGeometry(_points[^1], newPoint));
 
-                if (IsTwoPointsAreClose(_points[0], newPoint, Tolerance))
+                if (AreTwoPointsClose(_points[0], newPoint, Tolerance))
                     //newPoint = _points[0];
                     //_pathFigure.Segments.Add(new LineSegment(newPoint, true));
                     ClosePolygon();
@@ -158,7 +158,7 @@ namespace Lan.Shapes.Shapes
         }
 
 
-        private bool IsTwoPointsAreClose(Point p1, Point p2, double tolerance)
+        private bool AreTwoPointsClose(Point p1, Point p2, double tolerance)
         {
             return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)) < tolerance;
         }

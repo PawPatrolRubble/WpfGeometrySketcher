@@ -385,13 +385,14 @@ namespace Lan.Shapes.Shapes
     //}
 
 
-    public class Rectangle : ShapeVisualBase,IDataExport<PointsData>
+    public class Rectangle : ShapeVisualBase, IDataExport<PointsData>
     {
         #region fields
 
         private readonly RectangleGeometry _rectangleGeometry = new RectangleGeometry(default);
         private Point _bottomRight;
         private Point _topLeft;
+
         #endregion
 
         #region Propeties
@@ -412,7 +413,7 @@ namespace Lan.Shapes.Shapes
         /// <summary>
         /// 
         /// </summary>
-        public override Rect BoundsRect { get; }
+        public override Rect BoundsRect { get => RenderGeometry.Bounds; }
 
         public Point TopLeft
         {
@@ -434,6 +435,16 @@ namespace Lan.Shapes.Shapes
         {
             RenderGeometryGroup.Children.Add(_rectangleGeometry);
         }
+
+        #endregion
+
+        #region Implementations
+
+        public PointsData GetMetaData()
+        {
+            return new PointsData(0, new List<Point> { TopLeft, BottomRight });
+        }
+
 
         #endregion
 
@@ -503,28 +514,6 @@ namespace Lan.Shapes.Shapes
             OldPointForTranslate = mousePoint;
         }
 
-        private void UpdateHandleLocation()
-        {
-            for (int i = 0; i < Handles.Count+1; i++)
-            {
-                switch (i)
-                {
-                    case 1:
-                        Handles[i - 1].GeometryCenter = TopLeft;
-                        break;
-                    case 2:
-                        Handles[i - 1].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
-                        break;
-                    case 3:
-                        Handles[i - 1].GeometryCenter = BottomRight;
-                        break;
-                    case 4:
-                        Handles[i - 1].GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
-                        break;
-                }
-            }
-        }
-
 
         /// <summary>
         /// 鼠标点击移动
@@ -550,20 +539,6 @@ namespace Lan.Shapes.Shapes
             }
         }
 
-        public override void UpdateVisual()
-        {
-            var renderContext = RenderOpen();
-            if (ShapeStyler != null)
-            {
-                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _rectangleGeometry);
-                foreach (var dragHandle in Handles)
-                {
-                    renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, dragHandle.HandleGeometry);
-                }
-            }
-            renderContext.Close();
-        }
-
         /// <summary>
         /// 选择时
         /// </summary>
@@ -572,11 +547,39 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
-        #endregion
-
-        public PointsData GetMetaData()
+        private void UpdateHandleLocation()
         {
-            return new PointsData(0, new List<Point>() { TopLeft, BottomRight });
+            for (var i = 0; i < Handles.Count + 1; i++)
+                switch (i)
+                {
+                    case 1:
+                        Handles[i - 1].GeometryCenter = TopLeft;
+                        break;
+                    case 2:
+                        Handles[i - 1].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
+                        break;
+                    case 3:
+                        Handles[i - 1].GeometryCenter = BottomRight;
+                        break;
+                    case 4:
+                        Handles[i - 1].GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
+                        break;
+                }
         }
+
+        public override void UpdateVisual()
+        {
+            var renderContext = RenderOpen();
+            if (ShapeStyler != null)
+            {
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _rectangleGeometry);
+                foreach (var dragHandle in Handles)
+                    renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, dragHandle.HandleGeometry);
+            }
+
+            renderContext.Close();
+        }
+
+        #endregion
     }
 }
