@@ -4,7 +4,7 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.1-preview01</PackageVersion>
+		  <PackageVersion>1.0.1-preview02</PackageVersion>
 		  <Description>used to draw roi</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
@@ -18,6 +18,13 @@
 			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
+
+	
+
+	<Target Name="PushPackage" AfterTargets="Pack">
+		<Exec Command="dotnet nuget push &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(AssemblyName).$(PackageVersion).nupkg&quot; -s http://192.168.3.116:8081/repository/nuget-hosted/ -k b3872fec-fe9e-3ef6-8b79-2d7a8a9b5839" />
+	</Target>
+
 	<ItemGroup>
 	  <None Remove="Icons\ellipse.png" />
 	  <None Remove="Icons\polygon.png" />
