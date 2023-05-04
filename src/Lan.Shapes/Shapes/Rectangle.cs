@@ -1,39 +1,60 @@
 ﻿#nullable enable
+
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+
+#endregion
 
 namespace Lan.Shapes.Shapes
 {
     public class Line
     {
-        public double Length => Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
+        #region fields
+
+        private Point _end;
 
         private Point _start;
 
-        public Point Start
-        {
-            get => _start;
-            set { _start = value; }
-        }
+        #endregion
 
-        private Point _end;
+        #region Propeties
 
         public Point End
         {
             get => _end;
-            set { _end = value; }
+            set => _end = value;
         }
 
-        public Point MiddlePoint => new Point((End.X + Start.X) / 2, (End.Y + Start.Y) / 2);
+        public Geometry Geometry
+        {
+            get => new LineGeometry(Start, End);
+        }
 
-        public Geometry Geometry => new LineGeometry(Start, End);
+        public double Length
+        {
+            get => Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
+        }
+
+        public Point MiddlePoint
+        {
+            get => new Point((End.X + Start.X) / 2, (End.Y + Start.Y) / 2);
+        }
+
+        public Point Start
+        {
+            get => _start;
+            set => _start = value;
+        }
+
+        #endregion
+
+        #region others
 
         public bool IsHit(Point p)
         {
@@ -45,6 +66,8 @@ namespace Lan.Shapes.Shapes
             Start = matrix.Transform(Start);
             End = matrix.Transform(End);
         }
+
+        #endregion
     }
 
     public enum EdgeType
@@ -57,48 +80,26 @@ namespace Lan.Shapes.Shapes
 
     public class RectangleEdge : Line
     {
+        #region Propeties
+
+        public EdgeType EdgeType { get; set; }
+
+        #endregion
+
+        #region Constructors
+
         public RectangleEdge(EdgeType edgeType)
         {
             EdgeType = edgeType;
         }
 
-        public EdgeType EdgeType { get; set; }
+        #endregion
     }
 
 
     public class Rectangle : ShapeVisualBase
     {
-        #region edges
-
-        private List<RectangleEdge> _edges;
-        private Dictionary<EdgeType, RectangleEdge> _edgeDict;
-
-        private RectangleEdge? _selectedEdge;
-
-
-
-
-        #endregion
-
-
-        #region constructor
-
-        public Rectangle()
-        {
-            _edges = new List<RectangleEdge>()
-            {
-                new RectangleEdge(EdgeType.Upper),
-                new RectangleEdge(EdgeType.Bottom),
-                new RectangleEdge(EdgeType.Left),
-                new RectangleEdge(EdgeType.Right),
-            };
-
-            _edgeDict = _edges.ToDictionary(x => x.EdgeType);
-        }
-
-        #endregion
-
-
+        #region Propeties
 
         /// <summary>
         /// 
@@ -108,10 +109,59 @@ namespace Lan.Shapes.Shapes
             get => RenderGeometry.Bounds;
         }
 
+        private Point _topLeft;
+
+        public Point TopLeft
+        {
+            get => _topLeft;
+            set
+            {
+                SetField(ref _topLeft, value);
+            }
+        }
+
+        private Point _bottomRight;
+
+        public Point BottomRight
+        {
+            get => _bottomRight;
+            set { SetField(ref _bottomRight, value); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        #region constructor
+
+        public Rectangle()
+        {
+            _edges = new List<RectangleEdge>
+            {
+                new RectangleEdge(EdgeType.Upper),
+                new RectangleEdge(EdgeType.Bottom),
+                new RectangleEdge(EdgeType.Left),
+                new RectangleEdge(EdgeType.Right)
+            };
+
+            _edgeDict = _edges.ToDictionary(x => x.EdgeType);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region edges
+
+        private readonly List<RectangleEdge> _edges;
+        private readonly Dictionary<EdgeType, RectangleEdge> _edgeDict;
+
+        private RectangleEdge? _selectedEdge;
+
+        #endregion
+
 
         #region mouse events handler
-
-
 
         /// <summary>
         /// move with pan
@@ -128,6 +178,14 @@ namespace Lan.Shapes.Shapes
             }
 
             OldPointForTranslate = newPoint;
+        }
+
+        /// <summary>
+        /// 未选择状态
+        /// </summary>
+        public override void OnDeselected()
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -248,6 +306,7 @@ namespace Lan.Shapes.Shapes
                     throw new ArgumentOutOfRangeException();
             }
 
+
             //CreateHandles();
             //UpdateGeometryGroup();
             //UpdateVisual();
@@ -255,7 +314,6 @@ namespace Lan.Shapes.Shapes
 
         protected override void DrawGeometryInMouseMove(Point oldPoint, Point point)
         {
-
             _edgeDict[EdgeType.Upper].Start = new Point(oldPoint.X, oldPoint.Y);
             _edgeDict[EdgeType.Upper].End = new Point(point.X, oldPoint.Y);
 
@@ -269,36 +327,6 @@ namespace Lan.Shapes.Shapes
             _edgeDict[EdgeType.Bottom].End = new Point(point.X, point.Y);
         }
 
-        protected override void UpdateGeometryGroup()
-        {
-            RenderGeometryGroup.Children.Clear();
-
-            var rect = GenerateRect();
-            RenderGeometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
-            RenderGeometryGroup.Children.Add(HandleGeometryGroup);
-        }
-
-        protected override void CreateHandles()
-        {
-            Handles.Clear();
-
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].Start, (int)DragLocation.TopLeft));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End, (int)DragLocation.BottomLeft));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start, (int)DragLocation.TopRight));
-            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End, (int)DragLocation.BottomRight));
-
-            HandleGeometryGroup ??= new GeometryGroup();
-            HandleGeometryGroup.Children.Clear();
-            HandleGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-
-            PanSensitiveArea = new CombinedGeometry(GeometryCombineMode.Exclude, RenderGeometryGroup, HandleGeometryGroup);
-        }
-
-        private Rect GenerateRect()
-        {
-            return new Rect(_edgeDict[EdgeType.Upper].Start,
-                new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
-        }
         /// <summary>
         /// 选择时
         /// </summary>
@@ -307,12 +335,48 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// 未选择状态
-        /// </summary>
-        public override void OnDeselected()
+        protected override void UpdateGeometryGroup()
         {
-            throw new NotImplementedException();
+            RenderGeometryGroup.Children.Clear();
+
+            RenderGeometryGroup.Children.Add(new RectangleGeometry(GenerateRect()));
+            RenderGeometryGroup.Children.Add(HandleGeometryGroup);
+        }
+
+        protected override void CreateHandles()
+        {
+            Handles.Clear();
+
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].Start,
+                (int)DragLocation.TopLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Left].End,
+                (int)DragLocation.BottomLeft));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].Start,
+                (int)DragLocation.TopRight));
+            Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, _edgeDict[EdgeType.Right].End,
+                (int)DragLocation.BottomRight));
+
+            HandleGeometryGroup ??= new GeometryGroup();
+            HandleGeometryGroup.Children.Clear();
+            HandleGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+
+            PanSensitiveArea =
+                new CombinedGeometry(GeometryCombineMode.Exclude, RenderGeometryGroup, HandleGeometryGroup);
+        }
+
+        private Rect GenerateRect()
+        {
+            return new Rect(_edgeDict[EdgeType.Upper].Start,
+                new Size(_edgeDict[EdgeType.Upper].Length, _edgeDict[EdgeType.Left].Length));
+        }
+
+
+        public override void UpdateVisual()
+        {
+            base.UpdateVisual();
+            TopLeft = _edgeDict[EdgeType.Left].Start;
+            BottomRight = _edgeDict[EdgeType.Bottom].End;
+
         }
 
         #endregion
