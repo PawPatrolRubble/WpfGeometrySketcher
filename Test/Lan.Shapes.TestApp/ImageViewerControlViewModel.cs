@@ -114,10 +114,10 @@ namespace Lan.Shapes.App
             get => _selectedGeometryType;
             set
             {
-                if (SetProperty(ref _selectedGeometryType, value))
-                    if (_selectedGeometryType != null)
-                        SketchBoardDataManager.SetGeometryType(
-                            _geometryTypeManager.GetGeometryTypeByName(_selectedGeometryType.Name));
+                SetProperty(ref _selectedGeometryType, value);
+                if (_selectedGeometryType != null)
+                    SketchBoardDataManager.SetGeometryType(
+                        _geometryTypeManager.GetGeometryTypeByName(_selectedGeometryType.Name));
             }
         }
 
