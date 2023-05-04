@@ -9,6 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes;
+using Lan.Shapes.Enums;
+using Lan.Shapes.Interfaces;
 
 #endregion
 

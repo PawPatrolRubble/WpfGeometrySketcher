@@ -1,4 +1,4 @@
-﻿namespace Lan.Shapes
+﻿namespace Lan.Shapes.Enums
 {
     public enum ShapeVisualState
     {

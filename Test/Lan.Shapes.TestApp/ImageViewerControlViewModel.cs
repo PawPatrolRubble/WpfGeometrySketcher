@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
+using Lan.Shapes.Interfaces;
 using Lan.SketchBoard;
 
 #endregion

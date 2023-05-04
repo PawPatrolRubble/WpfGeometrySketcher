@@ -3,11 +3,13 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
 #endregion
 
@@ -383,7 +385,7 @@ namespace Lan.Shapes.Shapes
     //}
 
 
-    public class Rectangle : ShapeVisualBase
+    public class Rectangle : ShapeVisualBase,IDataExport<PointsData>
     {
         #region fields
 
@@ -570,5 +572,10 @@ namespace Lan.Shapes.Shapes
         }
 
         #endregion
+
+        public PointsData GetMetaData()
+        {
+            return new PointsData(0, new List<Point>() { TopLeft, BottomRight });
+        }
     }
 }

@@ -1,16 +1,18 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
 #endregion
 
 namespace Lan.Shapes.Custom
 {
-    public class ThickenedLine : CustomGeometryBase
+    public class ThickenedLine : CustomGeometryBase, IDataExport<PointsData>
     {
         #region fields
 
@@ -149,16 +151,19 @@ namespace Lan.Shapes.Custom
                         var deltaX = (point - OldPointForTranslate.Value).X;
                         var deltaY = (point - OldPointForTranslate.Value).Y;
 
-                        if (deltaX <= 0 && deltaY <=0)
+                        if (deltaX <= 0 && deltaY <= 0)
                         {
                             StrokeThickness -= Math.Min(deltaX, deltaY);
-                        }else if (deltaX >= 0 && deltaY <= 0)
+                        }
+                        else if (deltaX >= 0 && deltaY <= 0)
                         {
-                            StrokeThickness += Math.Max(deltaX,deltaY);
-                        }else if (deltaX >= 0 && deltaY >= 0)
+                            StrokeThickness += Math.Max(deltaX, deltaY);
+                        }
+                        else if (deltaX >= 0 && deltaY >= 0)
                         {
                             StrokeThickness -= Math.Max(deltaX, deltaY);
-                        }else if (deltaX<=0 && deltaY>=0)
+                        }
+                        else if (deltaX <= 0 && deltaY >= 0)
                         {
                             StrokeThickness -= deltaX;
                         }
@@ -220,5 +225,10 @@ namespace Lan.Shapes.Custom
         }
 
         #endregion
+
+        public PointsData GetMetaData()
+        {
+            return new PointsData(StrokeThickness, new List<Point>() { Start, End });
+        }
     }
 }

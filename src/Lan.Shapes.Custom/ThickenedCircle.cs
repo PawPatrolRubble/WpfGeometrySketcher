@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -194,7 +195,13 @@ namespace Lan.Shapes.Custom
 
         public EllipseData GetMetaData()
         {
-            throw new NotImplementedException();
+            return new EllipseData()
+            {
+                Center = Center,
+                RadiusX = Radius,
+                RadiusY = Radius,
+                StrokeThickness = StrokeThickness
+            };
         }
 
 

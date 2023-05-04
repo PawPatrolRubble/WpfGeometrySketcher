@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 
 #endregion
@@ -76,7 +77,7 @@ namespace Lan.Shapes.Custom
 
         public PointsData GetMetaData()
         {
-            throw new NotImplementedException();
+            return new PointsData(StrokeThickness, new List<Point>() { TopLeft, BottomRight });
         }
 
         #endregion
