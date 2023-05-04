@@ -12,7 +12,7 @@ using Lan.Shapes.Interfaces;
 
 namespace Lan.Shapes.Shapes
 {
-    public class Ellipse : ShapeVisualBase,IDataExport<EllipseData>
+    public class Ellipse : ShapeVisualBase, IDataExport<EllipseData>
     {
         #region fields
 
@@ -128,16 +128,18 @@ namespace Lan.Shapes.Shapes
 
         protected override void HandleResizing(Point point)
         {
-            switch (SelectedDragHandle!.Id)
+            if (MouseDownPoint != null && OldPointForTranslate != null)
             {
-                case 2:
-                    if (MouseDownPoint != null && OldPointForTranslate != null)
+                switch (SelectedDragHandle!.Id)
+                {
+                    case 2:
                         RadiusY += OldPointForTranslate.Value.Y - point.Y;
-                    break;
-                case 1:
-                    if (MouseDownPoint != null && OldPointForTranslate != null)
+                        break;
+
+                    case 1:
                         RadiusX += point.X - OldPointForTranslate.Value.X;
-                    break;
+                        break;
+                }
             }
 
             OldPointForTranslate = point;
@@ -176,7 +178,6 @@ namespace Lan.Shapes.Shapes
             {
                 FindSelectedHandle(mousePoint);
             }
-
 
             OldPointForTranslate = mousePoint;
             MouseDownPoint ??= mousePoint;
