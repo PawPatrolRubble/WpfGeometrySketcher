@@ -544,6 +544,7 @@ namespace Lan.Shapes.Shapes
                 }
                 else
                 {
+                    IsBeingDraggedOrPanMoving = true;
                     HandleTranslate(point);
                 }
             }
