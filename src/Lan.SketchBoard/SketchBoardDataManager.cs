@@ -12,6 +12,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
+using Lan.Shapes.Enums;
+using Lan.Shapes.Interfaces;
 using Lan.Shapes.Styler;
 
 #endregion

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes;
+using Lan.Shapes.Interfaces;
 using Lan.SketchBoard;
 
 namespace Lan.ImageViewer

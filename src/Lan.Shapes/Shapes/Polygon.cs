@@ -1,83 +1,101 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Enums;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
-namespace Lan.Shapes.Shapes {
-    public class Polygon : ShapeVisualBase {
+#endregion
+
+namespace Lan.Shapes.Shapes
+{
+    public class Polygon : ShapeVisualBase, IDataExport<PointsData>
+    {
         #region fields
 
-        private Dictionary<int, Point> _points = new Dictionary<int, Point>();
-        private readonly PathGeometry _pathGeometry;
-        private readonly PathFigureCollection _pathFigureCollection;
-        private readonly PathFigure _pathFigure = new PathFigure();
         private const double Tolerance = 30;
 
         #endregion
 
-        public Polygon() {
-            _pathGeometry = new PathGeometry();
-            _pathFigureCollection = _pathGeometry.Figures;
-        }
+        #region fields
+
+        private readonly PathFigure _pathFigure = new PathFigure();
+        private readonly PathFigureCollection _pathFigureCollection;
+        private readonly PathGeometry _pathGeometry;
+
+        private readonly Dictionary<int, Point> _points = new Dictionary<int, Point>();
+
+        #endregion
+
+        #region Propeties
 
         /// <summary>
         /// 
         /// </summary>
-        public override Rect BoundsRect {
+        public override Rect BoundsRect
+        {
             get => _pathGeometry.Bounds;
         }
 
-        /// <summary>
-        /// left mouse button down event
-        /// </summary>
-        /// <param name="mousePoint"></param>
-        public override void OnMouseLeftButtonDown(Point mousePoint) {
-            OldPointForTranslate = mousePoint;
-            if (!IsGeometryRendered) {
-                //_points.Add(_points.Count, mousePoint);
-                CreateNewGeometryAndRenderIt(mousePoint);
-            }
-            else {
-                SelectedDragHandle = FindDragHandleMouseOver(mousePoint);
-            }
+        #endregion
+
+        #region Constructors
+
+        public Polygon()
+        {
+            _pathGeometry = new PathGeometry();
+            _pathFigureCollection = _pathGeometry.Figures;
         }
 
-        /// <summary>
-        /// when mouse left button up
-        /// </summary>
-        /// <param name="newPoint"></param>
-        public override void OnMouseLeftButtonUp(Point newPoint) {
-            if (_pathFigure.IsClosed) {
-                IsGeometryRendered = true;
-            }
+        #endregion
 
-            SelectedDragHandle = null;
-            IsBeingDraggedOrPanMoving = false;
+        #region implementations
+
+        public PointsData GetMetaData()
+        {
+            return new PointsData(0, new List<Point>(_points.Values));
+        }
+
+        #endregion
+
+        #region others
+
+        private void ClosePolygon()
+        {
+            _pathFigure.IsClosed = true;
+            IsGeometryRendered = true;
+            HandleGeometryGroup ??= new GeometryGroup();
+            HandleGeometryGroup?.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+        }
+
+        protected override void CreateHandles()
+        {
         }
 
 
-        private void CreateNewGeometryAndRenderIt(Point newPoint) {
-            if (_points.Count > 0) {
+        private void CreateNewGeometryAndRenderIt(Point newPoint)
+        {
+            if (_points.Count > 0)
+            {
                 //add new line geometry
                 //RenderGeometryGroup.Children.Add(new LineGeometry(_points[^1], newPoint));
 
-                if (IsTwoPointsAreClose(_points[0], newPoint, Tolerance)) {
+                if (IsTwoPointsAreClose(_points[0], newPoint, Tolerance))
                     //newPoint = _points[0];
                     //_pathFigure.Segments.Add(new LineSegment(newPoint, true));
                     ClosePolygon();
-                }
-                else {
+                else
                     _pathFigure.Segments.Add(new LineSegment(newPoint, true));
-                }
 
                 //if last point is close to first point it will close the polygon
             }
-            else {
+            else
+            {
                 _pathFigure.StartPoint = newPoint;
                 _pathFigureCollection.Add(_pathFigure);
                 RenderGeometryGroup.Children.Add(_pathGeometry);
@@ -85,7 +103,8 @@ namespace Lan.Shapes.Shapes {
 
 
             //if the geometry is closed, handle and last point will not be added
-            if (!_pathFigure.IsClosed) {
+            if (!_pathFigure.IsClosed)
+            {
                 Handles.Add(new CircleDragHandle(ShapeStyler.DragHandleSize, newPoint, _points.Count));
                 _points.Add(_points.Count, newPoint);
             }
@@ -94,71 +113,20 @@ namespace Lan.Shapes.Shapes {
             UpdateVisual();
         }
 
-
-        public override void OnMouseRightButtonUp(Point mousePosition) {
-            ClosePolygon();
+        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
+        {
         }
 
-
-        private void ClosePolygon() {
-            _pathFigure.IsClosed = true;
-            IsGeometryRendered = true;
-            HandleGeometryGroup ??= new GeometryGroup();
-            HandleGeometryGroup?.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-        }
-
-
-        private bool IsTwoPointsAreClose(Point p1, Point p2, double tolerance) {
-            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)) < tolerance;
-        }
-
-
-        /// <summary>
-        /// 鼠标点击
-        /// </summary>
-        public override void OnMouseMove(Point point, MouseButtonState buttonState) {
-            if (IsGeometryRendered) {
-                //handle pan of geometry
-                State = ShapeVisualState.MouseOver;
-                if (buttonState == MouseButtonState.Pressed) 
-                {
-                    IsBeingDraggedOrPanMoving = true;
-                    if (SelectedDragHandle != null) 
-                    {
-                        //handle resizing 
-                        HandleResizing(point);
-                    }
-                    else 
-                    {
-                        //handle translation
-                        HandleTranslate(point);
-                    }
-
-                    UpdateVisual();
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override void UpdateGeometryGroup() {
-        }
-
-        protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint) {
-        }
-
-        protected override void HandleResizing(Point point) {
-            if (SelectedDragHandle != null) {
+        protected override void HandleResizing(Point point)
+        {
+            if (SelectedDragHandle != null)
+            {
                 _points[SelectedDragHandle.Id] = point;
 
-                if (SelectedDragHandle.Id > 0) {
+                if (SelectedDragHandle.Id > 0)
                     ((LineSegment)_pathFigure.Segments[SelectedDragHandle.Id - 1]).Point = point;
-                }
-                else {
+                else
                     _pathFigure.StartPoint = point;
-                }
 
                 SelectedDragHandle.GeometryCenter = point;
 
@@ -166,25 +134,10 @@ namespace Lan.Shapes.Shapes {
             }
         }
 
-        /// <summary>
-        /// 选择时
-        /// </summary>
-        public override void OnSelected() {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 未选择状态
-        /// </summary>
-        public override void OnDeselected() {
-            throw new NotImplementedException();
-        }
-
-        protected override void CreateHandles() {
-        }
-
-        protected override void HandleTranslate(Point newPoint) {
-            if (OldPointForTranslate.HasValue) {
+        protected override void HandleTranslate(Point newPoint)
+        {
+            if (OldPointForTranslate.HasValue)
+            {
                 var deltaX = newPoint.X - OldPointForTranslate.Value.X;
                 var deltaY = newPoint.Y - OldPointForTranslate.Value.Y;
 
@@ -193,11 +146,9 @@ namespace Lan.Shapes.Shapes {
 
                 var tans = new TranslateTransform(deltaX, deltaY);
 
-                foreach (var segment in _pathFigure.Segments) {
-                    if (segment is LineSegment lineSegment) {
+                foreach (var segment in _pathFigure.Segments)
+                    if (segment is LineSegment lineSegment)
                         lineSegment.Point = matrix.Transform(lineSegment.Point);
-                    }
-                }
 
                 _pathFigure.StartPoint = matrix.Transform(_pathFigure.StartPoint);
                 Handles.ForEach(x => x.GeometryCenter = tans.Transform(x.GeometryCenter));
@@ -205,5 +156,94 @@ namespace Lan.Shapes.Shapes {
 
             OldPointForTranslate = newPoint;
         }
+
+
+        private bool IsTwoPointsAreClose(Point p1, Point p2, double tolerance)
+        {
+            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)) < tolerance;
+        }
+
+        /// <summary>
+        /// 未选择状态
+        /// </summary>
+        public override void OnDeselected()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// left mouse button down event
+        /// </summary>
+        /// <param name="mousePoint"></param>
+        public override void OnMouseLeftButtonDown(Point mousePoint)
+        {
+            OldPointForTranslate = mousePoint;
+            if (!IsGeometryRendered)
+                //_points.Add(_points.Count, mousePoint);
+                CreateNewGeometryAndRenderIt(mousePoint);
+            else
+                SelectedDragHandle = FindDragHandleMouseOver(mousePoint);
+        }
+
+        /// <summary>
+        /// when mouse left button up
+        /// </summary>
+        /// <param name="newPoint"></param>
+        public override void OnMouseLeftButtonUp(Point newPoint)
+        {
+            if (_pathFigure.IsClosed) IsGeometryRendered = true;
+
+            SelectedDragHandle = null;
+            IsBeingDraggedOrPanMoving = false;
+        }
+
+
+        /// <summary>
+        /// 鼠标点击
+        /// </summary>
+        public override void OnMouseMove(Point point, MouseButtonState buttonState)
+        {
+            if (IsGeometryRendered)
+            {
+                //handle pan of geometry
+                State = ShapeVisualState.MouseOver;
+                if (buttonState == MouseButtonState.Pressed)
+                {
+                    IsBeingDraggedOrPanMoving = true;
+                    if (SelectedDragHandle != null)
+                        //handle resizing 
+                        HandleResizing(point);
+                    else
+                        //handle translation
+                        HandleTranslate(point);
+
+                    UpdateVisual();
+                }
+            }
+        }
+
+
+        public override void OnMouseRightButtonUp(Point mousePosition)
+        {
+            ClosePolygon();
+        }
+
+        /// <summary>
+        /// 选择时
+        /// </summary>
+        public override void OnSelected()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void UpdateGeometryGroup()
+        {
+        }
+
+        #endregion
     }
 }

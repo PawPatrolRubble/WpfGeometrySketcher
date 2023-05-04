@@ -6,12 +6,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
 #endregion
 
 namespace Lan.Shapes.Shapes
 {
-    public class Ellipse : ShapeVisualBase
+    public class Ellipse : ShapeVisualBase,IDataExport<EllipseData>
     {
         #region fields
 
@@ -21,13 +22,7 @@ namespace Lan.Shapes.Shapes
         private readonly DragHandle _topDragHandle = new RectDragHandle(10, default, 2);
 
         private Point _center;
-
-
-        private double _mouseDownRadiusX;
-        private double _mouseDownRadiusY;
-
         private double _radiusX;
-
         private double _radiusY;
 
         #endregion
@@ -259,5 +254,16 @@ namespace Lan.Shapes.Shapes
         }
 
         #endregion
+
+        public EllipseData GetMetaData()
+        {
+
+            return new EllipseData()
+            {
+                Center = Center,
+                RadiusX = RadiusX,
+                RadiusY = RadiusY,
+            };
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using Lan.Shapes.Enums;
 using Lan.Shapes.Styler;
 
 namespace Lan.Shapes

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
 #endregion
 
@@ -45,7 +46,8 @@ namespace Lan.Shapes.Custom
 
         public PointsData GetMetaData()
         {
-            throw new NotImplementedException();
+            //todo get the cross points in specific order
+            return new PointsData(StrokeThickness, new List<Point>());
         }
 
         #endregion

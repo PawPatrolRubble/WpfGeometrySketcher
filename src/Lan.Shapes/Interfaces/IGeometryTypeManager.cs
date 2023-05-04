@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Lan.Shapes
+namespace Lan.Shapes.Interfaces
 {
     /// <summary>
     /// used to manage geometry types

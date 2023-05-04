@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
-using Lan.Shapes;
-using Lan.Shapes.Styler;
 
-namespace Lan.SketchBoard
+namespace Lan.Shapes.Interfaces
 {
     /// <summary>
     /// provide the functionality for managing geometry data for <see cref="SketchBoard"/>,

@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
+using Lan.Shapes.Interfaces;
 using Lan.SketchBoard;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

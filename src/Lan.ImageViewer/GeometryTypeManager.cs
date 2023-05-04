@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Lan.Shapes;
+using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 
 namespace Lan.ImageViewer
