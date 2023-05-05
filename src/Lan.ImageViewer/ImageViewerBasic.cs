@@ -23,9 +23,43 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
     [TemplatePart(Type = typeof(Button), Name = "BtnFit")]
     [TemplatePart(Type = typeof(Border), Name = "BorderContainer")]
+    [TemplatePart(Type = typeof(Line), Name = "VerticalLine")]
+    [TemplatePart(Type = typeof(Line), Name = "HorizontalLine")]
     public class ImageViewerBasic : Control
     {
         #region fields
+
+        
+
+        private readonly MatrixTransform _matrixTransform = new MatrixTransform();
+        private readonly ScaleTransform _scaleTransform = new ScaleTransform();
+        private readonly TranslateTransform _translateTransform = new TranslateTransform();
+        private readonly TransformGroup _transformGroup = new TransformGroup();
+        private Canvas? _containerCanvas;
+
+        private bool _disablePropertyChangeCallback;
+        private Grid? _gridContainer;
+        private Image? _image;
+        private bool _isImageScaledByMouseWheel;
+        private bool _isMouseFirstClick = true;
+        private Point? _lastMouseDownPoint;
+        private Point? _mousePos;
+        private TextBlock? _textBlock;
+        private Button? _fitButton;
+        private Border? _borderContainer;
+
+        private Line? _verticalLineGeometry;
+        private Line? _horizontalLineGeometry;
+        #endregion
+
+        #region Propeties
+
+        public static readonly DependencyProperty MouseDoubleClickPositionProperty = DependencyProperty.Register(
+            nameof(MouseDoubleClickPosition), typeof(Point), typeof(ImageViewerBasic), new FrameworkPropertyMetadata(default(Point))
+            {
+                DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            });
+
 
         private static readonly DependencyPropertyKey PixelWidthPropertyKey =
             DependencyProperty.RegisterReadOnly(
@@ -53,43 +87,44 @@ namespace Lan.ImageViewer
             "Scale", typeof(double), typeof(ImageViewerBasic),
             new PropertyMetadata(default(double), OnScaleChangedCallback));
 
-        private readonly MatrixTransform _matrixTransform = new MatrixTransform();
-        private readonly ScaleTransform _scaleTransform = new ScaleTransform();
-        private readonly TranslateTransform _translateTransform = new TranslateTransform();
-        private readonly TransformGroup _transformGroup = new TransformGroup();
-        private Canvas? _containerCanvas;
 
-        private bool _disablePropertyChangeCallback;
-        private Grid? _gridContainer;
-        private Image? _image;
-        private bool _isImageScaledByMouseWheel;
-        private bool _isMouseFirstClick = true;
-        private Point? _lastMouseDownPoint;
-        private Point? _mousePos;
-        private TextBlock? _textBlock;
-        private Button? _fitButton;
-        private Border? _borderContainer;
+        public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
+            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(1.0));
 
-        private Line _verticalLineGeometry = new Line()
+        public double StrokeThickness
         {
-            StrokeThickness = 1,
-            Stroke = Brushes.Red
+            get { return (double)GetValue(StrokeThicknessProperty); }
+            set { SetValue(StrokeThicknessProperty, value); }
+        }
 
-        };
-        private Line _horizontalLineGeometry = new Line()
+        public static readonly DependencyProperty CrossLineColorProperty = DependencyProperty.Register(
+            nameof(CrossLineColor), typeof(Brush), typeof(ImageViewerBasic), new PropertyMetadata(Brushes.Lime));
+
+        public Brush CrossLineColor
         {
-            StrokeThickness = 1,
-            Stroke = Brushes.Red
-        };
-        #endregion
+            get { return (Brush)GetValue(CrossLineColorProperty); }
+            set { SetValue(CrossLineColorProperty, value); }
+        }
 
-        #region Propeties
+        public static readonly DependencyProperty StrokeDashArrayProperty = DependencyProperty.Register(
+            nameof(StrokeDashArray), typeof(DoubleCollection), typeof(ImageViewerBasic), new PropertyMetadata(default(DoubleCollection)));
 
-        public static readonly DependencyProperty MouseDoubleClickPositionProperty = DependencyProperty.Register(
-            nameof(MouseDoubleClickPosition), typeof(Point), typeof(ImageViewerBasic), new FrameworkPropertyMetadata(default(Point))
-            {
-                DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-            });
+        public DoubleCollection StrokeDashArray
+        {
+            get { return (DoubleCollection)GetValue(StrokeDashArrayProperty); }
+            set { SetValue(StrokeDashArrayProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty ShowCrossLineProperty = DependencyProperty.Register(
+            nameof(ShowCrossLine), typeof(bool), typeof(ImageViewerBasic), new PropertyMetadata(true));
+
+        public bool ShowCrossLine
+        {
+            get { return (bool)GetValue(ShowCrossLineProperty); }
+            set { SetValue(ShowCrossLineProperty, value); }
+        }
+
 
         public Point MouseDoubleClickPosition
         {
@@ -154,36 +189,30 @@ namespace Lan.ImageViewer
             _textBlock ??= GetTemplateChild("TbMousePosition") as TextBlock;
             _fitButton ??= GetTemplateChild("BtnFit") as Button;
             _borderContainer ??= GetTemplateChild("BorderContainer") as Border;
+            _horizontalLineGeometry ??= GetTemplateChild("HorizontalLine") as Line;
+            _verticalLineGeometry ??= GetTemplateChild("VerticalLine") as Line;
 
             _transformGroup.Children.Add(_matrixTransform);
             _transformGroup.Children.Add(_scaleTransform);
-
-            if (!_containerCanvas.Children.Contains(_horizontalLineGeometry))
-            {
-                _containerCanvas.Children.Add(_horizontalLineGeometry);
-            }
-
-            if (!_containerCanvas.Children.Contains(_verticalLineGeometry))
-            {
-                _containerCanvas.Children.Add(_verticalLineGeometry);
-            }
 
             if (_borderContainer != null)
             {
                 _borderContainer.SizeChanged += (s, e) =>
                 {
-                    _verticalLineGeometry.X1 = _borderContainer.ActualWidth / 2;
-                    _verticalLineGeometry.Y1 = 0;
+                    if (_verticalLineGeometry != null && _horizontalLineGeometry !=null)
+                    {
+                        _verticalLineGeometry.X1 = _borderContainer.ActualWidth / 2;
+                        _verticalLineGeometry.Y1 = 0;
 
-                    _verticalLineGeometry.X2 = _borderContainer.ActualWidth / 2;
-                    _verticalLineGeometry.Y2 = _borderContainer.ActualHeight;
+                        _verticalLineGeometry.X2 = _borderContainer.ActualWidth / 2;
+                        _verticalLineGeometry.Y2 = _borderContainer.ActualHeight;
+              
+                        _horizontalLineGeometry.X1 = 0;
+                        _horizontalLineGeometry.Y1 = _borderContainer.ActualHeight / 2;
 
-
-                    _horizontalLineGeometry.X1 = 0;
-                    _horizontalLineGeometry.Y1 = _borderContainer.ActualHeight / 2;
-
-                    _horizontalLineGeometry.X2 = _borderContainer.ActualWidth;
-                    _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
+                        _horizontalLineGeometry.X2 = _borderContainer.ActualWidth;
+                        _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
+                    }
                 };
 
 

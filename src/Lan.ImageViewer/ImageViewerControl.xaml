@@ -26,6 +26,8 @@
             <system:Double x:Key="ImageWidth">24</system:Double>
             <system:Double x:Key="ImageHeight">24</system:Double>
 
+            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+
             <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
                 <Setter Property="Height" Value="35" />
                 <Setter Property="Template">
