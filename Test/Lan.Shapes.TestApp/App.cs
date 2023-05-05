@@ -43,7 +43,7 @@ namespace Lan.Shapes.App
             _serviceCollection.AddSingleton<IGeometryTypeManager, GeometryTypeManager>();
             _serviceCollection.AddSingleton<IShapeLayerManager, ShapeLayerManager>();
             _serviceCollection.AddSingleton<IImageViewerViewModel, ImageViewerControlViewModel>();
-            _serviceCollection.AddSingleton<ISketchBoardDataManager, SketchBoardDataManager>();
+            _serviceCollection.AddTransient<ISketchBoardDataManager, SketchBoardDataManager>();
 
             _serviceProvider = _serviceCollection.BuildServiceProvider();
             

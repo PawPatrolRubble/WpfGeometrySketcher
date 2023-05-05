@@ -135,7 +135,7 @@
                 FontSize="15"
                 ItemTemplate="{StaticResource GeometryTypeTemplate}"
                 ItemsSource="{Binding GeometryTypeList}"
-                Visibility="Visible">
+                Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -192,15 +192,14 @@
                     SelectedIndex="0"
                     SelectedItem="{Binding SelectedShapeLayer}" />
 
-
                 <TextBlock Margin="2" Text="Scale rate" />
 
-                <!--<TextBox
+                <TextBox
                     Height="25"
                     Margin="2"
                     VerticalContentAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />-->
+                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />
 
 
                 <!--<Button

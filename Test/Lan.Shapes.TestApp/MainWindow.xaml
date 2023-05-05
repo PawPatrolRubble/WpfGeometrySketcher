@@ -32,9 +32,10 @@
                 DataContext="{Binding Camera1}"
                 />
 
-            <!--<imageViewer:ImageViewerBasic 
+            <imageViewer:ImageViewerBasic 
+                Background="Black"
                 ImageSource="{Binding Camera1.Image}" 
-                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />-->
+                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />
 
             <!--<imageViewer:ImageViewerControl
                 Margin="5"

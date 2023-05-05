@@ -5,17 +5,29 @@
     xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard">
 
     <Style TargetType="imageViewer:ImageViewer">
+        <Setter Property="Background" Value="Black" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="imageViewer:ImageViewer">
-
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                    <Border
+                        x:Name="BorderContainer"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
                             ClipToBounds="True"
                             IsHitTestVisible="True">
+
+                            <Button
+                                x:Name="BtnFit"
+                                Canvas.Left="120"
+                                Canvas.Top="15"
+                                Width="25"
+                                Panel.ZIndex="1"
+                                Content="fit" />
 
                             <TextBlock
                                 x:Name="TbMousePosition"
@@ -25,18 +37,10 @@
                                 Background="Black"
                                 Foreground="Lime" />
 
-                            <TextBlock
-                                x:Name="TbImageSizeAndScale"
-                                Canvas.Left="10"
-                                Canvas.Top="32" />
-
-
-
                             <Grid
                                 x:Name="GridContainer"
                                 Background="Blue"
-                                ClipToBounds="True"
-                                Row="0">
+                                ClipToBounds="True">
 
                                 <!--<Grid.RenderTransform>
                                     <TransformGroup>
@@ -70,6 +74,7 @@
 
                         </Canvas>
 
+
                     </Border>
 
                 </ControlTemplate>
@@ -82,7 +87,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="imageViewer:ImageViewerBasic">
 
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                    <Border
+                        x:Name="BorderContainer"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
                             x:Name="containerCanvas"
@@ -90,6 +99,15 @@
                             ClipToBounds="True"
                             IsHitTestVisible="True">
 
+
+
+                            <Button
+                                x:Name="BtnFit"
+                                Canvas.Left="120"
+                                Canvas.Top="15"
+                                Width="25"
+                                Panel.ZIndex="1"
+                                Content="fit" />
                             <TextBlock
                                 x:Name="TbMousePosition"
                                 Canvas.Left="10"

@@ -1,5 +1,6 @@
 ﻿#region
 
+#nullable enable
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 #endregion
 
@@ -19,6 +21,8 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(Image), Name = "ImageViewer")]
     [TemplatePart(Type = typeof(Grid), Name = "GridContainer")]
     [TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
+    [TemplatePart(Type = typeof(Button), Name = "BtnFit")]
+    [TemplatePart(Type = typeof(Border), Name = "BorderContainer")]
     public class ImageViewerBasic : Control
     {
         #region fields
@@ -51,18 +55,32 @@ namespace Lan.ImageViewer
 
         private readonly MatrixTransform _matrixTransform = new MatrixTransform();
         private readonly ScaleTransform _scaleTransform = new ScaleTransform();
+        private readonly TranslateTransform _translateTransform = new TranslateTransform();
         private readonly TransformGroup _transformGroup = new TransformGroup();
-        private Canvas _containerCanvas;
+        private Canvas? _containerCanvas;
 
         private bool _disablePropertyChangeCallback;
-        private Grid _gridContainer;
-        private Image _image;
+        private Grid? _gridContainer;
+        private Image? _image;
         private bool _isImageScaledByMouseWheel;
         private bool _isMouseFirstClick = true;
         private Point? _lastMouseDownPoint;
         private Point? _mousePos;
-        private TextBlock _textBlock;
+        private TextBlock? _textBlock;
+        private Button? _fitButton;
+        private Border? _borderContainer;
 
+        private Line _verticalLineGeometry = new Line()
+        {
+            StrokeThickness = 1,
+            Stroke = Brushes.Red
+
+        };
+        private Line _horizontalLineGeometry = new Line()
+        {
+            StrokeThickness = 1,
+            Stroke = Brushes.Red
+        };
         #endregion
 
         #region Propeties
@@ -115,9 +133,9 @@ namespace Lan.ImageViewer
             matrix.ScaleAt(
                 ratio,
                 ratio,
-                (width - pixelWidth * ratio) / 2,
-                (height - pixelHeight * ratio) / 2);
-
+                0,
+                0);
+            matrix.Translate((width-pixelWidth*ratio)/2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
         }
 
@@ -129,16 +147,60 @@ namespace Lan.ImageViewer
         /// <summary>When overridden in a derived class, is invoked whenever application code or internal processes call <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.</summary>
         public override void OnApplyTemplate()
         {
-            _containerCanvas = GetTemplateChild("containerCanvas") as Canvas;
+            _containerCanvas ??= GetTemplateChild("containerCanvas") as Canvas;
             _image = GetTemplateChild("ImageViewer") as Image;
 
-            _gridContainer = GetTemplateChild("GridContainer") as Grid;
-            _textBlock = GetTemplateChild("TbMousePosition") as TextBlock;
+            _gridContainer ??= GetTemplateChild("GridContainer") as Grid;
+            _textBlock ??= GetTemplateChild("TbMousePosition") as TextBlock;
+            _fitButton ??= GetTemplateChild("BtnFit") as Button;
+            _borderContainer ??= GetTemplateChild("BorderContainer") as Border;
 
             _transformGroup.Children.Add(_matrixTransform);
             _transformGroup.Children.Add(_scaleTransform);
 
-            if (_gridContainer != null) _gridContainer.RenderTransform = _transformGroup;
+            if (!_containerCanvas.Children.Contains(_horizontalLineGeometry))
+            {
+                _containerCanvas.Children.Add(_horizontalLineGeometry);
+            }
+
+            if (!_containerCanvas.Children.Contains(_verticalLineGeometry))
+            {
+                _containerCanvas.Children.Add(_verticalLineGeometry);
+            }
+
+            if (_borderContainer != null)
+            {
+                _borderContainer.SizeChanged += (s, e) =>
+                {
+                    _verticalLineGeometry.X1 = _borderContainer.ActualWidth / 2;
+                    _verticalLineGeometry.Y1 = 0;
+
+                    _verticalLineGeometry.X2 = _borderContainer.ActualWidth / 2;
+                    _verticalLineGeometry.Y2 = _borderContainer.ActualHeight;
+
+
+                    _horizontalLineGeometry.X1 = 0;
+                    _horizontalLineGeometry.Y1 = _borderContainer.ActualHeight / 2;
+
+                    _horizontalLineGeometry.X2 = _borderContainer.ActualWidth;
+                    _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
+                };
+
+
+                if (_fitButton != null)
+                {
+                    _fitButton.Click += (s, e) =>
+                    {
+                        if (_borderContainer != null)
+                        {
+                            AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth,
+                                PixelHeight);
+                        }
+                    };
+                }
+
+                if (_gridContainer != null) _gridContainer.RenderTransform = _transformGroup;
+            }
         }
 
         private static void OnImageSourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -177,8 +239,12 @@ namespace Lan.ImageViewer
         protected override void OnMouseMove(MouseEventArgs e)
         {
             var p = e.GetPosition(_image);
+            var p1 = e.GetPosition(_borderContainer);
             var mousePositionRelativeToCanvas = e.GetPosition(_containerCanvas);
-            _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}";
+            if (_textBlock != null)
+            {
+                _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}";
+            }
 
 
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
