@@ -108,10 +108,8 @@
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid
-                                Canvas.Left="10"
-                                Canvas.Top="15"
-                                Panel.ZIndex="1"
-                                Background="Black">
+                                Margin="2,5"
+                                Panel.ZIndex="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
                                     <ColumnDefinition Width="Auto" />
@@ -137,7 +135,6 @@
 
                             <Grid
                                 x:Name="GridContainer"
-                                Background="Blue"
                                 ClipToBounds="True">
 
                                 <!--<Grid.RenderTransform>
@@ -218,7 +215,7 @@
                                 Panel.ZIndex="1"
                                 Canvas.Left="10"
                                 Canvas.Top="15"
-                                Background="Black">
+                                Background="Transparent">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
                                     <ColumnDefinition Width="Auto" />

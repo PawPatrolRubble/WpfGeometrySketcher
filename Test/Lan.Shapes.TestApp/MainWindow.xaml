@@ -24,7 +24,7 @@
 
     <Grid>
 
-        <UniformGrid Columns="1">
+        <UniformGrid Columns="3" Rows="3">
 
             <imageViewer:ImageViewerControl
                 Margin="5"

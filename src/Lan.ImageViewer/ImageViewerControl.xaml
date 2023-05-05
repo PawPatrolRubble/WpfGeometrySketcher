@@ -23,9 +23,6 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <system:Double x:Key="ImageWidth">32</system:Double>
-            <system:Double x:Key="ImageHeight">32</system:Double>
-
             <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
 
             <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
@@ -55,7 +52,7 @@
                         <Style TargetType="Button">
                             <Setter Property="Foreground" Value="White" />
                             <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderThickness" Value="4" />
+                            <Setter Property="BorderThickness" Value="2" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
@@ -68,13 +65,13 @@
 
                                             <StackPanel Orientation="Horizontal">
                                                 <Path
-                                                    Width="{StaticResource ImageWidth}"
-                                                    Height="{StaticResource ImageHeight}"
+                                                    Width="{StaticResource IconSize}"
+                                                    Height="{StaticResource IconSize}"
                                                     Margin="5"
                                                     Data="{Binding IconGeometry}"
                                                     Stretch="Uniform"
                                                     Stroke="{TemplateBinding Foreground}"
-                                                    StrokeThickness="2" />
+                                                    StrokeThickness="1" />
                                             </StackPanel>
 
                                         </Border>
