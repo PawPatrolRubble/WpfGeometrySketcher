@@ -30,7 +30,7 @@ namespace Lan.ImageViewer
         /// <summary>
         /// the image displayed
         /// </summary>
-        ImageSource Image { get; }
+        ImageSource Image { get; set; }
 
         double Scale { get; set; }
 
