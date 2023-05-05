@@ -17,6 +17,7 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(Image), Name = "ImageViewer")]
     [TemplatePart(Type = typeof(Grid), Name = "GridContainer")]
     [TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
+    [TemplatePart(Type = typeof(Button), Name = "BtnFit")]
     public class ImageViewer : ImageViewerBasic
     {
         #region fields

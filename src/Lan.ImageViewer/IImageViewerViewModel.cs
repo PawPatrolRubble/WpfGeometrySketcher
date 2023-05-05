@@ -53,6 +53,10 @@ namespace Lan.ImageViewer
         /// </summary>
         bool ShowSimpleCanvas { get; set; }
 
+        /// <summary>
+        /// use to control the visibility of tools
+        /// </summary>
+        bool ShowShapeTypes { get; set; }
         #endregion
     }
 }
