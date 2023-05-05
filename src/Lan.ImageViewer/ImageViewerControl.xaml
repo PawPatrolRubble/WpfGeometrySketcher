@@ -147,8 +147,8 @@
 
         <Grid
             Grid.Column="1"
-            Margin="5"
             Width="180"
+            Margin="5"
             Visibility="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.RowDefinitions>
