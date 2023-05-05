@@ -23,10 +23,10 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <system:Double x:Key="ImageWidth">24</system:Double>
-            <system:Double x:Key="ImageHeight">24</system:Double>
+            <system:Double x:Key="ImageWidth">32</system:Double>
+            <system:Double x:Key="ImageHeight">32</system:Double>
 
-            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"/>
+            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
 
             <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
                 <Setter Property="Height" Value="35" />
@@ -49,37 +49,49 @@
             <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
                 <Button
                     Margin="1"
-                    BorderThickness="1"
+                    Background="Transparent"
                     Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
                     CommandParameter="{Binding}">
-                    <Border
-                        x:Name="Container"
-                        Margin="1"
-                        ToolTip="{Binding Description}">
-                        <StackPanel Orientation="Horizontal">
-                            <Image
-                                Width="{StaticResource ImageWidth}"
-                                Height="{StaticResource ImageHeight}"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Source="{Binding IconData}"
-                                Stretch="Uniform" />
-                            <!--<TextBlock
-                                Width="80"
-                                Margin="5,0"
-                                VerticalAlignment="Center"
-                                Text="{Binding Name}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="Wrap" />-->
-                        </StackPanel>
-                    </Border>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderThickness" Value="4" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border
+                                            x:Name="Container"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            ToolTip="{Binding Description}">
 
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path
+                                                    Width="{StaticResource ImageWidth}"
+                                                    Height="{StaticResource ImageHeight}"
+                                                    Margin="5"
+                                                    Data="{Binding IconGeometry}"
+                                                    Stretch="Uniform"
+                                                    Stroke="{TemplateBinding Foreground}"
+                                                    StrokeThickness="2" />
+                                            </StackPanel>
+
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="Lime" />
+                                    <Setter Property="BorderBrush" Value="Lime" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                 </Button>
-                <!--<DataTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter TargetName="Container" Property="Background" Value="red" />
-                    </Trigger>
-                </DataTemplate.Triggers>-->
+
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type shapes:Rectangle}">
@@ -117,10 +129,6 @@
         </Grid.ColumnDefinitions>
 
         <Grid Background="Black">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
 
             <local:ImageViewer
                 BorderBrush="LightGray"
@@ -130,7 +138,7 @@
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
             <ItemsControl
-                Grid.Row="1"
+                Margin="2,5"
                 HorizontalAlignment="Right"
                 BorderBrush="LightGray"
                 BorderThickness="0"

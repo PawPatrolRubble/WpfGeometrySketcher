@@ -7,13 +7,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
+using Lan.Shapes.Custom;
 using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
 using Lan.SketchBoard;
 
 #endregion
@@ -33,7 +36,7 @@ namespace Lan.Shapes.App
 
         private readonly IGeometryTypeManager _geometryTypeManager;
         private readonly IShapeLayerManager _shapeLayerManager;
-
+        private ResourceDictionary _resourceDictionary;
 
         private double _scale;
 
@@ -61,6 +64,8 @@ namespace Lan.Shapes.App
             ISketchBoardDataManager sketchBoardDataManager,
             IGeometryTypeManager geometryTypeManager)
         {
+            _resourceDictionary = new ResourceDictionary();
+            _resourceDictionary.Source = new Uri("pack://application:,,,/Lan.ImageViewer;component/Geometries.xaml");
             SketchBoardDataManager = sketchBoardDataManager;
             _shapeLayerManager = shapeLayerManager;
             _geometryTypeManager = geometryTypeManager;
@@ -189,26 +194,26 @@ namespace Lan.Shapes.App
 
         private void CreateGeometryTypeList()
         {
-            var iconPngsFromResource = new Dictionary<string, string>
+            var iconPngsFromResource = new Dictionary<string, Geometry?>
             {
-                { "Ellipse", "pack://application:,,,/Lan.ImageViewer;component/Icons/ellipse.png" },
-                { "Rectangle", "pack://application:,,,/Lan.ImageViewer;component/Icons/square.png" },
-                { "Polygon", "pack://application:,,,/Lan.ImageViewer;component/Icons/polygon.png" }
+                { nameof(Ellipse), _resourceDictionary["Ellipse"] as Geometry },
+                { nameof(Rectangle), _resourceDictionary["Rectangle"] as Geometry },
+                { nameof(Polygon), _resourceDictionary["Polygon"] as Geometry },
+                { nameof(ThickenedCircle), _resourceDictionary["ThickenedCircle"] as Geometry },
+                { nameof(ThickenedCross), _resourceDictionary["ThickenedCross"] as Geometry },
+                { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
+                { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
             };
 
 
-            Func<string, ImageSource> getIconImage = iconName =>
-
+            Geometry? GetIconImage(string iconName)
             {
-                if (iconPngsFromResource.ContainsKey(iconName))
-                    return new BitmapImage(new Uri(iconPngsFromResource[iconName], UriKind.Absolute));
-
-                return CreateEmptyImageSource(16, 16);
-            };
+                return iconPngsFromResource.ContainsKey(iconName) ? iconPngsFromResource[iconName] : null;
+            }
 
 
             GeometryTypeList = new List<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
-                .Select(x => new GeometryType(x, x, getIconImage(x))));
+                .Select(x => new GeometryType(x, x, GetIconImage(x))));
         }
 
         private ImageSource ImageFromFile(string filePath)

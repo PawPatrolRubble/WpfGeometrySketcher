@@ -29,7 +29,7 @@ namespace Lan.ImageViewer
     {
         #region fields
 
-        
+
 
         private readonly MatrixTransform _matrixTransform = new MatrixTransform();
         private readonly ScaleTransform _scaleTransform = new ScaleTransform();
@@ -170,7 +170,7 @@ namespace Lan.ImageViewer
                 ratio,
                 0,
                 0);
-            matrix.Translate((width-pixelWidth*ratio)/2, (height - pixelHeight * ratio) / 2);
+            matrix.Translate((width - pixelWidth * ratio) / 2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
         }
 
@@ -199,14 +199,14 @@ namespace Lan.ImageViewer
             {
                 _borderContainer.SizeChanged += (s, e) =>
                 {
-                    if (_verticalLineGeometry != null && _horizontalLineGeometry !=null)
+                    if (_verticalLineGeometry != null && _horizontalLineGeometry != null)
                     {
                         _verticalLineGeometry.X1 = _borderContainer.ActualWidth / 2;
                         _verticalLineGeometry.Y1 = 0;
 
                         _verticalLineGeometry.X2 = _borderContainer.ActualWidth / 2;
                         _verticalLineGeometry.Y2 = _borderContainer.ActualHeight;
-              
+
                         _horizontalLineGeometry.X1 = 0;
                         _horizontalLineGeometry.Y1 = _borderContainer.ActualHeight / 2;
 
@@ -324,11 +324,13 @@ namespace Lan.ImageViewer
         {
             base.OnRenderSizeChanged(sizeInfo);
             if (ImageSource is BitmapSource bitmap && !_isImageScaledByMouseWheel)
+            {
                 AutoScaleImageToFit(
                     sizeInfo.NewSize.Width,
                     sizeInfo.NewSize.Height,
                     bitmap.PixelWidth,
                     bitmap.PixelHeight);
+            }
         }
 
         private static void OnScaleChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

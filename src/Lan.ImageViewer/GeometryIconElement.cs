@@ -22,6 +22,17 @@ namespace Lan.ImageViewer
             return (Geometry)element.GetValue(IconGeometryProperty);
         }
 
+        public static readonly DependencyProperty IconSizeProperty = DependencyProperty.RegisterAttached(
+            "IconSize", typeof(double), typeof(GeometryIconElement), new PropertyMetadata(default(double)));
 
+        public static void SetIconSize(DependencyObject element, double value)
+        {
+            element.SetValue(IconSizeProperty, value);
+        }
+
+        public static double GetIconSize(DependencyObject element)
+        {
+            return (double)element.GetValue(IconSizeProperty);
+        }
     }
 }
