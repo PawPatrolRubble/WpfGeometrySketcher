@@ -17,7 +17,6 @@
     <system:Double x:Key="IconSize">16</system:Double>
     <GridLength x:Key="TextBlockWidth">170</GridLength>
 
-    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
     <Style x:Key="IconButton" TargetType="Button">
 
         <Setter Property="Margin" Value="2" />
@@ -111,6 +110,7 @@
                             <Grid
                                 Canvas.Left="10"
                                 Canvas.Top="15"
+                                Panel.ZIndex="1"
                                 Background="Black">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
@@ -215,6 +215,7 @@
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid
+                                Panel.ZIndex="1"
                                 Canvas.Left="10"
                                 Canvas.Top="15"
                                 Background="Black">
@@ -225,14 +226,12 @@
                                 <TextBlock
                                     x:Name="TbMousePosition"
                                     VerticalAlignment="Center"
-                                    Panel.ZIndex="1"
                                     FontSize="{StaticResource FontSize}"
                                     Foreground="Lime" />
 
                                 <Button
                                     x:Name="BtnFit"
                                     Grid.Column="1"
-                                    Panel.ZIndex="1"
                                     imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
                                     imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
                                     BorderBrush="Gray"

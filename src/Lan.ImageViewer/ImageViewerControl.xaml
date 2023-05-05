@@ -49,12 +49,12 @@
             <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
                 <Button
                     Margin="1"
-                    Background="Transparent"
                     Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
                     CommandParameter="{Binding}">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Background" Value="Transparent" />
                             <Setter Property="BorderThickness" Value="4" />
                             <Setter Property="Template">
                                 <Setter.Value>
