@@ -4,6 +4,11 @@
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer"
     xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard">
 
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
+
     <Style TargetType="imageViewer:ImageViewer">
         <Setter Property="Background" Value="Black" />
         <Setter Property="Template">
@@ -20,6 +25,24 @@
                             Panel.ZIndex="3"
                             ClipToBounds="True"
                             IsHitTestVisible="True">
+
+                            <Line
+                                x:Name="HorizontalLine"
+                                Panel.ZIndex="1"
+                                Stroke="{TemplateBinding CrossLineColor}"
+                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                StrokeThickness="{TemplateBinding StrokeThickness}"
+                                Visibility="{TemplateBinding ShowCrossLine,
+                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <Line
+                                x:Name="VerticalLine"
+                                Panel.ZIndex="1"
+                                Stroke="{TemplateBinding CrossLineColor}"
+                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                StrokeThickness="{TemplateBinding StrokeThickness}"
+                                Visibility="{TemplateBinding ShowCrossLine,
+                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Button
                                 x:Name="BtnFit"
@@ -100,6 +123,23 @@
                             IsHitTestVisible="True">
 
 
+                            <Line
+                                x:Name="HorizontalLine"
+                                Panel.ZIndex="1"
+                                Stroke="{TemplateBinding CrossLineColor}"
+                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                StrokeThickness="{TemplateBinding StrokeThickness}"
+                                Visibility="{TemplateBinding ShowCrossLine,
+                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <Line
+                                x:Name="VerticalLine"
+                                Panel.ZIndex="1"
+                                Stroke="{TemplateBinding CrossLineColor}"
+                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                StrokeThickness="{TemplateBinding StrokeThickness}"
+                                Visibility="{TemplateBinding ShowCrossLine,
+                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Button
                                 x:Name="BtnFit"

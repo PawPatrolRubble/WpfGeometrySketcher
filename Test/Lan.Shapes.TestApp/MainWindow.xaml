@@ -34,6 +34,8 @@
 
             <imageViewer:ImageViewerBasic 
                 Background="Black"
+                StrokeDashArray="4 4"
+                ShowCrossLine="True"
                 ImageSource="{Binding Camera1.Image}" 
                 MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />
 

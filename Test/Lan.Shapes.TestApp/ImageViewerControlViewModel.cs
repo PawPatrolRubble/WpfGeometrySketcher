@@ -150,6 +150,11 @@ namespace Lan.Shapes.App
             set { SetProperty(ref _showSimpleCanvas, value); }
         }
 
+        /// <summary>
+        /// use to control the visibility of tools
+        /// </summary>
+        public bool ShowShapeTypes { get; set; } = true;
+
         #endregion
 
         #region others
