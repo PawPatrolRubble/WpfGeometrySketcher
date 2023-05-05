@@ -5,7 +5,7 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
-	<ItemGroup>
-      <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
+    </ItemGroup>
 </Project>

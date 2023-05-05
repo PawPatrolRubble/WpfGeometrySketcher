@@ -48,6 +48,11 @@ namespace Lan.ImageViewer
         ICommand ScaleToOriginalSizeCommand { get; }
         ICommand ScaleToFitCommand { get; }
 
+        /// <summary>
+        /// if true, it will show canvas only, geometry list will be hidden
+        /// </summary>
+        bool ShowSimpleCanvas { get; set; }
+
         #endregion
     }
 }

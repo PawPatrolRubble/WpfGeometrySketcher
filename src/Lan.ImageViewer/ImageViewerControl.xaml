@@ -84,8 +84,8 @@
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Rectangle: " />
                     <TextBlock>
-                        <Run Text="{Binding TopLeft,StringFormat='{}{0:f2};'}"></Run>
-                        <Run Text="{Binding BottomRight,StringFormat='{}{0:f2}'}"></Run>
+                        <Run Text="{Binding TopLeft, StringFormat='{}{0:f2};'}" />
+                        <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>
@@ -94,12 +94,14 @@
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="ellipse: " />
                     <TextBlock>
-                        <Run Text="{Binding Center,StringFormat='{}{0:f2};'}"></Run>
-                        <Run Text="{Binding RadiusX,StringFormat='{}{0:f2}, '}"></Run>
-                        <Run Text="{Binding RadiusY,StringFormat='{}{0:f2}'}"></Run>
+                        <Run Text="{Binding Center, StringFormat='{}{0:f2};'}" />
+                        <Run Text="{Binding RadiusX, StringFormat='{}{0:f2}, '}" />
+                        <Run Text="{Binding RadiusY, StringFormat='{}{0:f2}'}" />
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         </ResourceDictionary>
 
@@ -109,7 +111,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Grid Background="Black">
@@ -143,7 +145,11 @@
 
         </Grid>
 
-        <Grid Grid.Column="1" Margin="5">
+        <Grid
+            Grid.Column="1"
+            Margin="5"
+            Width="180"
+            Visibility="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -177,9 +183,7 @@
 
             <StackPanel>
 
-                <TextBlock
-                    Text="Shape Layer"
-                    TextWrapping="Wrap" />
+                <TextBlock Text="Shape Layer" TextWrapping="Wrap" />
 
                 <ComboBox
                     Margin="0,5"
