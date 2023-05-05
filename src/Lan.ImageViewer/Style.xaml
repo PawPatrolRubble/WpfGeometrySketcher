@@ -2,12 +2,76 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer"
-    xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard">
+    xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
+    <system:Double x:Key="FontSize">18</system:Double>
+    <system:Double x:Key="IconSize">16</system:Double>
+    <GridLength x:Key="TextBlockWidth">170</GridLength>
+
     <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
+    <Style x:Key="IconButton" TargetType="Button">
+
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path
+                                Width="{TemplateBinding imageViewer:GeometryIconElement.IconSize}"
+                                Height="{TemplateBinding imageViewer:GeometryIconElement.IconSize}"
+                                Data="{TemplateBinding imageViewer:GeometryIconElement.IconGeometry}"
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                            <ContentPresenter
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
+
+
+                    </Border>
+
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="BorderBrush" Value="Lime" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+
+
+    </Style>
 
     <Style TargetType="imageViewer:ImageViewer">
         <Setter Property="Background" Value="Black" />
@@ -44,21 +108,32 @@
                                 Visibility="{TemplateBinding ShowCrossLine,
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Button
-                                x:Name="BtnFit"
-                                Canvas.Left="120"
-                                Canvas.Top="15"
-                                Width="25"
-                                Panel.ZIndex="1"
-                                Content="fit" />
-
-                            <TextBlock
-                                x:Name="TbMousePosition"
+                            <Grid
                                 Canvas.Left="10"
                                 Canvas.Top="15"
-                                Panel.ZIndex="1"
-                                Background="Black"
-                                Foreground="Lime" />
+                                Background="Black">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    x:Name="TbMousePosition"
+                                    VerticalAlignment="Center"
+                                    Panel.ZIndex="1"
+                                    FontSize="{StaticResource FontSize}"
+                                    Foreground="Lime" />
+                                <Button
+                                    x:Name="BtnFit"
+                                    Grid.Column="1"
+                                    Panel.ZIndex="1"
+                                    imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
+                                    imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
+                                    Foreground="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2"
+                                    Style="{StaticResource IconButton}" />
+                            </Grid>
 
                             <Grid
                                 x:Name="GridContainer"
@@ -122,7 +197,6 @@
                             ClipToBounds="True"
                             IsHitTestVisible="True">
 
-
                             <Line
                                 x:Name="HorizontalLine"
                                 Panel.ZIndex="1"
@@ -131,7 +205,6 @@
                                 StrokeThickness="{TemplateBinding StrokeThickness}"
                                 Visibility="{TemplateBinding ShowCrossLine,
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
-
                             <Line
                                 x:Name="VerticalLine"
                                 Panel.ZIndex="1"
@@ -141,25 +214,34 @@
                                 Visibility="{TemplateBinding ShowCrossLine,
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Button
-                                x:Name="BtnFit"
-                                Canvas.Left="120"
-                                Canvas.Top="15"
-                                Width="25"
-                                Panel.ZIndex="1"
-                                Content="fit" />
-                            <TextBlock
-                                x:Name="TbMousePosition"
+                            <Grid
                                 Canvas.Left="10"
                                 Canvas.Top="15"
-                                Panel.ZIndex="1"
-                                Background="Black"
-                                Foreground="Lime" />
+                                Background="Black">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    x:Name="TbMousePosition"
+                                    VerticalAlignment="Center"
+                                    Panel.ZIndex="1"
+                                    FontSize="{StaticResource FontSize}"
+                                    Foreground="Lime" />
 
-                            <TextBlock
-                                x:Name="TbImageSizeAndScale"
-                                Canvas.Left="10"
-                                Canvas.Top="32" />
+                                <Button
+                                    x:Name="BtnFit"
+                                    Grid.Column="1"
+                                    Panel.ZIndex="1"
+                                    imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
+                                    imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
+                                    BorderBrush="Gray"
+                                    BorderThickness="2"
+                                    Foreground="White"
+                                    Style="{StaticResource IconButton}" />
+
+                            </Grid>
+
 
 
 
@@ -196,59 +278,5 @@
         </Setter>
     </Style>
 
-    <Style x:Key="IconButton" TargetType="Button">
-
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Padding" Value="2" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-        <Setter Property="Background" Value="LightGray" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="2">
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Path
-                                Width="24"
-                                Data="{TemplateBinding imageViewer:GeometryIconElement.IconGeometry}"
-                                Fill="Black"
-                                Stretch="Uniform" />
-                            <ContentPresenter
-                                Grid.Column="1"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                        </Grid>
-
-
-                    </Border>
-
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="DarkGray" />
-                            <Setter Property="Cursor" Value="Hand" />
-                            <Setter Property="BorderBrush" Value="Lime" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-
-            </Setter.Value>
-        </Setter>
-
-
-    </Style>
 
 </ResourceDictionary>
