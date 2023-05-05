@@ -22,6 +22,7 @@ namespace Lan.Shapes.App
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
+
         #region fields
 
         private const double ScaleIncremental = 0.1;
@@ -137,6 +138,16 @@ namespace Lan.Shapes.App
         public ICommand ZoomInCommand { get; set; }
         public ICommand ScaleToOriginalSizeCommand { get; set; }
         public ICommand ScaleToFitCommand { get; set; }
+
+        /// <summary>
+        /// if true, it will show canvas only, geometry list will be hidden
+        /// </summary>
+        private bool _showSimpleCanvas;
+        public bool ShowSimpleCanvas
+        {
+            get => _showSimpleCanvas;
+            set { SetProperty(ref _showSimpleCanvas, value); }
+        }
 
         #endregion
 
