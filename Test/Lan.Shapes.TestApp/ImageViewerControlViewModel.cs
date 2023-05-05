@@ -71,7 +71,7 @@ namespace Lan.Shapes.App
             _geometryTypeManager = geometryTypeManager;
 
             Scale = 1;
-            ShowSimpleCanvas = true;
+            ShowSimpleCanvas = false;
             CreateGeometryTypeList();
 
             //Image = CreateEmptyImageSource(1096, 1024);
