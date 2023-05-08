@@ -75,6 +75,10 @@ namespace Lan.Shapes.Custom
 
         #region implementations
 
+        /// <summary>
+        /// 输出左上，右下两个点，及stroke thickness
+        /// </summary>
+        /// <returns></returns>
         public PointsData GetMetaData()
         {
             return new PointsData(StrokeThickness, new List<Point>() { TopLeft, BottomRight });

@@ -2,6 +2,8 @@
 
 #nullable enable
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -159,11 +161,30 @@ namespace Lan.ImageViewer
 
         #endregion
 
+
+        public ImageViewerBasic()
+        {
+            SizeChanged += (s, e) =>
+            {
+                if (ImageSource is BitmapSource bitmap && !_isImageScaledByMouseWheel)
+                {
+                    AutoScaleImageToFit(
+                        e.NewSize.Width,
+                        e.NewSize.Height,
+                        bitmap.PixelWidth,
+                        bitmap.PixelHeight);
+                }
+            };
+        }
+
         #region others
+
+
 
         private void AutoScaleImageToFit(double width, double height, double pixelWidth, double pixelHeight)
         {
             var ratio = AutoScaleImageToFitRatio(width, height, pixelWidth, pixelHeight);
+
             var matrix = new Matrix();
             matrix.ScaleAt(
                 ratio,
@@ -213,6 +234,8 @@ namespace Lan.ImageViewer
                         _horizontalLineGeometry.X2 = _borderContainer.ActualWidth;
                         _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
                     }
+
+
                 };
 
 
@@ -237,6 +260,16 @@ namespace Lan.ImageViewer
             var imageViewer = (ImageViewerBasic)d;
             if (e.NewValue is BitmapSource source)
             {
+                if (imageViewer._borderContainer != null && (Math.Abs(imageViewer.PixelWidth - source.PixelWidth) > Double.Epsilon 
+                                                             || Math.Abs(imageViewer.PixelHeight - source.PixelHeight) > double.Epsilon))
+                {
+                    Console.WriteLine($"auto fit in image source change");
+                    imageViewer.AutoScaleImageToFit(
+                        imageViewer._borderContainer.ActualWidth,
+                        imageViewer._borderContainer.ActualHeight,
+                        source.PixelWidth, source.PixelHeight);
+                }
+
                 imageViewer.SetValue(PixelWidthPropertyKey, source.PixelWidth * 1.0);
                 imageViewer.SetValue(PixelHeightPropertyKey, source.PixelHeight * 1.0);
             }
@@ -323,14 +356,9 @@ namespace Lan.ImageViewer
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (ImageSource is BitmapSource bitmap && !_isImageScaledByMouseWheel)
-            {
-                AutoScaleImageToFit(
-                    sizeInfo.NewSize.Width,
-                    sizeInfo.NewSize.Height,
-                    bitmap.PixelWidth,
-                    bitmap.PixelHeight);
-            }
+   
+
+
         }
 
         private static void OnScaleChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
