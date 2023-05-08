@@ -440,6 +440,10 @@ namespace Lan.Shapes.Shapes
 
         #region Implementations
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public PointsData GetMetaData()
         {
             return new PointsData(0, new List<Point> { TopLeft, BottomRight });
