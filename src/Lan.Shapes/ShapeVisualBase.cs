@@ -27,7 +27,6 @@ namespace Lan.Shapes
         /// </summary>
         protected readonly GeometryGroup RenderGeometryGroup = new GeometryGroup();
 
-
         private bool _canMoveWithHand;
 
         private ShapeVisualState _state;
@@ -81,7 +80,20 @@ namespace Lan.Shapes
         }
 
         protected DragHandle? SelectedDragHandle { get; set; }
+        private bool _isLocked;
 
+        public bool IsLocked
+        {
+            get => _isLocked;
+            protected set
+            {
+                _isLocked = value;
+                if (_isLocked)
+                {
+                    State = ShapeVisualState.Locked;
+                }
+            }
+        }
 
         public ShapeLayer? ShapeLayer { get; set; }
 
@@ -112,6 +124,16 @@ namespace Lan.Shapes
         #endregion
 
         #region others
+
+        public virtual void Lock()
+        {
+            IsLocked = true;
+        }
+
+        public virtual void UnLock()
+        {
+            IsLocked = false;
+        }
 
         protected abstract void CreateHandles();
 

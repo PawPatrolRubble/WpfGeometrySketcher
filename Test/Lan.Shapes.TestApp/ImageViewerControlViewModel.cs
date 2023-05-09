@@ -17,7 +17,6 @@ using Lan.ImageViewer;
 using Lan.Shapes.Custom;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
-using Lan.SketchBoard;
 
 #endregion
 
@@ -25,7 +24,6 @@ namespace Lan.Shapes.App
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
-
         #region fields
 
         private const double ScaleIncremental = 0.1;
@@ -36,7 +34,7 @@ namespace Lan.Shapes.App
 
         private readonly IGeometryTypeManager _geometryTypeManager;
         private readonly IShapeLayerManager _shapeLayerManager;
-        private ResourceDictionary _resourceDictionary;
+        private readonly ResourceDictionary _resourceDictionary;
 
         private double _scale;
 
@@ -110,7 +108,9 @@ namespace Lan.Shapes.App
             set
             {
                 if (SetProperty(ref _selectedShapeLayer, value))
+                {
                     SketchBoardDataManager.SetShapeLayer(_selectedShapeLayer);
+                }
             }
         }
 
@@ -124,8 +124,10 @@ namespace Lan.Shapes.App
             {
                 SetProperty(ref _selectedGeometryType, value);
                 if (_selectedGeometryType != null)
+                {
                     SketchBoardDataManager.SetGeometryType(
                         _geometryTypeManager.GetGeometryTypeByName(_selectedGeometryType.Name));
+                }
             }
         }
 
@@ -149,10 +151,11 @@ namespace Lan.Shapes.App
         /// if true, it will show canvas only, geometry list will be hidden
         /// </summary>
         private bool _showSimpleCanvas;
+
         public bool ShowSimpleCanvas
         {
             get => _showSimpleCanvas;
-            set { SetProperty(ref _showSimpleCanvas, value); }
+            set => SetProperty(ref _showSimpleCanvas, value);
         }
 
         /// <summary>
@@ -202,7 +205,7 @@ namespace Lan.Shapes.App
                 { nameof(ThickenedCircle), _resourceDictionary["ThickenedCircle"] as Geometry },
                 { nameof(ThickenedCross), _resourceDictionary["ThickenedCross"] as Geometry },
                 { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
-                { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
+                { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry }
             };
 
 

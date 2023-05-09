@@ -20,12 +20,21 @@
 
       "Selected": {
         "FillColor": "#6bb599",
-        "StrokeColor": "#e00926",
+        "StrokeColor": "#a83232",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
+
+      "Locked": {
+        "FillColor": "#d6d4d4",
+        "StrokeColor": "#d6d4d4",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
     },
     "LayerId": 1,
     "Name": "default",
@@ -61,6 +70,14 @@
         "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
+      "Locked": {
+        "FillColor": "#d6d4d4",
+        "StrokeColor": "#a83232",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
     },
     "LayerId": 2,
     "Name": "layer2",

@@ -3,7 +3,7 @@
     public enum ShapeVisualState
     {
         Normal,
-        BeingSketched,
+        Locked,
         Selected,
         MouseOver,
     }

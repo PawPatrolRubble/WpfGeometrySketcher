@@ -22,7 +22,7 @@ namespace Lan.Shapes.Interfaces
         /// <summary>
         /// this is used to hold all shapes
         /// </summary>
-        VisualCollection VisualCollection { get; set; }
+        public VisualCollection VisualCollection { get; set; }
 
         /// <summary>
         /// get all shapes defined in canvas
@@ -40,12 +40,14 @@ namespace Lan.Shapes.Interfaces
         /// </summary>
         ShapeVisualBase? CurrentGeometry { get; set; }
 
+        ShapeVisualBase? SelectedGeometry { get; set; }
 
         /// <summary>
         /// 设置图层
         /// </summary>
         /// <param name="layer"></param>
         void SetShapeLayer(ShapeLayer layer);
+
 
         void SetGeometryType(Type type);
 
@@ -54,7 +56,7 @@ namespace Lan.Shapes.Interfaces
         /// </summary>
         ShapeLayer? CurrentShapeLayer { get; }
 
-        
+
         /// <summary>
         /// 由sketchboard 向此添加,可用于初始化时加载现有图形,
         /// </summary>
@@ -85,6 +87,13 @@ namespace Lan.Shapes.Interfaces
 
         ShapeVisualBase? GetShapeVisual(int index);
 
+        /// <summary>
+        /// add a specific geometry with specific data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TP"></typeparam>
+        /// <param name="parameter"></param>
+        void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>,new () where TP : IGeometryMetaData;
 
         /// <summary>
         /// create new geometry from mouse down position
