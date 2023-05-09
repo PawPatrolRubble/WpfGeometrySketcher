@@ -106,7 +106,10 @@ namespace Lan.Shapes.Custom
         public override void OnMouseLeftButtonDown(Point newPoint)
         {
             if (!IsGeometryRendered && Start == default)
+            {
                 Start = newPoint;
+                End = newPoint + new Vector(10,10);
+            }
             else if (End == default)
                 End = newPoint;
             else
