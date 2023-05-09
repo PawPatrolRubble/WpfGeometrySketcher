@@ -44,6 +44,11 @@ namespace Lan.Shapes.Custom
 
         #region implementations
 
+        public void FromData(PointsData data)
+        {
+            throw new NotImplementedException();
+        }
+
         public PointsData GetMetaData()
         {
             //todo get the cross points in specific order

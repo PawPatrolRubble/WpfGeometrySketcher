@@ -75,6 +75,11 @@ namespace Lan.Shapes.Custom
 
         #region implementations
 
+        public void FromData(PointsData data)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 输出左上，右下两个点，及stroke thickness
         /// </summary>

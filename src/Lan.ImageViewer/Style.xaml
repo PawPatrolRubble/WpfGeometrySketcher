@@ -127,8 +127,8 @@
                                     Panel.ZIndex="1"
                                     imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
                                     imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
-                                    Foreground="White"
-                                    BorderBrush="Gray"
+                                    Foreground="Lime"
+                                    BorderBrush="Lime"
                                     BorderThickness="2"
                                     Style="{StaticResource IconButton}" />
                             </Grid>

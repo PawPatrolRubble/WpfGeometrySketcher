@@ -56,6 +56,11 @@ namespace Lan.Shapes.Shapes
 
         #region implementations
 
+        public void FromData(PointsData data)
+        {
+            throw new NotImplementedException();
+        }
+
         public PointsData GetMetaData()
         {
             return new PointsData(0, new List<Point>(_points.Values));

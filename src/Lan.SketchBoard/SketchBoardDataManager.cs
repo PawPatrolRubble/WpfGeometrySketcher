@@ -98,6 +98,30 @@ namespace Lan.SketchBoard
             }
         }
 
+        private ShapeVisualBase? _selectedGeometry;
+
+        public ShapeVisualBase? SelectedGeometry
+        {
+            get => _selectedGeometry;
+            set
+            {
+                if (_selectedGeometry != null)
+                {
+                    _selectedGeometry.State = 
+                        _selectedGeometry.State == ShapeVisualState.Locked 
+                        ? ShapeVisualState.Locked 
+                        : ShapeVisualState.Normal;
+                }
+
+                _selectedGeometry = value;
+
+                if (_selectedGeometry != null)
+                {
+                    _selectedGeometry.State = ShapeVisualState.Selected;
+                }
+            }
+        }
+
 
         public void SetGeometryType(Type type)
         {
@@ -170,6 +194,21 @@ namespace Lan.SketchBoard
         public ShapeVisualBase? GetShapeVisual(int index)
         {
             return VisualCollection[index] as ShapeVisualBase;
+        }
+
+        /// <summary>
+        /// add a specific geometry with specific data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TP"></typeparam>
+        /// <param name="parameter"></param>
+        public void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>, new() where TP : IGeometryMetaData
+        {
+            var shape = new T();
+            shape.ShapeLayer = CurrentShapeLayer;
+            shape.FromData(parameter);
+            AddShape(shape);
+
         }
 
         /// <summary>
@@ -248,5 +287,7 @@ namespace Lan.SketchBoard
             OnPropertyChanged(propertyName);
             return true;
         }
+
+
     }
 }

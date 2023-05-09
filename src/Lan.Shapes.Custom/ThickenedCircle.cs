@@ -193,6 +193,11 @@ namespace Lan.Shapes.Custom
             }
         }
 
+        public void FromData(EllipseData data)
+        {
+            throw new NotImplementedException();
+        }
+
         public EllipseData GetMetaData()
         {
             return new EllipseData()

@@ -257,6 +257,11 @@ namespace Lan.Shapes.Shapes
 
         #endregion
 
+        public void FromData(EllipseData data)
+        {
+            throw new NotImplementedException();
+        }
+
         public EllipseData GetMetaData()
         {
 

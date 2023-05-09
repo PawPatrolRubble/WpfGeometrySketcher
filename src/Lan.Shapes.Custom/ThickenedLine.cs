@@ -226,6 +226,11 @@ namespace Lan.Shapes.Custom
 
         #endregion
 
+        public void FromData(PointsData data)
+        {
+            throw new NotImplementedException();
+        }
+
         public PointsData GetMetaData()
         {
             return new PointsData(StrokeThickness, new List<Point>() { Start, End });

@@ -3,10 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
+using Lan.SketchBoard;
 
 namespace Lan.Shapes.App
 {
@@ -28,6 +31,10 @@ namespace Lan.Shapes.App
             //Camera1 = camera;
             SelectOneShapeCommand = new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand = new RelayCommand(GetShapeInfoCommandImpl);
+            LoadFromParameterCommand = new RelayCommand(LoadFromParameterCommandImpl);
+            LockEditCommand = new RelayCommand(LockEditCommandImpl);
+            UnlockEditCommand = new RelayCommand(UnlockEditCommandImpl);
+
 
         }
 
@@ -41,6 +48,30 @@ namespace Lan.Shapes.App
         {
 
         }
+
+        public RelayCommand LoadFromParameterCommand { get; private set; }
+        private void LoadFromParameterCommandImpl()
+        {
+            Camera1.SketchBoardDataManager.LoadShape<Rectangle, PointsData>(new PointsData(1, new List<Point>()
+            {
+                new Point(10,10),
+                new Point(50,50)
+            }));
+        }
+
+        public RelayCommand LockEditCommand { get; private set; }
+        private void LockEditCommandImpl()
+        {
+            Camera1.SketchBoardDataManager.SelectedGeometry?.Lock();
+        }
+
+
+        public RelayCommand UnlockEditCommand { get; private set; }
+        private void UnlockEditCommandImpl()
+        {
+            Camera1.SketchBoardDataManager.Shapes.Last().UnLock();
+        }
+
 
         private Point _mouseDblPosition;
 
