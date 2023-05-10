@@ -189,6 +189,7 @@ namespace Lan.SketchBoard
         public void ClearAllShapes()
         {
             VisualCollection.Clear();
+            Shapes.Clear();
         }
 
         public ShapeVisualBase? GetShapeVisual(int index)
