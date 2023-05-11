@@ -49,10 +49,53 @@ namespace Lan.Shapes.Custom
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// first point horizontal top left, cw
+        /// </summary>
+        /// <returns></returns>
         public PointsData GetMetaData()
         {
-            //todo get the cross points in specific order
-            return new PointsData(StrokeThickness, new List<Point>());
+
+            var points = new List<Point>();
+            points.Add(HorizontalTopLeft);
+
+            //second
+            points.Add(new Point(VerticalTopLeft.X, HorizontalTopLeft.Y));
+
+            //third
+            points.Add(VerticalTopLeft);
+
+            //4
+            points.Add(new Point(VerticalBottomRight.X, VerticalTopLeft.Y));
+
+            //5
+            points.Add(new Point(VerticalBottomRight.X,HorizontalTopLeft.Y));
+
+            //6
+            points.Add(new Point(HorizontalBottomRight.X, HorizontalTopLeft.Y));
+
+            //7
+            points.Add(HorizontalBottomRight);
+
+            //8
+            points.Add(new Point(VerticalBottomRight.X, HorizontalBottomRight.Y));
+
+
+            //9
+            points.Add(VerticalBottomRight);
+
+            //10
+            points.Add(new Point(VerticalTopLeft.X,VerticalBottomRight.Y));
+
+            //11
+            points.Add(new Point(VerticalTopLeft.X,HorizontalBottomRight.Y));
+
+            //12
+            points.Add(new Point(HorizontalTopLeft.X, HorizontalBottomRight.Y));
+
+            return new PointsData(StrokeThickness, points);
+
         }
 
         #endregion
