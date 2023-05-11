@@ -4,7 +4,7 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.3-preview02</PackageVersion>
+		  <PackageVersion>1.0.3-preview03</PackageVersion>
 		  <Description>update geometry icon</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
