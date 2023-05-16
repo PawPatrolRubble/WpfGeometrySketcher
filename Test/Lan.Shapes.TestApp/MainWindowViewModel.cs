@@ -29,7 +29,7 @@ namespace Lan.Shapes.App
             Camera1 = serviceProvider.GetService<IImageViewerViewModel>();
             Camera2 = serviceProvider.GetService<IImageViewerViewModel>();
             _shapeLayerManager = shapeLayerManager;
-            
+
             Camera1.Layers = _shapeLayerManager.Layers;
             Camera1.SelectedShapeLayer = Camera1.Layers[0];
 
@@ -84,10 +84,7 @@ namespace Lan.Shapes.App
         public RelayCommand FilterShapeTypeCommand { get; private set; }
         private void FilterShapeTypeCommandImpl()
         {
-
-           var cross= ((ObservableCollection<GeometryType>)Camera1.GeometryTypeList)
-               .First(x=>x.Name.Equals(nameof(ThickenedCross)));
-           ((ObservableCollection<GeometryType>)Camera1.GeometryTypeList).Remove(cross);
+            Camera1.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
         }
 
         private Point _mouseDblPosition;

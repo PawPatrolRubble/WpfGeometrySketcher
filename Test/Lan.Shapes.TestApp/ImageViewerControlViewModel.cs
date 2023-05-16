@@ -68,6 +68,7 @@ namespace Lan.Shapes.App
             SketchBoardDataManager = sketchBoardDataManager;
             _shapeLayerManager = shapeLayerManager;
             _geometryTypeManager = geometryTypeManager;
+            GeometryTypeList = new ObservableCollection<GeometryType>();
 
             Scale = 1;
             ShowSimpleCanvas = false;
@@ -103,8 +104,7 @@ namespace Lan.Shapes.App
         /// </summary>
         public ObservableCollection<GeometryType> GeometryTypeList
         {
-            get => _geometryTypeList;
-            private set => SetProperty(ref _geometryTypeList, value);
+            get;
         }
 
 
@@ -180,7 +180,7 @@ namespace Lan.Shapes.App
         {
             var func = predicate.Compile();
             GeometryTypeList.Clear();
-            GeometryTypeList.AddRange(_geometryTypeList.Where(x=>func(x)));
+            GeometryTypeList.AddRange(_geometryTypeList.Where(x => func(x)));
         }
 
 
@@ -236,8 +236,11 @@ namespace Lan.Shapes.App
             }
 
 
-            GeometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
+            _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
+
+            GeometryTypeList.AddRange(_geometryTypeList);
+
         }
 
         private ImageSource ImageFromFile(string filePath)

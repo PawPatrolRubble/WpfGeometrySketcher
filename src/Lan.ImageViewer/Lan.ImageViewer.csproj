@@ -4,7 +4,7 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.3-preview08</PackageVersion>
+		  <PackageVersion>1.0.3-preview09</PackageVersion>
 		  <Description>show shape types</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
