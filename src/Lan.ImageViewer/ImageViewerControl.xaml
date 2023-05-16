@@ -23,97 +23,6 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
-
-            <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
-                <Setter Property="Height" Value="35" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ListBoxItem">
-                            <Border
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-
-                                <ContentPresenter />
-
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type local:GeometryType}">
-                <Button
-                    Margin="1"
-                    Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
-                    CommandParameter="{Binding}">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderThickness" Value="2" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border
-                                            x:Name="Container"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            ToolTip="{Binding Description}">
-
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path
-                                                    Width="{StaticResource IconSize}"
-                                                    Height="{StaticResource IconSize}"
-                                                    Margin="5"
-                                                    Data="{Binding IconGeometry}"
-                                                    Stretch="Uniform"
-                                                    Stroke="{TemplateBinding Foreground}"
-                                                    StrokeThickness="1" />
-                                            </StackPanel>
-
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="Lime" />
-                                    <Setter Property="BorderBrush" Value="Lime" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type shapes:Rectangle}">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Rectangle: " />
-                    <TextBlock>
-                        <Run Text="{Binding TopLeft, StringFormat='{}{0:f2};'}" />
-                        <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
-                    </TextBlock>
-                </StackPanel>
-            </DataTemplate>
-
-            <DataTemplate DataType="{x:Type shapes:Ellipse}">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="ellipse: " />
-                    <TextBlock>
-                        <Run Text="{Binding Center, StringFormat='{}{0:f2};'}" />
-                        <Run Text="{Binding RadiusX, StringFormat='{}{0:f2}, '}" />
-                        <Run Text="{Binding RadiusY, StringFormat='{}{0:f2}'}" />
-                    </TextBlock>
-                </StackPanel>
-            </DataTemplate>
-
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
         </ResourceDictionary>
 
     </UserControl.Resources>
@@ -135,10 +44,13 @@
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
             <ItemsControl
+                MinWidth="100"
                 Margin="2,5"
+                Padding="5"
                 HorizontalAlignment="Right"
-                BorderBrush="LightGray"
-                BorderThickness="0"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Right"
+                Panel.ZIndex="1"
                 FontSize="15"
                 ItemTemplate="{StaticResource GeometryTypeTemplate}"
                 ItemsSource="{Binding GeometryTypeList}"

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -94,10 +95,17 @@ namespace Lan.Shapes.App
         /// </summary>
         public ISketchBoardDataManager SketchBoardDataManager { get; set; }
 
+
+        private ObservableCollection<GeometryType> _geometryTypeList;
+
         /// <summary>
         /// geometry type list
         /// </summary>
-        public IEnumerable<GeometryType> GeometryTypeList { get; set; }
+        public ObservableCollection<GeometryType> GeometryTypeList
+        {
+            get => _geometryTypeList;
+            private set => SetProperty(ref _geometryTypeList, value);
+        }
 
 
         public ObservableCollection<ShapeLayer> Layers { get; set; }
@@ -147,6 +155,7 @@ namespace Lan.Shapes.App
         public ICommand ScaleToOriginalSizeCommand { get; set; }
         public ICommand ScaleToFitCommand { get; set; }
 
+
         /// <summary>
         /// if true, it will show canvas only, geometry list will be hidden
         /// </summary>
@@ -162,6 +171,18 @@ namespace Lan.Shapes.App
         /// use to control the visibility of tools
         /// </summary>
         public bool ShowShapeTypes { get; set; } = true;
+
+        /// <summary>
+        /// show shapes only confirm to the conditions provided
+        /// </summary>
+        /// <param name="predicate"></param>
+        public void FilterGeometryTypes(Expression<Func<GeometryType, bool>> predicate)
+        {
+            var func = predicate.Compile();
+            GeometryTypeList.Clear();
+            GeometryTypeList.AddRange(_geometryTypeList.Where(x=>func(x)));
+        }
+
 
         #endregion
 
@@ -215,7 +236,7 @@ namespace Lan.Shapes.App
             }
 
 
-            GeometryTypeList = new List<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
+            GeometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
         }
 

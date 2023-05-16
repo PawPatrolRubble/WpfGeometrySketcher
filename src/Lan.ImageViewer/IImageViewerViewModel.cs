@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,7 +21,7 @@ namespace Lan.ImageViewer
         /// <summary>
         /// geometry type list
         /// </summary>
-        IEnumerable<GeometryType> GeometryTypeList { get; }
+        ObservableCollection<GeometryType> GeometryTypeList { get; }
 
         /// <summary>
         ///
@@ -57,6 +58,14 @@ namespace Lan.ImageViewer
         /// use to control the visibility of tools
         /// </summary>
         bool ShowShapeTypes { get; set; }
+
+
+        /// <summary>
+        /// show shapes only confirm to the conditions provided
+        /// </summary>
+        /// <param name="predicate"></param>
+        void FilterGeometryTypes(Expression<Func<GeometryType, bool>> predicate);
+
         #endregion
     }
 }
