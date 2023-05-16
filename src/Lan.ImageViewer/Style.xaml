@@ -276,8 +276,6 @@
     </Style>
 
 
-    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" />
-
     <Style x:Key="DrawShapeTypeStyle" TargetType="ListBoxItem">
         <Setter Property="Height" Value="35" />
         <Setter Property="Template">
