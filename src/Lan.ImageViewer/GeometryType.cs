@@ -19,5 +19,7 @@ namespace Lan.ImageViewer
         public string Name { get;  }
         public string Description { get; }
         public Geometry? IconGeometry { get; set; }
+        
+
     }
 }

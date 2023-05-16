@@ -3,13 +3,16 @@ using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Custom;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 using Lan.SketchBoard;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lan.Shapes.App
 {
@@ -20,20 +23,26 @@ namespace Lan.Shapes.App
         public IImageViewerViewModel Camera2 { get; set; }
 
         public MainWindowViewModel(
-            IImageViewerViewModel camera1,
+            IServiceProvider serviceProvider,
             IShapeLayerManager shapeLayerManager)
         {
-            Camera1 = camera1;
+            Camera1 = serviceProvider.GetService<IImageViewerViewModel>();
+            Camera2 = serviceProvider.GetService<IImageViewerViewModel>();
             _shapeLayerManager = shapeLayerManager;
             
             Camera1.Layers = _shapeLayerManager.Layers;
             Camera1.SelectedShapeLayer = Camera1.Layers[0];
+
+            Camera2.Layers = _shapeLayerManager.Layers;
+            Camera2.SelectedShapeLayer = Camera2.Layers[0];
+
             //Camera1 = camera;
             SelectOneShapeCommand = new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand = new RelayCommand(GetShapeInfoCommandImpl);
             LoadFromParameterCommand = new RelayCommand(LoadFromParameterCommandImpl);
             LockEditCommand = new RelayCommand(LockEditCommandImpl);
             UnlockEditCommand = new RelayCommand(UnlockEditCommandImpl);
+            FilterShapeTypeCommand = new RelayCommand(FilterShapeTypeCommandImpl);
 
 
         }
@@ -72,6 +81,14 @@ namespace Lan.Shapes.App
             Camera1.SketchBoardDataManager.Shapes.Last().UnLock();
         }
 
+        public RelayCommand FilterShapeTypeCommand { get; private set; }
+        private void FilterShapeTypeCommandImpl()
+        {
+
+           var cross= ((ObservableCollection<GeometryType>)Camera1.GeometryTypeList)
+               .First(x=>x.Name.Equals(nameof(ThickenedCross)));
+           ((ObservableCollection<GeometryType>)Camera1.GeometryTypeList).Remove(cross);
+        }
 
         private Point _mouseDblPosition;
 

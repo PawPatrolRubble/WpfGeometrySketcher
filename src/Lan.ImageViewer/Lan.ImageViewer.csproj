@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.3-preview03</PackageVersion>
-		  <Description>update geometry icon</Description>
+		  <PackageVersion>1.0.3-preview08</PackageVersion>
+		  <Description>show shape types</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>
