@@ -259,7 +259,10 @@ namespace Lan.Shapes.Shapes
 
         public void FromData(EllipseData data)
         {
-            throw new NotImplementedException();
+            Center = data.Center;
+            RadiusX = data.RadiusX;
+            RadiusY = data.RadiusY;
+            IsGeometryRendered = true;
         }
 
         public EllipseData GetMetaData()

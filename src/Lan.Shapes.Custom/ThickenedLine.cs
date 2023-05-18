@@ -108,7 +108,7 @@ namespace Lan.Shapes.Custom
             if (!IsGeometryRendered && Start == default)
             {
                 Start = newPoint;
-                End = newPoint + new Vector(10,10);
+                End = newPoint + new Vector(10, 10);
             }
             else if (End == default)
                 End = newPoint;
@@ -231,7 +231,17 @@ namespace Lan.Shapes.Custom
 
         public void FromData(PointsData data)
         {
-            throw new NotImplementedException();
+            if (data.DataPoints.Count >= 2)
+            {
+                Start = data.DataPoints[0];
+                End = data.DataPoints[1];
+                StrokeThickness = data.StrokeThickness;
+            }
+            else
+            {
+                throw new Exception($"提供的点数据不足，必须大于2个点。");
+            }
+
         }
 
         public PointsData GetMetaData()
