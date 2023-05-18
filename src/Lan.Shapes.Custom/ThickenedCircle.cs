@@ -195,7 +195,10 @@ namespace Lan.Shapes.Custom
 
         public void FromData(EllipseData data)
         {
-            throw new NotImplementedException();
+            Center = data.Center;
+            Radius = data.RadiusX;
+            StrokeThickness = data.StrokeThickness;
+            IsGeometryRendered = true;
         }
 
         public EllipseData GetMetaData()

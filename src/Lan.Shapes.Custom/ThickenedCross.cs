@@ -43,10 +43,25 @@ namespace Lan.Shapes.Custom
         #endregion
 
         #region implementations
-
+        /// <summary>
+        /// 需要4个点
+        /// </summary>
+        /// <param name="data"></param>
         public void FromData(PointsData data)
         {
-            throw new NotImplementedException();
+            if (data.DataPoints.Count != 4)
+            {
+                throw new Exception($"{nameof(PointsData)} must have 2 elements in  DataPoints");
+            }
+
+
+            VerticalTopLeft = data.DataPoints[0];
+            VerticalBottomRight = data.DataPoints[1];
+            HorizontalTopLeft = data.DataPoints[2];
+            HorizontalBottomRight = data.DataPoints[3];
+            StrokeThickness = data.StrokeThickness;
+
+            IsGeometryRendered = true;
         }
 
 

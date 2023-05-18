@@ -93,7 +93,9 @@ namespace Lan.Shapes.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
-        void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>,new () where TP : IGeometryMetaData;
+        void LoadShape<T, TP>(TP parameter) 
+            where T : ShapeVisualBase, IDataExport<TP>,new () 
+            where TP : IGeometryMetaData;
 
         /// <summary>
         /// create new geometry from mouse down position
