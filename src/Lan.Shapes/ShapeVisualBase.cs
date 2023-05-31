@@ -57,6 +57,8 @@ namespace Lan.Shapes
 
         #region Propeties
 
+        public Guid Id { get;  }
+
         /// <summary>
         /// 
         /// </summary>
@@ -116,6 +118,11 @@ namespace Lan.Shapes
         }
 
         #endregion
+
+        protected ShapeVisualBase()
+        {
+            Id = Guid.NewGuid();
+        }
 
         #region implementations
 

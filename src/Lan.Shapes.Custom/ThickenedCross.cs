@@ -73,40 +73,42 @@ namespace Lan.Shapes.Custom
         {
 
             var points = new List<Point>();
+
+            //0
             points.Add(HorizontalTopLeft);
 
-            //second
+            //1
             points.Add(new Point(VerticalTopLeft.X, HorizontalTopLeft.Y));
 
-            //third
+            //2
             points.Add(VerticalTopLeft);
 
-            //4
+            //3
             points.Add(new Point(VerticalBottomRight.X, VerticalTopLeft.Y));
 
-            //5
+            //4
             points.Add(new Point(VerticalBottomRight.X,HorizontalTopLeft.Y));
 
-            //6
+            //5
             points.Add(new Point(HorizontalBottomRight.X, HorizontalTopLeft.Y));
 
-            //7
+            //6
             points.Add(HorizontalBottomRight);
 
-            //8
+            //7
             points.Add(new Point(VerticalBottomRight.X, HorizontalBottomRight.Y));
 
 
-            //9
+            //8
             points.Add(VerticalBottomRight);
 
-            //10
+            //9
             points.Add(new Point(VerticalTopLeft.X,VerticalBottomRight.Y));
 
-            //11
+            //10
             points.Add(new Point(VerticalTopLeft.X,HorizontalBottomRight.Y));
 
-            //12
+            //11
             points.Add(new Point(HorizontalTopLeft.X, HorizontalBottomRight.Y));
 
             return new PointsData(StrokeThickness, points);

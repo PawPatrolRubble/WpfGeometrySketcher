@@ -71,7 +71,7 @@ namespace Lan.Shapes.App
             GeometryTypeList = new ObservableCollection<GeometryType>();
 
             Scale = 1;
-            ShowSimpleCanvas = false;
+            ShowSimpleCanvas = true;
             CreateGeometryTypeList();
 
             //Image = CreateEmptyImageSource(1096, 1024);

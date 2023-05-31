@@ -29,12 +29,12 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <UniformGrid Columns="2">
+            <UniformGrid Columns="1">
 
                 <imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    DataContext="{Binding Camera1}" />
+                    DataContext="{Binding SelectedImageViewModel}" />
 
                 <!--<imageViewer:ImageViewerBasic
                 Background="Black"
@@ -43,21 +43,35 @@
                 ImageSource="{Binding Camera1.Image}"
                 MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />-->
 
-                <imageViewer:ImageViewerControl
+                <!--<imageViewer:ImageViewerControl
                 Margin="5"
                 Padding="10"
                 BorderBrush="LightGray"
                 DataContext="{Binding Camera2}"
-                BorderThickness="1" />
+                BorderThickness="1" />-->
 
             </UniformGrid>
 
-            <StackPanel Grid.Column="1">
 
-                <Button Margin="5" Command="{Binding LoadFromParameterCommand}" Content="load from parameter" />
-                <Button Margin="5" Command="{Binding LockEditCommand}" Content="lock" />
-                <Button Margin="5" Command="{Binding UnlockEditCommand}" Content="Unlock" />
-                <Button Margin="5" Command="{Binding FilterShapeTypeCommand}" Content="Filter" />
+            <StackPanel Grid.Column="1">
+                <ComboBox ItemsSource="{Binding ImageViewerViewModels}" SelectedItem="{Binding SelectedImageViewModel}" />
+
+                <Button
+                    Margin="5"
+                    Command="{Binding LoadFromParameterCommand}"
+                    Content="load from parameter" />
+                <Button
+                    Margin="5"
+                    Command="{Binding LockEditCommand}"
+                    Content="lock" />
+                <Button
+                    Margin="5"
+                    Command="{Binding UnlockEditCommand}"
+                    Content="Unlock" />
+                <Button
+                    Margin="5"
+                    Command="{Binding FilterShapeTypeCommand}"
+                    Content="Filter" />
             </StackPanel>
 
         </Grid>
