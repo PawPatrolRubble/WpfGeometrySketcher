@@ -8,11 +8,17 @@
 
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview2" />
-      <PackageReference Include="Lan.ImageViewer" Version="1.0.3-preview12" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Lan.ImageViewer\Lan.ImageViewer.csproj" />
+      <ProjectReference Include="..\..\src\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
+      <ProjectReference Include="..\..\src\Lan.Shapes\Lan.Shapes.csproj" />
+      <ProjectReference Include="..\..\src\Lan.SketchBoard\Lan.SketchBoard.csproj" />
     </ItemGroup>
 
     <ItemGroup>

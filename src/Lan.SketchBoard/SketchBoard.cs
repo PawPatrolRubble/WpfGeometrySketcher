@@ -70,7 +70,21 @@ namespace Lan.SketchBoard
             DependencyPropertyChangedEventArgs e)
         {
             if (d is SketchBoard sketchBoard && e.NewValue is ISketchBoardDataManager dataManager)
+            {
+                
+
+                var oldShapes = dataManager.Shapes;
+
                 dataManager.VisualCollection = new VisualCollection(sketchBoard);
+                if (oldShapes != null)
+                {
+
+                    foreach (var shape in oldShapes)
+                    {
+                        dataManager.AddShape(shape);
+                    }
+                }
+            }
         }
 
         #endregion

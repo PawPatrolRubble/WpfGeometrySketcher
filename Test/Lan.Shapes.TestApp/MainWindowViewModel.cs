@@ -1,18 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
+using Lan.Shapes.Custom;
+using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using Lan.Shapes.Custom;
-using Lan.Shapes.Interfaces;
-using Lan.Shapes.Shapes;
-using Lan.SketchBoard;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lan.Shapes.App
 {
@@ -43,9 +41,24 @@ namespace Lan.Shapes.App
             LockEditCommand = new RelayCommand(LockEditCommandImpl);
             UnlockEditCommand = new RelayCommand(UnlockEditCommandImpl);
             FilterShapeTypeCommand = new RelayCommand(FilterShapeTypeCommandImpl);
-
+            
+            ImageViewerViewModels.Add(Camera1);
+            ImageViewerViewModels.Add(Camera2);
 
         }
+
+
+        private IImageViewerViewModel _selectedImageViewModel;
+
+        public IImageViewerViewModel SelectedImageViewModel
+        {
+            get => _selectedImageViewModel;
+            set { SetProperty(ref _selectedImageViewModel, value); }
+        }
+
+        public ObservableCollection<IImageViewerViewModel> ImageViewerViewModels { get; set; } =
+            new ObservableCollection<IImageViewerViewModel>();
+
 
         public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
@@ -76,10 +89,10 @@ namespace Lan.Shapes.App
 
             Camera1.SketchBoardDataManager.LoadShape<ThickenedCross,PointsData>(new PointsData(10, new List<Point>()
             {
-                new Point(350,200),
-                new Point(550,400),
-                new Point(200,300),
-                new Point(550,550),
+                new Point(152,52),
+                new Point(359,463),
+                new Point(50,154),
+                new Point(461,361),
             }));
 
             Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle,EllipseData>(new EllipseData()
@@ -104,6 +117,7 @@ namespace Lan.Shapes.App
                 new Point(600,600),
                 new Point(800,800),
             }));
+            Camera1.SketchBoardDataManager.Shapes[0].Lock();
         }
 
         public RelayCommand LockEditCommand { get; private set; }

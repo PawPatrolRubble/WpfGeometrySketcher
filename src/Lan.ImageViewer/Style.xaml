@@ -2,9 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer"
+    xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes"
     xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes">
+    xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
 
     <ResourceDictionary.MergedDictionaries>
@@ -108,9 +108,7 @@
                                 Visibility="{TemplateBinding ShowCrossLine,
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Grid
-                                Margin="2,5"
-                                Panel.ZIndex="1">
+                            <Grid Margin="2,5" Panel.ZIndex="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
                                     <ColumnDefinition Width="Auto" />
@@ -128,15 +126,13 @@
                                     Panel.ZIndex="1"
                                     imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
                                     imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
-                                    Foreground="Lime"
                                     BorderBrush="Lime"
                                     BorderThickness="2"
+                                    Foreground="Lime"
                                     Style="{StaticResource IconButton}" />
                             </Grid>
 
-                            <Grid
-                                x:Name="GridContainer"
-                                ClipToBounds="True">
+                            <Grid x:Name="GridContainer" ClipToBounds="True">
 
                                 <!--<Grid.RenderTransform>
                                     <TransformGroup>
@@ -213,9 +209,9 @@
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid
-                                Panel.ZIndex="1"
                                 Canvas.Left="10"
                                 Canvas.Top="15"
+                                Panel.ZIndex="1"
                                 Background="Transparent">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
@@ -282,9 +278,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <Border
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
 
                         <ContentPresenter />
 
@@ -296,9 +292,9 @@
 
     <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type imageViewer:GeometryType}">
         <Button
-                    Margin="2"
-                    Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
-                    CommandParameter="{Binding}">
+            Margin="2"
+            Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
+            CommandParameter="{Binding}">
             <Button.Style>
                 <Style TargetType="Button">
                     <Setter Property="Foreground" Value="White" />
@@ -308,21 +304,21 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Border
-                                            x:Name="Container"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            ToolTip="{Binding Description}">
+                                    x:Name="Container"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    ToolTip="{Binding Description}">
 
                                     <StackPanel Orientation="Horizontal">
                                         <Path
-                                                    Width="{StaticResource IconSize}"
-                                                    Height="{StaticResource IconSize}"
-                                                    Margin="5"
-                                                    Data="{Binding IconGeometry}"
-                                                    Stretch="Uniform"
-                                                    Stroke="{TemplateBinding Foreground}"
-                                                    StrokeThickness="1" />
+                                            Width="{StaticResource IconSize}"
+                                            Height="{StaticResource IconSize}"
+                                            Margin="5"
+                                            Data="{Binding IconGeometry}"
+                                            Stretch="Uniform"
+                                            Stroke="{TemplateBinding Foreground}"
+                                            StrokeThickness="1" />
                                     </StackPanel>
 
                                 </Border>
@@ -346,8 +342,9 @@
         <StackPanel Orientation="Vertical">
             <TextBlock Text="Rectangle: " />
             <TextBlock>
-                        <Run Text="{Binding TopLeft, StringFormat='{}{0:f2};'}" />
-                        <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
+                <Run Text="{Binding Id, Mode=OneWay}" />
+                <Run Text="{Binding TopLeft, StringFormat='; {}{0:f2};'}" />
+                <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
             </TextBlock>
         </StackPanel>
     </DataTemplate>
@@ -356,9 +353,10 @@
         <StackPanel Orientation="Vertical">
             <TextBlock Text="ellipse: " />
             <TextBlock>
-                        <Run Text="{Binding Center, StringFormat='{}{0:f2};'}" />
-                        <Run Text="{Binding RadiusX, StringFormat='{}{0:f2}, '}" />
-                        <Run Text="{Binding RadiusY, StringFormat='{}{0:f2}'}" />
+                <Run Text="{Binding Id, Mode=OneWay}" />
+                <Run Text="{Binding Center, StringFormat='{}{0:f2};'}" />
+                <Run Text="{Binding RadiusX, StringFormat='{}{0:f2}, '}" />
+                <Run Text="{Binding RadiusY, StringFormat='{}{0:f2}'}" />
             </TextBlock>
         </StackPanel>
     </DataTemplate>

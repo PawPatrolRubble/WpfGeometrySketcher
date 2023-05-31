@@ -144,6 +144,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape)
         {
             VisualCollection.Add(shape);
+            Shapes.Add(shape);
             CurrentGeometry = shape;
         }
 
@@ -155,6 +156,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape, int index)
         {
             VisualCollection.Insert(index, shape);
+            Shapes.Insert(index,shape);
             CurrentGeometry = shape;
         }
 
@@ -188,8 +190,8 @@ namespace Lan.SketchBoard
         /// </summary>
         public void ClearAllShapes()
         {
-            VisualCollection.Clear();
-            Shapes.Clear();
+            VisualCollection?.Clear();
+            Shapes?.Clear();
         }
 
         public ShapeVisualBase? GetShapeVisual(int index)

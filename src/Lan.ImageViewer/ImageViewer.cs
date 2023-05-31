@@ -32,6 +32,8 @@ namespace Lan.ImageViewer
                 new FrameworkPropertyMetadata(typeof(ImageViewer)));
         }
 
+   
+
         #endregion
 
         #region others
