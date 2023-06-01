@@ -12,6 +12,9 @@ namespace Lan.Shapes
         public int LayerId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int MaximumThickenedShapeWidth { get; set; }
+        public int TagFontSize { get; set; }
+
 
         [JsonConverter(typeof(BrushToHexConverter))]
         public Brush TextForeground { get; set; }

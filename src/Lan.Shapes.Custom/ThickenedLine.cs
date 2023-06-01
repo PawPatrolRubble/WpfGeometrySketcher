@@ -2,11 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Lan.Shapes.Enums;
 using Lan.Shapes.Handle;
 using Lan.Shapes.Interfaces;
+using Point = System.Windows.Point;
 
 #endregion
 
@@ -16,10 +19,10 @@ namespace Lan.Shapes.Custom
     {
         #region fields
 
-        private readonly DragHandle _leftDragHandle = new RectDragHandle(10, default, 1);
+        private readonly DragHandle _leftDragHandle; //= new RectDragHandle(10, default, 1);
+        private readonly DragHandle _rightDragHandle;// = new RectDragHandle(10, default, 2);
 
         private readonly LineGeometry _lineGeometry = new LineGeometry(default, default);
-        private readonly DragHandle _rightDragHandle = new RectDragHandle(10, default, 2);
 
         private Point _end;
 
@@ -53,9 +56,11 @@ namespace Lan.Shapes.Custom
 
         #region Constructors
 
-        public ThickenedLine()
+        public ThickenedLine(ShapeLayer shapeLayer) : base(shapeLayer)
         {
             RenderGeometryGroup.Children.Add(_lineGeometry);
+            _leftDragHandle = new RectDragHandle(DragHandleSize, default, 1);
+            _rightDragHandle = new RectDragHandle(DragHandleSize, default, 2);
         }
 
         #endregion
@@ -212,19 +217,61 @@ namespace Lan.Shapes.Custom
 
         public override void UpdateVisual()
         {
+            if (DistanceResizeHandle == null || _leftDragHandle == null || _rightDragHandle == null)
+            {
+                return;
+            }
+
             if (ShapeStyler == null) return;
 
             Pen ??= ShapeStyler.SketchPen.CloneCurrentValue();
-            Pen.Brush.Opacity = 0.3;
             Pen.Thickness = StrokeThickness;
 
+
             var render = RenderOpen();
+
+
+            switch (State)
+            {
+                case ShapeVisualState.Normal:
+                    Pen.Brush = ShapeStyler.FillColor;
+                    Pen.Brush.Opacity = 0.3;
+
+                    break;
+                case ShapeVisualState.Locked:
+                    Pen.Brush = ShapeStyler.FillColor;
+
+                    break;
+                case ShapeVisualState.Selected:
+                    Pen.Brush = ShapeStyler.FillColor;
+                    Pen.Brush.Opacity = 0.8;
+                    break;
+                case ShapeVisualState.MouseOver:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             render.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
             render.DrawGeometry(DragHandleFillColor, DragHandlePen, DistanceResizeHandle.HandleGeometry);
             render.DrawGeometry(DragHandleFillColor, DragHandlePen, _leftDragHandle.HandleGeometry);
             render.DrawGeometry(DragHandleFillColor, DragHandlePen, _rightDragHandle.HandleGeometry);
 
+            var angle = GetAngleBetweenPoints(Start, End);
+
+            AddTagText(render, Start - new Vector(0, ShapeLayer.TagFontSize + StrokeThickness), angle);
             render.Close();
+        }
+
+        public static int GetAngleBetweenPoints(Point pt1, Point pt2)
+        {
+            double dx = pt2.X - pt1.X;
+            double dy = pt2.Y - pt1.Y;
+
+            int deg = Convert.ToInt32(Math.Atan2(dy, dx) * (180 / Math.PI));
+            if (deg < 0) { deg += 360; }
+
+            return deg;
         }
 
         #endregion

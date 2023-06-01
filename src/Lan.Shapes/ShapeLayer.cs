@@ -48,12 +48,14 @@ namespace Lan.Shapes
         {
             get => _shapeVisuals;
         }
-        
-        
+
+
         public int LayerId { get; }
         public string Name { get; }
         public string Description { get; }
-        
+        public int MaximumThickenedShapeWidth { get; set; }
+        public int TagFontSize { get; set; }
+
         public Brush TextForeground { get; } = Brushes.Black;
         public Brush BorderBackground { get; } = Brushes.LightBlue;
 
@@ -75,6 +77,8 @@ namespace Lan.Shapes
             LayerId = shapeLayerParameter.LayerId;
             Name = shapeLayerParameter.Name;
             Description = shapeLayerParameter.Description;
+            MaximumThickenedShapeWidth = shapeLayerParameter.MaximumThickenedShapeWidth;
+            TagFontSize = shapeLayerParameter.TagFontSize;
 
             _stylers = new Dictionary<ShapeVisualState, IShapeStyler>(shapeLayerParameter.StyleSchema.Select(x =>
                 new KeyValuePair<ShapeVisualState, IShapeStyler>(x.Key, new ShapeStyler(x.Value))));

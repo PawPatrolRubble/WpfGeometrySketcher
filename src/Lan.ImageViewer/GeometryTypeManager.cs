@@ -50,7 +50,7 @@ namespace Lan.ImageViewer
 
             foreach (var assembly in assemblies)
             {
-                var derivedTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(ShapeVisualBase)));
+                var derivedTypes = assembly.GetTypes().Where(t => typeof(ShapeVisualBase).IsAssignableFrom(t));
                 foreach (var derivedType in derivedTypes)
                 {
                     RegisterGeometryType(derivedType.Name, derivedType);

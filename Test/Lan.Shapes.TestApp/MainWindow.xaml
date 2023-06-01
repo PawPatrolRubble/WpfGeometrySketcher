@@ -72,6 +72,9 @@
                     Margin="5"
                     Command="{Binding FilterShapeTypeCommand}"
                     Content="Filter" />
+
+                <Button Content="Set Tag" Command="{Binding SetTagNameCommand}" />
+
             </StackPanel>
 
         </Grid>

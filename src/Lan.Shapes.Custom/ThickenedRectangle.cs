@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -66,7 +68,7 @@ namespace Lan.Shapes.Custom
 
         #region Constructors
 
-        public ThickenedRectangle()
+        public ThickenedRectangle(ShapeLayer shapeLayer) : base(shapeLayer)
         {
             RenderGeometryGroup.Children.Add(_middleRectangleGeometry);
         }
@@ -109,10 +111,10 @@ namespace Lan.Shapes.Custom
 
         protected override void CreateHandles()
         {
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopLeft));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.TopRight));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomLeft));
-            Handles.Add(new RectDragHandle(new Size(10, 10), default, 10, (int)DragLocation.BottomRight));
+            Handles.Add(new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), default, 10, (int)DragLocation.TopLeft));
+            Handles.Add(new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), default, 10, (int)DragLocation.TopRight));
+            Handles.Add(new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), default, 10, (int)DragLocation.BottomLeft));
+            Handles.Add(new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), default, 10, (int)DragLocation.BottomRight));
 
             _dragHandleDict = Handles.ToDictionary(x => (DragLocation)x.Id);
         }
@@ -264,6 +266,10 @@ namespace Lan.Shapes.Custom
 
         public override void UpdateVisual()
         {
+            if (DistanceResizeHandle == null)
+            {
+                return;
+            }
             var renderContext = RenderOpen();
             Pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
 
@@ -279,6 +285,7 @@ namespace Lan.Shapes.Custom
             foreach (var dragHandle in Handles)
                 renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, dragHandle.HandleGeometry);
 
+            AddTagText(renderContext, TopLeft - new Vector(0, ShapeLayer.TagFontSize + StrokeThickness));
             renderContext.Close();
         }
 

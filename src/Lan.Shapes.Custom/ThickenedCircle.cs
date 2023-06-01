@@ -29,10 +29,10 @@ namespace Lan.Shapes.Custom
 
         #region constructor
 
-        public ThickenedCircle()
+        public ThickenedCircle(ShapeLayer shapeLayer) : base(shapeLayer)
         {
             RenderGeometryGroup.Children.Add(_middleEllipseGeometry);
-            _resizeHandle = new RectDragHandle(10, Center + new Vector(Radius, 0), 1);
+            _resizeHandle = new RectDragHandle(DragHandleSize, Center + new Vector(Radius, 0), 1);
         }
 
         #endregion
@@ -162,6 +162,11 @@ namespace Lan.Shapes.Custom
 
         public override void UpdateVisual()
         {
+            if (_resizeHandle == null || DistanceResizeHandle == null)
+            {
+                return;
+            }
+
             var renderContext = RenderOpen();
             Pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
 
@@ -173,9 +178,14 @@ namespace Lan.Shapes.Custom
             }
 
 
-            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, _resizeHandle.HandleGeometry);
-            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen,
+            renderContext.DrawGeometry(DragHandleFillColor,
+                DragHandlePen,
+                _resizeHandle.HandleGeometry);
+
+            renderContext.DrawGeometry(DragHandleFillColor,
+                DragHandlePen,
                 DistanceResizeHandle.HandleGeometry);
+            AddTagText(renderContext, Center);
 
             renderContext.Close();
         }

@@ -28,6 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="1.bmp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="ShapeLayers.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>

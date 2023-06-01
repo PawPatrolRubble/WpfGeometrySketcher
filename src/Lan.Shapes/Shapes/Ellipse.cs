@@ -2,6 +2,7 @@
 
 #nullable enable
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,8 +19,8 @@ namespace Lan.Shapes.Shapes
 
         private readonly EllipseGeometry _ellipseGeometry = new EllipseGeometry(default);
 
-        private readonly DragHandle _rightDragHandle = new RectDragHandle(10, default, 1);
-        private readonly DragHandle _topDragHandle = new RectDragHandle(10, default, 2);
+        private DragHandle _rightDragHandle; //= new RectDragHandle(10, default, 1);
+        private DragHandle _topDragHandle;// = new RectDragHandle(10, default, 2);
 
         private Point _center;
         private double _radiusX;
@@ -72,9 +73,11 @@ namespace Lan.Shapes.Shapes
 
         #region Constructors
 
-        public Ellipse()
+        public Ellipse(ShapeLayer shapeLayer) : base(shapeLayer)
         {
             RenderGeometryGroup.Children.Add(_ellipseGeometry);
+            _rightDragHandle = new RectDragHandle(DragHandleSize, default, 1);
+            _topDragHandle = new RectDragHandle(DragHandleSize, default, 2);
         }
 
         #endregion
@@ -243,12 +246,19 @@ namespace Lan.Shapes.Shapes
 
         public override void UpdateVisual()
         {
+
+
+
+
             var renderContext = RenderOpen();
-            if (ShapeStyler != null)
+            if (ShapeStyler != null && _rightDragHandle != null && _topDragHandle != null)
             {
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen,
                     _rightDragHandle.HandleGeometry);
+
+                AddTagText(renderContext, Center);
+
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _topDragHandle.HandleGeometry);
             }
 
