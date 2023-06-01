@@ -13,15 +13,17 @@ namespace Lan.Shapes.Custom
     {
         #region fields
 
-        protected const double MaxStrokeThickness = 50;
+        protected  double MaxStrokeThickness { get; private set; } 
 
         #endregion
 
         #region fields
 
-        protected readonly DragHandle DistanceResizeHandle = new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
+        protected readonly DragHandle
+            DistanceResizeHandle; //= new RectDragHandle(new Size(10, 10), new Point(), 10, 99);
+
         protected readonly SolidColorBrush DragHandleFillColor = Brushes.Aquamarine;
-        protected readonly Pen DragHandlePen = new Pen(Brushes.Red, 1);
+        protected readonly Pen DragHandlePen; // = new Pen(Brushes.Red, 1);
         private double _strokeThickness = 15;
         protected Pen? Pen;
 
@@ -43,11 +45,25 @@ namespace Lan.Shapes.Custom
                 _strokeThickness = Math.Min(MaxStrokeThickness, _strokeThickness);
                 _strokeThickness = Math.Max(0, _strokeThickness);
 
-                if (Pen != null) Pen.Thickness = StrokeThickness;
+                if (Pen != null)
+                {
+                    Pen.Thickness = StrokeThickness;
+                }
 
                 //update handle position, when stroke thickness changes
                 OnStrokeThicknessChanges(_strokeThickness);
             }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public CustomGeometryBase(ShapeLayer shapeLayer) : base(shapeLayer)
+        {
+            DistanceResizeHandle = new RectDragHandle(new Size(DragHandleSize, DragHandleSize), new Point(), 10, 99);
+            DragHandlePen = ShapeStyler.SketchPen;
+            MaxStrokeThickness = shapeLayer.MaximumThickenedShapeWidth;
         }
 
         #endregion
@@ -75,7 +91,6 @@ namespace Lan.Shapes.Custom
         {
             throw new NotImplementedException();
         }
-
 
 
         /// <summary>

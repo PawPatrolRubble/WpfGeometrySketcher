@@ -235,7 +235,10 @@ namespace Lan.ImageViewer
                         _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
                     }
 
-
+                    if (PixelHeight != 0 && PixelWidth != 0)
+                    {
+                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth, PixelHeight);
+                    }
                 };
 
 
@@ -258,21 +261,33 @@ namespace Lan.ImageViewer
         private static void OnImageSourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var imageViewer = (ImageViewerBasic)d;
+            double pixelWidth = 0;
+            double pixelHeight = 0;
+
             if (e.NewValue is BitmapSource source)
             {
-                if (imageViewer._borderContainer != null && (Math.Abs(imageViewer.PixelWidth - source.PixelWidth) > Double.Epsilon 
-                                                             || Math.Abs(imageViewer.PixelHeight - source.PixelHeight) > double.Epsilon))
-                {
-                    Console.WriteLine($"auto fit in image source change");
-                    imageViewer.AutoScaleImageToFit(
-                        imageViewer._borderContainer.ActualWidth,
-                        imageViewer._borderContainer.ActualHeight,
-                        source.PixelWidth, source.PixelHeight);
-                }
-
-                imageViewer.SetValue(PixelWidthPropertyKey, source.PixelWidth * 1.0);
-                imageViewer.SetValue(PixelHeightPropertyKey, source.PixelHeight * 1.0);
+                pixelWidth = source.Width;
+                pixelHeight = source.Height;
             }
+
+            if (e.NewValue is DrawingImage drawingImage)
+            {
+                pixelWidth = drawingImage.Width;
+                pixelHeight = drawingImage.Height;
+            }
+
+            if (imageViewer._borderContainer != null && (Math.Abs(imageViewer.PixelWidth - pixelWidth) > Double.Epsilon
+                                                         || Math.Abs(imageViewer.PixelHeight - pixelHeight) > double.Epsilon))
+            {
+                Console.WriteLine($"auto fit in image source change");
+                imageViewer.AutoScaleImageToFit(
+                    imageViewer._borderContainer.ActualWidth,
+                    imageViewer._borderContainer.ActualHeight,
+                    pixelWidth, pixelHeight);
+            }
+
+            imageViewer.SetValue(PixelWidthPropertyKey, pixelWidth * 1.0);
+            imageViewer.SetValue(PixelHeightPropertyKey, pixelHeight * 1.0);
         }
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.UIElement.MouseLeftButtonDown" /> routed event is raised on this element. Implement this method to add class handling for this event.</summary>
@@ -356,7 +371,7 @@ namespace Lan.ImageViewer
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-   
+
 
 
         }

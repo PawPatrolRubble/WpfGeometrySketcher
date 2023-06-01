@@ -23,6 +23,10 @@ namespace Lan.Shapes.App
             //initialize shape layer data
             _serviceProvider.GetService<IShapeLayerManager>().ReadShapeLayers("ShapeLayers.json");
             _serviceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
+
+            var currentShapeLayer = _serviceProvider.GetRequiredService<IShapeLayerManager>().Layers[0];
+            var shape = new ThickenedCircle(currentShapeLayer);
+
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }   
@@ -36,7 +40,6 @@ namespace Lan.Shapes.App
 
             //_serviceCollection.AddSingleton(config);
 
-            var shape = new ThickenedCircle();
 
             _serviceCollection.AddSingleton<MainWindowViewModel>();
             _serviceCollection.AddSingleton<MainWindow>();

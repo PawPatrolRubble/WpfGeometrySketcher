@@ -75,7 +75,7 @@ namespace Lan.Shapes.App
             CreateGeometryTypeList();
 
             //Image = CreateEmptyImageSource(1096, 1024);
-            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "roi.png"));
+            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "1.bmp"));
 
             ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });
 

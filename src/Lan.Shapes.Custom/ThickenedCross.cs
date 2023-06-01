@@ -17,14 +17,12 @@ namespace Lan.Shapes.Custom
     {
         #region fields
 
-        private readonly CombinedGeometry _combinedGeometry;
-        private readonly RectangleGeometry _hRectangleGeometry = new RectangleGeometry();
-
         private readonly bool _isSquare;
+        private readonly CombinedGeometry? _combinedGeometry;
+        private readonly RectangleGeometry _hRectangleGeometry = new RectangleGeometry();
         private readonly RectangleGeometry _vRectangleGeometry = new RectangleGeometry();
+
         private Point _centerPoint;
-
-
         private Dictionary<DragLocations, DragHandle> _dragHandles = new Dictionary<DragLocations, DragHandle>();
         private Point _horizontalTopLeft;
         private Point _verticalBottomRight;
@@ -34,247 +32,10 @@ namespace Lan.Shapes.Custom
 
         #region Propeties
 
-
         public override Geometry RenderGeometry
         {
             get => _combinedGeometry;
         }
-
-        #endregion
-
-        #region implementations
-        /// <summary>
-        /// 需要4个点
-        /// </summary>
-        /// <param name="data"></param>
-        public void FromData(PointsData data)
-        {
-            if (data.DataPoints.Count != 4)
-            {
-                throw new Exception($"{nameof(PointsData)} must have 2 elements in  DataPoints");
-            }
-
-
-            VerticalTopLeft = data.DataPoints[0];
-            VerticalBottomRight = data.DataPoints[1];
-            HorizontalTopLeft = data.DataPoints[2];
-            HorizontalBottomRight = data.DataPoints[3];
-            StrokeThickness = data.StrokeThickness;
-
-            IsGeometryRendered = true;
-        }
-
-
-        /// <summary>
-        /// first point horizontal top left, cw
-        /// </summary>
-        /// <returns></returns>
-        public PointsData GetMetaData()
-        {
-
-            var points = new List<Point>();
-
-            //0
-            points.Add(HorizontalTopLeft);
-
-            //1
-            points.Add(new Point(VerticalTopLeft.X, HorizontalTopLeft.Y));
-
-            //2
-            points.Add(VerticalTopLeft);
-
-            //3
-            points.Add(new Point(VerticalBottomRight.X, VerticalTopLeft.Y));
-
-            //4
-            points.Add(new Point(VerticalBottomRight.X,HorizontalTopLeft.Y));
-
-            //5
-            points.Add(new Point(HorizontalBottomRight.X, HorizontalTopLeft.Y));
-
-            //6
-            points.Add(HorizontalBottomRight);
-
-            //7
-            points.Add(new Point(VerticalBottomRight.X, HorizontalBottomRight.Y));
-
-
-            //8
-            points.Add(VerticalBottomRight);
-
-            //9
-            points.Add(new Point(VerticalTopLeft.X,VerticalBottomRight.Y));
-
-            //10
-            points.Add(new Point(VerticalTopLeft.X,HorizontalBottomRight.Y));
-
-            //11
-            points.Add(new Point(HorizontalTopLeft.X, HorizontalBottomRight.Y));
-
-            return new PointsData(StrokeThickness, points);
-
-        }
-
-        #endregion
-
-        #region others
-
-        protected override void OnStrokeThicknessChanges(double strokeThickness)
-        {
-            _dragHandles[DragLocations.ResizeHandle].GeometryCenter = GetResizeHandleLocation();
-        }
-
-        protected override void CreateHandles()
-        {
-            if (Handles.Count == 0)
-            {
-                Handles.Add(new RectDragHandle(10, _hRectangleGeometry.Rect.Location, (int)DragLocations.HTopLeft));
-                Handles.Add(new RectDragHandle(10, _hRectangleGeometry.Rect.BottomRight,
-                    (int)DragLocations.HBottomRight));
-
-                Handles.Add(new RectDragHandle(10, _vRectangleGeometry.Rect.BottomRight,
-                    (int)DragLocations.VBottomRight));
-                Handles.Add(new RectDragHandle(10, _vRectangleGeometry.Rect.TopLeft, (int)DragLocations.VTopLeft));
-
-                Handles.Add(new RectDragHandle(10, GetResizeHandleLocation(), (int)DragLocations.ResizeHandle));
-
-                _dragHandles = Handles.ToDictionary(x => (DragLocations)x.Id);
-
-                RenderGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-            }
-        }
-
-        private Point GetResizeHandleLocation()
-        {
-            return _vRectangleGeometry.Rect.Location +
-                   new Vector(_vRectangleGeometry.Rect.Width / 2, -StrokeThickness / 2);
-        }
-
-
-        protected override void HandleTranslate(Point newPoint)
-        {
-            if (OldPointForTranslate.HasValue)
-            {
-                var offset = newPoint - OldPointForTranslate.Value;
-                VerticalTopLeft += offset;
-                VerticalBottomRight += offset;
-
-                HorizontalBottomRight += offset;
-                HorizontalTopLeft += offset;
-
-                UpdateHandleLocation();
-                UpdateVisual();
-                OldPointForTranslate = newPoint;
-            }
-        }
-
-
-        /// <summary>
-        ///     left mouse button down event
-        /// </summary>
-        /// <param name="mousePoint"></param>
-        public override void OnMouseLeftButtonDown(Point mousePoint)
-        {
-            if (!IsGeometryRendered)
-                VerticalTopLeft = mousePoint;
-            else
-                FindSelectedHandle(mousePoint);
-            OldPointForTranslate = mousePoint;
-        }
-
-
-        /// <summary>
-        ///     鼠标点击移动
-        /// </summary>
-        public override void OnMouseMove(Point point, MouseButtonState buttonState)
-        {
-            if (buttonState == MouseButtonState.Pressed)
-            {
-                if (!IsGeometryRendered)
-                {
-                    VerticalBottomRight = point;
-                    UpdateVisual();
-                }
-                else if (SelectedDragHandle != null)
-                {
-                    IsBeingDraggedOrPanMoving = true;
-
-                    switch ((DragLocations)SelectedDragHandle.Id)
-                    {
-                        case DragLocations.VTopLeft:
-                            VerticalTopLeft = point;
-                            break;
-                        case DragLocations.VBottomRight:
-                            VerticalBottomRight = point;
-                            break;
-                        case DragLocations.HTopLeft:
-
-                            HorizontalTopLeft = point;
-
-                            break;
-                        case DragLocations.HBottomRight:
-
-                            HorizontalBottomRight = point;
-                            break;
-                        case DragLocations.ResizeHandle:
-
-                            if (OldPointForTranslate != null)
-                            {
-                                var delta = point - OldPointForTranslate.Value;
-                                StrokeThickness += -delta.Y;
-                                OldPointForTranslate = point;
-                            }
-
-                            break;
-                    }
-
-                    UpdateHandleLocation();
-                    UpdateVisual();
-                }
-                else
-                {
-                    Mouse.SetCursor(Cursors.Hand);
-                    HandleTranslate(point);
-                }
-            }
-        }
-
-
-        public override void UpdateVisual()
-        {
-            var renderContext = RenderOpen();
-
-            Pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
-
-            if (ShapeStyler != null && Pen != null)
-            {
-                Pen.Brush.Opacity = 0.5;
-                Pen.Thickness = StrokeThickness;
-                renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
-            }
-
-            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, RenderGeometryGroup);
-            renderContext.Close();
-        }
-
-        private enum DragLocations
-        {
-            None = 0,
-            VTopLeft,
-            VTopRight,
-            VBottomLeft,
-            VBottomRight,
-            HTopLeft,
-            HTopRight,
-            HBottomLeft,
-            HBottomRight,
-            ResizeHandle
-        }
-
-        #endregion
-
-
-        #region properties
 
         private Point CenterPoint
         {
@@ -341,61 +102,20 @@ namespace Lan.Shapes.Custom
             }
         }
 
-        #endregion
-
-
-        #region constructor
-
-        public ThickenedCross(bool enableHandleGeneration, bool isSquare)
-        {
-            _isSquare = isSquare;
-            _combinedGeometry =
-                new CombinedGeometry(GeometryCombineMode.Union, _hRectangleGeometry, _vRectangleGeometry);
-        }
-
-        public ThickenedCross() : this(true, false)
-        {
-        }
 
         #endregion
 
+        #region Constructors
+
+        public ThickenedCross(ShapeLayer shapeLayer) : base(shapeLayer)
+        {
+            _combinedGeometry = new CombinedGeometry(_vRectangleGeometry, _hRectangleGeometry);
+
+        }
+
+        #endregion
 
         #region local methods
-
-
-
-        private void UpdateCenter()
-        {
-            //update center point
-            CenterPoint = new Point(
-                (_vRectangleGeometry.Rect.TopLeft.X + _vRectangleGeometry.Rect.BottomRight.X) / 2,
-                (_vRectangleGeometry.Rect.TopLeft.Y + _vRectangleGeometry.Rect.BottomRight.Y) / 2);
-        }
-
-
-        /// <summary>
-        ///     update horizontal top left and bottom right when center changes
-        ///     as it must be symmetric to the center
-        /// </summary>
-        private void UpdateHorizontalGeometryCornerPoints()
-        {
-            //get width and height of horizontal geometry
-            var width = _hRectangleGeometry.Rect.Width / 2;
-            var height = _hRectangleGeometry.Rect.Height / 2;
-
-            if (!IsGeometryRendered)
-            {
-                width = _vRectangleGeometry.Rect.Height / 2;
-                height = _vRectangleGeometry.Rect.Width / 2;
-            }
-
-
-            HorizontalTopLeft = CenterPoint -
-                                new Vector(width, height);
-            HorizontalBottomRight = CenterPoint +
-                                    new Vector(width, height);
-        }
-
 
         private void CreateGeometry(Point topLeft)
         {
@@ -467,6 +187,15 @@ namespace Lan.Shapes.Custom
             UpdateHandleLocation();
         }
 
+
+        private void UpdateCenter()
+        {
+            //update center point
+            CenterPoint = new Point(
+                (_vRectangleGeometry.Rect.TopLeft.X + _vRectangleGeometry.Rect.BottomRight.X) / 2,
+                (_vRectangleGeometry.Rect.TopLeft.Y + _vRectangleGeometry.Rect.BottomRight.Y) / 2);
+        }
+
         private void UpdateHandleLocation()
         {
             if (Handles.Count > 0)
@@ -490,7 +219,33 @@ namespace Lan.Shapes.Custom
             }
 
             if (!IsGeometryRendered)
+            {
                 HorizontalBottomRight = VerticalBottomRight + new Vector(15, -_vRectangleGeometry.Rect.Width);
+            }
+        }
+
+
+        /// <summary>
+        ///     update horizontal top left and bottom right when center changes
+        ///     as it must be symmetric to the center
+        /// </summary>
+        private void UpdateHorizontalGeometryCornerPoints()
+        {
+            //get width and height of horizontal geometry
+            var width = _hRectangleGeometry.Rect.Width / 2;
+            var height = _hRectangleGeometry.Rect.Height / 2;
+
+            if (!IsGeometryRendered)
+            {
+                width = _vRectangleGeometry.Rect.Height / 2;
+                height = _vRectangleGeometry.Rect.Width / 2;
+            }
+
+
+            HorizontalTopLeft = CenterPoint -
+                                new Vector(width, height);
+            HorizontalBottomRight = CenterPoint +
+                                    new Vector(width, height);
         }
 
         private void UpdateHTopLeft()
@@ -505,8 +260,261 @@ namespace Lan.Shapes.Custom
 
             //set default size of 
             if (!IsGeometryRendered)
+            {
                 HorizontalTopLeft = VerticalTopLeft + new Vector(-15, _vRectangleGeometry.Rect.Width);
+            }
         }
+
+        #endregion
+
+        #region implementations
+
+        /// <summary>
+        /// 需要4个点
+        /// </summary>
+        /// <param name="data"></param>
+        public void FromData(PointsData data)
+        {
+            if (data.DataPoints.Count != 4)
+            {
+                throw new Exception($"{nameof(PointsData)} must have 2 elements in  DataPoints");
+            }
+
+
+            VerticalTopLeft = data.DataPoints[0];
+            VerticalBottomRight = data.DataPoints[1];
+            HorizontalTopLeft = data.DataPoints[2];
+            HorizontalBottomRight = data.DataPoints[3];
+            StrokeThickness = data.StrokeThickness;
+
+            IsGeometryRendered = true;
+        }
+
+
+        /// <summary>
+        /// first point horizontal top left, cw
+        /// </summary>
+        /// <returns></returns>
+        public PointsData GetMetaData()
+        {
+            var points = new List<Point>();
+
+            //0
+            points.Add(HorizontalTopLeft);
+
+            //1
+            points.Add(new Point(VerticalTopLeft.X, HorizontalTopLeft.Y));
+
+            //2
+            points.Add(VerticalTopLeft);
+
+            //3
+            points.Add(new Point(VerticalBottomRight.X, VerticalTopLeft.Y));
+
+            //4
+            points.Add(new Point(VerticalBottomRight.X, HorizontalTopLeft.Y));
+
+            //5
+            points.Add(new Point(HorizontalBottomRight.X, HorizontalTopLeft.Y));
+
+            //6
+            points.Add(HorizontalBottomRight);
+
+            //7
+            points.Add(new Point(VerticalBottomRight.X, HorizontalBottomRight.Y));
+
+
+            //8
+            points.Add(VerticalBottomRight);
+
+            //9
+            points.Add(new Point(VerticalTopLeft.X, VerticalBottomRight.Y));
+
+            //10
+            points.Add(new Point(VerticalTopLeft.X, HorizontalBottomRight.Y));
+
+            //11
+            points.Add(new Point(HorizontalTopLeft.X, HorizontalBottomRight.Y));
+
+            return new PointsData(StrokeThickness, points);
+        }
+
+        #endregion
+
+        #region others
+
+        protected override void OnStrokeThicknessChanges(double strokeThickness)
+        {
+            _dragHandles[DragLocations.ResizeHandle].GeometryCenter = GetResizeHandleLocation();
+        }
+
+        protected override void CreateHandles()
+        {
+            if (Handles.Count == 0)
+            {
+                Handles.Add(new RectDragHandle(DragHandleSize, _hRectangleGeometry.Rect.Location,
+                    (int)DragLocations.HTopLeft));
+                Handles.Add(new RectDragHandle(DragHandleSize, _hRectangleGeometry.Rect.BottomRight,
+                    (int)DragLocations.HBottomRight));
+
+                Handles.Add(new RectDragHandle(DragHandleSize, _vRectangleGeometry.Rect.BottomRight,
+                    (int)DragLocations.VBottomRight));
+                Handles.Add(new RectDragHandle(DragHandleSize, _vRectangleGeometry.Rect.TopLeft,
+                    (int)DragLocations.VTopLeft));
+
+                Handles.Add(new RectDragHandle(DragHandleSize, GetResizeHandleLocation(),
+                    (int)DragLocations.ResizeHandle));
+
+                _dragHandles = Handles.ToDictionary(x => (DragLocations)x.Id);
+
+                RenderGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
+            }
+        }
+
+        private Point GetResizeHandleLocation()
+        {
+            return _vRectangleGeometry.Rect.Location +
+                   new Vector(_vRectangleGeometry.Rect.Width / 2, -StrokeThickness / 2);
+        }
+
+
+        protected override void HandleTranslate(Point newPoint)
+        {
+            if (OldPointForTranslate.HasValue)
+            {
+                var offset = newPoint - OldPointForTranslate.Value;
+                VerticalTopLeft += offset;
+                VerticalBottomRight += offset;
+
+                HorizontalBottomRight += offset;
+                HorizontalTopLeft += offset;
+
+                UpdateHandleLocation();
+                UpdateVisual();
+                OldPointForTranslate = newPoint;
+            }
+        }
+
+
+        /// <summary>
+        ///     left mouse button down event
+        /// </summary>
+        /// <param name="mousePoint"></param>
+        public override void OnMouseLeftButtonDown(Point mousePoint)
+        {
+            if (!IsGeometryRendered)
+            {
+                VerticalTopLeft = mousePoint;
+            }
+            else
+            {
+                FindSelectedHandle(mousePoint);
+            }
+
+            OldPointForTranslate = mousePoint;
+        }
+
+
+        /// <summary>
+        ///     鼠标点击移动
+        /// </summary>
+        public override void OnMouseMove(Point point, MouseButtonState buttonState)
+        {
+            if (buttonState == MouseButtonState.Pressed)
+            {
+                if (!IsGeometryRendered)
+                {
+                    VerticalBottomRight = point;
+                    UpdateVisual();
+                }
+                else if (SelectedDragHandle != null)
+                {
+                    IsBeingDraggedOrPanMoving = true;
+
+                    switch ((DragLocations)SelectedDragHandle.Id)
+                    {
+                        case DragLocations.VTopLeft:
+                            VerticalTopLeft = point;
+                            break;
+                        case DragLocations.VBottomRight:
+                            VerticalBottomRight = point;
+                            break;
+                        case DragLocations.HTopLeft:
+
+                            HorizontalTopLeft = point;
+
+                            break;
+                        case DragLocations.HBottomRight:
+
+                            HorizontalBottomRight = point;
+                            break;
+                        case DragLocations.ResizeHandle:
+
+                            if (OldPointForTranslate != null)
+                            {
+                                var delta = point - OldPointForTranslate.Value;
+                                StrokeThickness += -delta.Y;
+                                OldPointForTranslate = point;
+                            }
+
+                            break;
+                    }
+
+                    UpdateHandleLocation();
+                    UpdateVisual();
+                }
+                else
+                {
+                    Mouse.SetCursor(Cursors.Hand);
+                    HandleTranslate(point);
+                }
+            }
+        }
+
+
+        public override void UpdateVisual()
+        {
+            if (DistanceResizeHandle == null)
+            {
+                return;
+            }
+
+
+            var renderContext = RenderOpen();
+
+            Pen ??= ShapeStyler?.SketchPen.CloneCurrentValue();
+
+            if (ShapeStyler != null && Pen != null)
+            {
+                Pen.Brush.Opacity = 0.5;
+                Pen.Thickness = StrokeThickness;
+                renderContext.DrawGeometry(ShapeStyler.FillColor, Pen, RenderGeometry);
+            }
+
+            AddTagText(renderContext, VerticalTopLeft - new Vector(0, ShapeLayer.TagFontSize + StrokeThickness));
+            renderContext.DrawGeometry(DragHandleFillColor, DragHandlePen, RenderGeometryGroup);
+            renderContext.Close();
+        }
+
+        private enum DragLocations
+        {
+            None = 0,
+            VTopLeft,
+            VTopRight,
+            VBottomLeft,
+            VBottomRight,
+            HTopLeft,
+            HTopRight,
+            HBottomLeft,
+            HBottomRight,
+            ResizeHandle
+        }
+
+        #endregion
+
+
+
+        #region constructor
 
         #endregion
     }

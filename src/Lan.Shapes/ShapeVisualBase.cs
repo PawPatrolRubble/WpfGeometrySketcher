@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -28,6 +29,7 @@ namespace Lan.Shapes
         protected readonly GeometryGroup RenderGeometryGroup = new GeometryGroup();
 
         private bool _canMoveWithHand;
+        private bool _isLocked;
 
         private ShapeVisualState _state;
 
@@ -57,12 +59,15 @@ namespace Lan.Shapes
 
         #region Propeties
 
-        public Guid Id { get;  }
-
         /// <summary>
         /// 
         /// </summary>
         public abstract Rect BoundsRect { get; }
+
+        protected double DragHandleSize { get; set; }
+
+
+        public Guid Id { get; }
 
 
         /// <summary>
@@ -76,28 +81,27 @@ namespace Lan.Shapes
         /// </summary>
         public bool IsGeometryRendered { get; protected set; }
 
-        public virtual Geometry RenderGeometry
-        {
-            get => RenderGeometryGroup;
-        }
-
-        protected DragHandle? SelectedDragHandle { get; set; }
-        private bool _isLocked;
-
         public bool IsLocked
         {
             get => _isLocked;
             protected set
             {
                 _isLocked = value;
-                if (_isLocked)
-                {
-                    State = ShapeVisualState.Locked;
-                }
+
+                State = _isLocked ? ShapeVisualState.Locked : ShapeVisualState.Normal;
+
             }
         }
 
-        public ShapeLayer? ShapeLayer { get; set; }
+        public virtual Geometry RenderGeometry
+        {
+            get => RenderGeometryGroup;
+        }
+
+        protected DragHandle? SelectedDragHandle { get; set; }
+
+
+        public ShapeLayer ShapeLayer { get; set; }
 
         /// <summary>
         /// the current valid styler should be given from layer base on the shape State
@@ -114,19 +118,49 @@ namespace Lan.Shapes
             {
                 _state = value;
                 UpdateVisual();
+                //update handle size
+                if (ShapeLayer != null)
+                {
+                    DragHandleSize = ShapeStyler?.DragHandleSize ?? 0;
+                    OnDragHandleSizeChanges(DragHandleSize);
+                }
+            }
+        }
+
+        private string? _tag;
+
+        public string? Tag
+        {
+            get => _tag;
+            set
+            {
+                _tag = value;
+                UpdateVisual();
             }
         }
 
         #endregion
 
-        protected ShapeVisualBase()
+        #region Constructors
+
+        protected ShapeVisualBase(ShapeLayer layer)
         {
+            ShapeLayer = layer;
             Id = Guid.NewGuid();
+            State = ShapeVisualState.Normal;
+            //Tag = this.GetType().Name;
         }
+
+
+        #endregion
+
+        #region Implementations
 
         #region implementations
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        #endregion
 
         #endregion
 
@@ -142,11 +176,19 @@ namespace Lan.Shapes
             IsLocked = false;
         }
 
+        protected virtual void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+        }
+
         protected abstract void CreateHandles();
 
         protected DragHandle CreateRectDragHandle(Point location, int id)
         {
-            if (ShapeStyler == null) throw new Exception("Style cannot be null");
+            if (ShapeStyler == null)
+            {
+                throw new Exception("Style cannot be null");
+            }
+
             return new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), location, 10,
                 id);
         }
@@ -160,8 +202,12 @@ namespace Lan.Shapes
         public DragHandle? FindDragHandleMouseOver(Point p)
         {
             foreach (var handle in Handles)
+            {
                 if (handle.FillContains(p))
+                {
                     return handle;
+                }
+            }
 
             return null;
         }
@@ -199,9 +245,13 @@ namespace Lan.Shapes
         public virtual void OnMouseLeftButtonDown(Point mousePoint)
         {
             if (HandleGeometryGroup?.FillContains(mousePoint) ?? false)
+            {
                 FindSelectedHandle(mousePoint);
+            }
             else
+            {
                 SelectedDragHandle = null;
+            }
 
             OldPointForTranslate = mousePoint;
             MouseDownPoint ??= mousePoint;
@@ -213,7 +263,10 @@ namespace Lan.Shapes
         /// <param name="newPoint"></param>
         public virtual void OnMouseLeftButtonUp(Point newPoint)
         {
-            if (!IsGeometryRendered && RenderGeometryGroup.Children.Count > 0) IsGeometryRendered = true;
+            if (!IsGeometryRendered && RenderGeometryGroup.Children.Count > 0)
+            {
+                IsGeometryRendered = true;
+            }
 
             SelectedDragHandle = null;
             IsBeingDraggedOrPanMoving = false;
@@ -232,7 +285,10 @@ namespace Lan.Shapes
                 if (HandleGeometryGroup?.FillContains(point) ?? false)
                 {
                     var handle = FindDragHandleMouseOver(point);
-                    if (handle != null) UpdateMouseCursor((DragLocation)handle.Id);
+                    if (handle != null)
+                    {
+                        UpdateMouseCursor((DragLocation)handle.Id);
+                    }
                 }
 
 
@@ -272,7 +328,11 @@ namespace Lan.Shapes
                 }
                 else
                 {
-                    if (MouseDownPoint != null) DrawGeometryInMouseMove(MouseDownPoint.Value, point);
+                    if (MouseDownPoint != null)
+                    {
+                        DrawGeometryInMouseMove(MouseDownPoint.Value, point);
+                    }
+
                     CreateHandles();
                     UpdateGeometryGroup();
                     UpdateVisual();
@@ -302,7 +362,11 @@ namespace Lan.Shapes
 
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
             field = value;
             OnPropertyChanged(propertyName);
             return true;
@@ -362,12 +426,56 @@ namespace Lan.Shapes
 
         public virtual void UpdateVisual()
         {
+            if (ShapeStyler == null)
+            {
+                return;
+            }
+
             var renderContext = RenderOpen();
-            if (ShapeStyler != null)
-                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
+            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
             renderContext.Close();
         }
 
         #endregion
+
+        protected void AddTagText(DrawingContext renderContext, Point location)
+        {
+            if (!string.IsNullOrEmpty(Tag))
+            {
+                FormattedText formattedText = new FormattedText(
+                    Tag,
+                    CultureInfo.GetCultureInfo("en-us"),
+                    FlowDirection.LeftToRight,
+                    new Typeface("Verdana"),
+                    ShapeLayer.TagFontSize,
+                    Brushes.Lime);
+
+                renderContext.DrawText(formattedText, location);
+            }
+        }
+
+        protected void AddTagText(DrawingContext renderContext, Point location, double angle)
+        {
+            if (!string.IsNullOrEmpty(Tag))
+            {
+                RotateTransform rt = new RotateTransform();
+
+                rt.Angle = angle;
+                rt.CenterX = location.X;
+                rt.CenterY = location.Y;
+                renderContext.PushTransform(rt);
+
+                FormattedText formattedText = new FormattedText(
+                    Tag,
+                    CultureInfo.GetCultureInfo("en-us"),
+                    FlowDirection.LeftToRight,
+                    new Typeface("Verdana"),
+                    ShapeLayer.TagFontSize,
+                    Brushes.Lime);
+
+                renderContext.DrawText(formattedText, location);
+                renderContext.Pop();
+            }
+        }
     }
 }

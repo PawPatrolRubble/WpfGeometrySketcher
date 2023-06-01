@@ -110,7 +110,7 @@ namespace Lan.Shapes.Shapes
 
         protected override void CreateHandles()
         {
-            Handles.AddRange(Enumerable.Range(1, 4).Select(x => new RectDragHandle(10, default, x)));
+            Handles.AddRange(Enumerable.Range(1, 4).Select(x => new RectDragHandle(DragHandleSize, default, x)));
         }
 
         protected override void HandleResizing(Point point)
@@ -237,6 +237,8 @@ namespace Lan.Shapes.Shapes
             var renderContext = RenderOpen();
             if (ShapeStyler != null)
             {
+                AddTagText(renderContext, TopLeft - new Vector(0, ShapeLayer.TagFontSize));
+
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _rectangleGeometry);
                 foreach (var dragHandle in Handles)
                     renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, dragHandle.HandleGeometry);
@@ -246,5 +248,9 @@ namespace Lan.Shapes.Shapes
         }
 
         #endregion
+
+        public Rectangle(ShapeLayer layer) : base(layer)
+        {
+        }
     }
 }

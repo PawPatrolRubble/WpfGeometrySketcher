@@ -107,9 +107,9 @@ namespace Lan.SketchBoard
             {
                 if (_selectedGeometry != null)
                 {
-                    _selectedGeometry.State = 
-                        _selectedGeometry.State == ShapeVisualState.Locked 
-                        ? ShapeVisualState.Locked 
+                    _selectedGeometry.State =
+                        _selectedGeometry.State == ShapeVisualState.Locked
+                        ? ShapeVisualState.Locked
                         : ShapeVisualState.Normal;
                 }
 
@@ -156,7 +156,7 @@ namespace Lan.SketchBoard
         public void AddShape(ShapeVisualBase shape, int index)
         {
             VisualCollection.Insert(index, shape);
-            Shapes.Insert(index,shape);
+            Shapes.Insert(index, shape);
             CurrentGeometry = shape;
         }
 
@@ -205,10 +205,10 @@ namespace Lan.SketchBoard
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
-        public void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>, new() where TP : IGeometryMetaData
+        public void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>
+            where TP : IGeometryMetaData
         {
-            var shape = new T();
-            shape.ShapeLayer = CurrentShapeLayer;
+            var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
 
@@ -228,7 +228,7 @@ namespace Lan.SketchBoard
         {
             if (_currentGeometryType == null || _currentShapeLayer == null) return null;
 
-            var shape = Activator.CreateInstance(_currentGeometryType) as ShapeVisualBase;
+            var shape = Activator.CreateInstance(_currentGeometryType, CurrentShapeLayer) as ShapeVisualBase;
 
             if (shape != null)
             {

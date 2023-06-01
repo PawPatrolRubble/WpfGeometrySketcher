@@ -94,7 +94,7 @@ namespace Lan.Shapes.Interfaces
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
         void LoadShape<T, TP>(TP parameter) 
-            where T : ShapeVisualBase, IDataExport<TP>,new () 
+            where T : ShapeVisualBase, IDataExport<TP>
             where TP : IGeometryMetaData;
 
         /// <summary>

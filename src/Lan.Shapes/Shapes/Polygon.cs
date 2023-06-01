@@ -46,7 +46,7 @@ namespace Lan.Shapes.Shapes
 
         #region Constructors
 
-        public Polygon()
+        public Polygon(ShapeLayer shapeLayer) : base(shapeLayer)
         {
             _pathGeometry = new PathGeometry();
             _pathFigureCollection = _pathGeometry.Figures;

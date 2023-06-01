@@ -8,9 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Lan.Shapes.App
 {
@@ -34,6 +37,7 @@ namespace Lan.Shapes.App
             Camera2.Layers = _shapeLayerManager.Layers;
             Camera2.SelectedShapeLayer = Camera2.Layers[0];
 
+
             //Camera1 = camera;
             SelectOneShapeCommand = new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand = new RelayCommand(GetShapeInfoCommandImpl);
@@ -41,12 +45,25 @@ namespace Lan.Shapes.App
             LockEditCommand = new RelayCommand(LockEditCommandImpl);
             UnlockEditCommand = new RelayCommand(UnlockEditCommandImpl);
             FilterShapeTypeCommand = new RelayCommand(FilterShapeTypeCommandImpl);
-            
+            SetTagNameCommand = new RelayCommand(SetTagNameCommandImpl);
+
             ImageViewerViewModels.Add(Camera1);
             ImageViewerViewModels.Add(Camera2);
 
         }
 
+        private ImageSource CreateImageSourceFromFile(string filePath)
+        {
+            using (var fileStream = File.Open(filePath, FileMode.Open))
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = fileStream;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
+            }
+        }
 
         private IImageViewerViewModel _selectedImageViewModel;
 
@@ -63,12 +80,21 @@ namespace Lan.Shapes.App
         public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
         {
+
         }
 
         public ICommand GetShapeInfoCommand { get; private set; }
         private void GetShapeInfoCommandImpl()
         {
 
+        }
+
+        public ICommand SetTagNameCommand { get; private set; }
+
+
+        private void SetTagNameCommandImpl()
+        {
+            SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry.Tag = "absdasdasd";
         }
 
         public RelayCommand LoadFromParameterCommand { get; private set; }
@@ -80,14 +106,14 @@ namespace Lan.Shapes.App
                 new Point(50,50)
             }));
 
-            Camera1.SketchBoardDataManager.LoadShape<Ellipse,EllipseData>(new EllipseData()
+            Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
             {
-                Center = new Point(150,150),
+                Center = new Point(150, 150),
                 RadiusX = 100,
                 RadiusY = 100,
             });
 
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedCross,PointsData>(new PointsData(10, new List<Point>()
+            Camera1.SketchBoardDataManager.LoadShape<ThickenedCross, PointsData>(new PointsData(10, new List<Point>()
             {
                 new Point(152,52),
                 new Point(359,463),
@@ -95,9 +121,9 @@ namespace Lan.Shapes.App
                 new Point(461,361),
             }));
 
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle,EllipseData>(new EllipseData()
+            Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle, EllipseData>(new EllipseData()
             {
-                Center = new Point(400,400),
+                Center = new Point(400, 400),
                 StrokeThickness = 10,
                 RadiusX = 150,
                 RadiusY = 150
@@ -123,20 +149,20 @@ namespace Lan.Shapes.App
         public RelayCommand LockEditCommand { get; private set; }
         private void LockEditCommandImpl()
         {
-            Camera1.SketchBoardDataManager.SelectedGeometry?.Lock();
+            SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry?.Lock();
         }
 
 
         public RelayCommand UnlockEditCommand { get; private set; }
         private void UnlockEditCommandImpl()
         {
-            Camera1.SketchBoardDataManager.Shapes.Last().UnLock();
+            SelectedImageViewModel.SketchBoardDataManager.Shapes.Last().UnLock();
         }
 
         public RelayCommand FilterShapeTypeCommand { get; private set; }
         private void FilterShapeTypeCommandImpl()
         {
-            Camera1.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
+            SelectedImageViewModel.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
         }
 
         private Point _mouseDblPosition;
