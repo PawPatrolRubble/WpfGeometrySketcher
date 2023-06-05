@@ -16,7 +16,7 @@
 
     <system:Double x:Key="FontSize">18</system:Double>
     <system:Double x:Key="IconSize">16</system:Double>
-    <GridLength x:Key="TextBlockWidth">170</GridLength>
+    <GridLength x:Key="TextBlockWidth">300</GridLength>
 
     <Style x:Key="IconButton" TargetType="Button">
 
