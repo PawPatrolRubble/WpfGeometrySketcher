@@ -318,11 +318,25 @@ namespace Lan.ImageViewer
             var p = e.GetPosition(_image);
             var p1 = e.GetPosition(_borderContainer);
             var mousePositionRelativeToCanvas = e.GetPosition(_containerCanvas);
+
+
+
             if (_textBlock != null)
             {
-                _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}";
+                if (ImageSource is BitmapSource image)
+                {
+                    //Console.WriteLine($"{p1}, {p}");
+                    if (image.PixelHeight > (int)p.Y && image.PixelWidth > (int)p.X && p.Y >= 0 && p.X >= 0)
+                    {
+                        var pixelValue = GetPixelValue(image, (int)p.X, (int)p.Y);
+                        _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}, {pixelValue}";
+                    }
+                }
+                else
+                {
+                    _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}";
+                }
             }
-
 
             if (Keyboard.IsKeyDown(Key.LeftCtrl))
             {
@@ -341,6 +355,23 @@ namespace Lan.ImageViewer
                 }
             }
         }
+
+        private static string? GetPixelValue(BitmapSource bitmap, int x, int y)
+        {
+            var bytesPerPixel = (bitmap.Format.BitsPerPixel + 7) / 8;
+            var bytes = new byte[bytesPerPixel];
+            var rect = new Int32Rect(x, y, 1, 1);
+
+            bitmap.CopyPixels(rect, bytes, bytesPerPixel, 0);
+            
+            if (bytes.Length >= 3)
+            {
+                return $"R:{bytes[2]},G:{bytes[1]},B:{bytes[0]}";
+            }
+
+            return string.Join(',', bytes);
+        }
+
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseUp" /> routed event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs" /> that contains the event data. The event data reports that the mouse button was released.</param>
@@ -364,16 +395,6 @@ namespace Lan.ImageViewer
             ScaleGridContainer(scale, _lastMouseDownPoint.Value);
             _disablePropertyChangeCallback = false;
             _isImageScaledByMouseWheel = true;
-        }
-
-        /// <summary>Raises the <see cref="E:System.Windows.FrameworkElement.SizeChanged" /> event, using the specified information as part of the eventual event data.</summary>
-        /// <param name="sizeInfo">Details of the old and new size involved in the change.</param>
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            base.OnRenderSizeChanged(sizeInfo);
-
-
-
         }
 
         private static void OnScaleChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -23,7 +23,7 @@
 
     <ItemGroup>
       <Resource Include="reference.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Resource>
     </ItemGroup>
 
