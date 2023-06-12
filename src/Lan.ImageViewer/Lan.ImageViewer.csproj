@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.4-preview02</PackageVersion>
-		  <Description>增加rgb显示</Description>
+		  <PackageVersion>1.0.4-preview05</PackageVersion>
+		  <Description>增加圆心固定圆，</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>

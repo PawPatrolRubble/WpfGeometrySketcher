@@ -226,7 +226,8 @@ namespace Lan.Shapes.App
                 { nameof(ThickenedCircle), _resourceDictionary["ThickenedCircle"] as Geometry },
                 { nameof(ThickenedCross), _resourceDictionary["ThickenedCross"] as Geometry },
                 { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
-                { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry }
+                { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
+                { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry }
             };
 
 

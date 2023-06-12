@@ -76,12 +76,19 @@ namespace Lan.Shapes.Custom
 
         public void FromData(EllipseData data)
         {
-            throw new NotImplementedException();
+            Center = data.Center;
+            Radius = data.RadiusX;
+            IsGeometryRendered = true;
         }
 
         public EllipseData GetMetaData()
         {
-            throw new NotImplementedException();
+            return new EllipseData()
+            {
+                Center = Center,
+                RadiusX = Radius,
+                RadiusY = Radius,
+            };
         }
 
         #endregion
