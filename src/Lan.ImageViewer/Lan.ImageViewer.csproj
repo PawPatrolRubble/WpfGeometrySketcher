@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.4-preview01</PackageVersion>
-		  <Description>show shape types</Description>
+		  <PackageVersion>1.0.4-preview02</PackageVersion>
+		  <Description>增加rgb显示</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>

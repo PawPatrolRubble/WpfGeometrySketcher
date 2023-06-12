@@ -22,7 +22,7 @@ namespace Lan.Shapes.Interfaces
         /// <summary>
         /// this is used to hold all shapes
         /// </summary>
-        public VisualCollection VisualCollection { get; set; }
+        public VisualCollection VisualCollection { get; }
 
         /// <summary>
         /// get all shapes defined in canvas
@@ -108,5 +108,7 @@ namespace Lan.Shapes.Interfaces
         /// set current geometry as null
         /// </summary>
         void UnselectGeometry();
+
+        void InitializeVisualCollection(Visual visual);
     }
 }

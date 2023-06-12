@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes;
+using Lan.Shapes.Custom;
 using Lan.Shapes.Enums;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Styler;
@@ -23,6 +23,8 @@ namespace Lan.SketchBoard
     public class SketchBoardDataManager : ISketchBoardDataManager, INotifyPropertyChanged
     {
         #region fields
+
+        private SketchBoard? _sketchBoardOwner;
 
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
@@ -38,6 +40,61 @@ namespace Lan.SketchBoard
 
         #endregion
 
+        #region Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region local methods
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #region others
+
+        /// <summary>
+        /// select one shape to draw
+        /// </summary>
+        /// <param name="drawingTool"></param>
+        public void SetGeometryType(string drawingTool)
+        {
+            Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
+
+            //it is not true when select one new geometry type means the user will create a new shape, it is completely possible that the user
+            //switches the geometry type by accident
+            // LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
+
+            //todo set current geometry type
+            //
+            if (_drawingTools.ContainsKey(drawingTool))
+            {
+                _currentGeometryType = _drawingTools[drawingTool];
+            }
+            else
+            {
+                throw new Exception("the drawing tool does not exist");
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         #region implementations
 
         /// <summary>
@@ -45,7 +102,8 @@ namespace Lan.SketchBoard
         /// </summary>
         public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
 
-        private VisualCollection _visualCollection = null!;
+
+        private VisualCollection _visualCollection;
 
         /// <summary>
         /// this is used to hold all shapes
@@ -53,11 +111,7 @@ namespace Lan.SketchBoard
         public VisualCollection VisualCollection
         {
             get => _visualCollection;
-            set
-            {
-                _visualCollection = value;
-                Shapes = new ObservableCollection<ShapeVisualBase>();
-            }
+            private set => _visualCollection = value;
         }
 
         /// <summary>
@@ -94,7 +148,10 @@ namespace Lan.SketchBoard
                 }
 
                 SetField(ref _currentGeometry, value);
-                if (_currentGeometry != null) _currentGeometry.State = ShapeVisualState.Selected;
+                if (_currentGeometry != null)
+                {
+                    _currentGeometry.State = ShapeVisualState.Selected;
+                }
             }
         }
 
@@ -109,8 +166,8 @@ namespace Lan.SketchBoard
                 {
                     _selectedGeometry.State =
                         _selectedGeometry.State == ShapeVisualState.Locked
-                        ? ShapeVisualState.Locked
-                        : ShapeVisualState.Normal;
+                            ? ShapeVisualState.Locked
+                            : ShapeVisualState.Normal;
                 }
 
                 _selectedGeometry = value;
@@ -211,7 +268,6 @@ namespace Lan.SketchBoard
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
-
         }
 
         /// <summary>
@@ -226,7 +282,10 @@ namespace Lan.SketchBoard
 
         public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
         {
-            if (_currentGeometryType == null || _currentShapeLayer == null) return null;
+            if (_currentGeometryType == null || _currentShapeLayer == null)
+            {
+                return null;
+            }
 
             var shape = Activator.CreateInstance(_currentGeometryType, CurrentShapeLayer) as ShapeVisualBase;
 
@@ -236,6 +295,15 @@ namespace Lan.SketchBoard
                 VisualCollection.Add(shape);
                 CurrentGeometry = shape;
                 Shapes.Add(shape);
+            }
+
+            if (shape is FixedCenterCircle fixedCenterCircle)
+            {
+                if (_sketchBoardOwner != null)
+                {
+                    fixedCenterCircle.Center =
+                        new Point(_sketchBoardOwner.ActualWidth / 2, _sketchBoardOwner.ActualHeight / 2);
+                }
             }
 
             return shape;
@@ -250,47 +318,18 @@ namespace Lan.SketchBoard
             _currentGeometryType = null;
         }
 
-        #endregion
-
-        #region others
-
-        /// <summary>
-        /// select one shape to draw
-        /// </summary>
-        /// <param name="drawingTool"></param>
-        public void SetGeometryType(string drawingTool)
+        public void InitializeVisualCollection(Visual visual)
         {
-            Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
+            VisualCollection = new VisualCollection(visual);
+            Shapes ??= new ObservableCollection<ShapeVisualBase>();
+            Shapes.Clear();
 
-            //it is not true when select one new geometry type means the user will create a new shape, it is completely possible that the user
-            //switches the geometry type by accident
-            // LocalAddNewGeometry(drawingTool, _currentShapeLayer.Styler);
-
-            //todo set current geometry type
-            //
-            if (_drawingTools.ContainsKey(drawingTool))
-                _currentGeometryType = _drawingTools[drawingTool];
-            else
-                throw new Exception("the drawing tool does not exist");
+            if (visual is SketchBoard  sketchBoard)
+            {
+                _sketchBoardOwner = sketchBoard;
+            }
         }
 
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-
     }
 }

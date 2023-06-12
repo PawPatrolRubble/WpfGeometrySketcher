@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <UniformGrid Columns="1">
+            <UniformGrid Columns="2" Rows="2">
 
                 <imageViewer:ImageViewerControl
                     Margin="5"
