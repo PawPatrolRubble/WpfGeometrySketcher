@@ -75,7 +75,7 @@ namespace Lan.SketchBoard
 
                 var oldShapes = dataManager.Shapes;
 
-                dataManager.VisualCollection = new VisualCollection(sketchBoard);
+                dataManager.InitializeVisualCollection(sketchBoard);
                 if (oldShapes != null)
                 {
 

@@ -16,7 +16,7 @@
 
     <system:Double x:Key="FontSize">18</system:Double>
     <system:Double x:Key="IconSize">16</system:Double>
-    <GridLength x:Key="TextBlockWidth">300</GridLength>
+    <GridLength x:Key="TextBlockWidth">310</GridLength>
 
     <Style x:Key="IconButton" TargetType="Button">
 
@@ -231,11 +231,10 @@
                                     BorderBrush="Gray"
                                     BorderThickness="2"
                                     Foreground="White"
+                                    Margin="5 0 0 0"
                                     Style="{StaticResource IconButton}" />
 
                             </Grid>
-
-
 
 
                             <Grid

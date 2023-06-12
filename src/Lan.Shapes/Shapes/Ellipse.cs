@@ -86,41 +86,6 @@ namespace Lan.Shapes.Shapes
 
         protected override void CreateHandles()
         {
-            //Handles.Clear();
-
-            //Handles.Add(new CircleDragHandle(
-            //    ShapeStyler.DragHandleSize,
-            //    new Point(_ellipseGeometry.Center.X,
-            //        _ellipseGeometry.Center.Y - _ellipseGeometry.RadiusY),
-            //    (int)DragLocation.TopMiddle));
-
-            //Handles.Add(
-            //    new CircleDragHandle(
-            //        ShapeStyler.DragHandleSize,
-            //        new Point(
-            //            _ellipseGeometry.Center.X + _ellipseGeometry.RadiusX,
-            //            _ellipseGeometry.Center.Y),
-            //        (int)DragLocation.RightMiddle));
-
-            //Handles.Add(new CircleDragHandle(
-            //    ShapeStyler.DragHandleSize,
-            //    new Point(_ellipseGeometry.Center.X,
-            //        _ellipseGeometry.Center.Y + _ellipseGeometry.RadiusY),
-            //    (int)DragLocation.BottomMiddle));
-
-            //Handles.Add(
-            //    new CircleDragHandle(
-            //        ShapeStyler.DragHandleSize,
-            //        new Point(
-            //            _ellipseGeometry.Center.X - _ellipseGeometry.RadiusX,
-            //            _ellipseGeometry.Center.Y),
-            //        (int)DragLocation.LeftMiddle));
-
-            //HandleGeometryGroup ??= new GeometryGroup();
-            //HandleGeometryGroup.Children.AddRange(Handles.Select(x => x.HandleGeometry));
-
-            //PanSensitiveArea =
-            //    new CombinedGeometry(GeometryCombineMode.Exclude, RenderGeometryGroup, HandleGeometryGroup);
         }
 
         protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
@@ -246,10 +211,6 @@ namespace Lan.Shapes.Shapes
 
         public override void UpdateVisual()
         {
-
-
-
-
             var renderContext = RenderOpen();
             if (ShapeStyler != null && _rightDragHandle != null && _topDragHandle != null)
             {
