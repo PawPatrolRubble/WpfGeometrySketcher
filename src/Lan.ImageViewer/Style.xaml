@@ -114,12 +114,23 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock
-                                    x:Name="TbMousePosition"
-                                    VerticalAlignment="Center"
-                                    Panel.ZIndex="1"
-                                    FontSize="{StaticResource FontSize}"
-                                    Foreground="Lime" />
+                                <StackPanel Panel.ZIndex="1">
+
+                                    <TextBlock
+                                        x:Name="TbMousePosition"
+                                        VerticalAlignment="Center"
+                                        Panel.ZIndex="1"
+                                        FontSize="{StaticResource FontSize}"
+                                        Foreground="Lime" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="{StaticResource FontSize}"
+                                        Foreground="Lime"
+                                        Text="{Binding Path=LocalScale, StringFormat='Scale: {0:p2}', RelativeSource={RelativeSource TemplatedParent}}" />
+                                </StackPanel>
+
+
+
                                 <Button
                                     x:Name="BtnFit"
                                     Grid.Column="1"
@@ -129,6 +140,7 @@
                                     BorderBrush="Lime"
                                     BorderThickness="2"
                                     Foreground="Lime"
+                                    VerticalAlignment="Top"
                                     Style="{StaticResource IconButton}" />
                             </Grid>
 
@@ -226,12 +238,12 @@
                                 <Button
                                     x:Name="BtnFit"
                                     Grid.Column="1"
+                                    Margin="5,0,0,0"
                                     imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
                                     imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
                                     BorderBrush="Gray"
                                     BorderThickness="2"
                                     Foreground="White"
-                                    Margin="5 0 0 0"
                                     Style="{StaticResource IconButton}" />
 
                             </Grid>
