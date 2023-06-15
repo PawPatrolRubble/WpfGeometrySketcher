@@ -2,8 +2,11 @@
 
 #nullable enable
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -27,7 +30,7 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(Border), Name = "BorderContainer")]
     [TemplatePart(Type = typeof(Line), Name = "VerticalLine")]
     [TemplatePart(Type = typeof(Line), Name = "HorizontalLine")]
-    public class ImageViewerBasic : Control
+    public class ImageViewerBasic : Control,INotifyPropertyChanged
     {
         #region fields
 
@@ -87,7 +90,7 @@ namespace Lan.ImageViewer
 
         public static readonly DependencyProperty ScaleProperty = DependencyProperty.Register(
             "Scale", typeof(double), typeof(ImageViewerBasic),
-            new PropertyMetadata(default(double), OnScaleChangedCallback));
+            new FrameworkPropertyMetadata(default(double), OnScaleChangedCallback));
 
 
         public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
@@ -133,8 +136,6 @@ namespace Lan.ImageViewer
             get { return (Point)GetValue(MouseDoubleClickPositionProperty); }
             set { SetValue(MouseDoubleClickPositionProperty, value); }
         }
-
-
 
 
         public ImageSource ImageSource
@@ -183,8 +184,8 @@ namespace Lan.ImageViewer
 
         private void AutoScaleImageToFit(double width, double height, double pixelWidth, double pixelHeight)
         {
-            var ratio = AutoScaleImageToFitRatio(width, height, pixelWidth, pixelHeight);
-
+            var ratio = CalculateAutoFitRatio(width, height, pixelWidth, pixelHeight);
+            LocalScale = ratio;
             var matrix = new Matrix();
             matrix.ScaleAt(
                 ratio,
@@ -195,7 +196,7 @@ namespace Lan.ImageViewer
             _matrixTransform.Matrix = matrix;
         }
 
-        private double AutoScaleImageToFitRatio(double width, double height, double pixelWidth, double pixelHeight)
+        private double CalculateAutoFitRatio(double width, double height, double pixelWidth, double pixelHeight)
         {
             return Math.Min(width / pixelWidth, height / pixelHeight);
         }
@@ -329,12 +330,12 @@ namespace Lan.ImageViewer
                     if (image.PixelHeight > (int)p.Y && image.PixelWidth > (int)p.X && p.Y >= 0 && p.X >= 0)
                     {
                         var pixelValue = GetPixelValue(image, (int)p.X, (int)p.Y);
-                        _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}, {pixelValue}";
+                        _textBlock.Text = $"X:{p.X:f0}, Y:{p.Y:f0}, {pixelValue}";
                     }
                 }
                 else
                 {
-                    _textBlock.Text = $"X:{p.X:f}, Y:{p.Y:f}";
+                    _textBlock.Text = $"X:{p.X:f0}, Y:{p.Y:f0}";
                 }
             }
 
@@ -390,7 +391,6 @@ namespace Lan.ImageViewer
             _lastMouseDownPoint = e.GetPosition(this);
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
 
-
             _disablePropertyChangeCallback = true;
             ScaleGridContainer(scale, _lastMouseDownPoint.Value);
             _disablePropertyChangeCallback = false;
@@ -419,11 +419,36 @@ namespace Lan.ImageViewer
         {
             var matrix = _matrixTransform.Matrix;
             matrix.ScaleAt(scaleDelta, scaleDelta, pos.X, pos.Y);
-            Scale = matrix.M11;
+            LocalScale = matrix.M11;
             //Debug.WriteLine($"x scale factor: {matrix.M11}");
             _matrixTransform.Matrix = matrix;
         }
 
+
         #endregion
+
+
+        private double _localScale;
+
+        public double LocalScale
+        {
+            get => _localScale;
+            set => SetField(ref _localScale, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 }

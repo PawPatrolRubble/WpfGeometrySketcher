@@ -10,7 +10,7 @@ namespace Lan.Shapes.Styler
         void SetStrokeThickness(double strokeThickness);
         void SetPenDashStyle(DashStyle dashStyle);
 
-        double DragHandleSize { get; }
+        double DragHandleSize { get; set; }
         Pen SketchPen { get; }
         Brush FillColor { get; }
         IShapeStyler Clone();

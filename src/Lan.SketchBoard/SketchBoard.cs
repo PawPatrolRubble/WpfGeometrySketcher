@@ -62,6 +62,27 @@ namespace Lan.SketchBoard
                         }
                     };
             };
+
+            SizeChanged += SketchBoard_SizeChanged;
+        }
+
+        private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Console.WriteLine($"new canvas size: {e.NewSize}");
+            var scaleFactor = CalculateStrokeThickness();
+            var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
+
+            foreach (var shapeStyler in stylers)
+            {
+                shapeStyler.Value.SketchPen.Thickness = 2 * scaleFactor;
+                shapeStyler.Value.DragHandleSize = 10 * scaleFactor;
+            }
+            Console.WriteLine($"stroke thickness{scaleFactor}");
+        }
+
+        private double CalculateStrokeThickness()
+        {
+            return Math.Pow(1.8, Math.Log2(ActualWidth + ActualHeight) - 10);
         }
 
         #region others
@@ -71,8 +92,6 @@ namespace Lan.SketchBoard
         {
             if (d is SketchBoard sketchBoard && e.NewValue is ISketchBoardDataManager dataManager)
             {
-                
-
                 var oldShapes = dataManager.Shapes;
 
                 dataManager.InitializeVisualCollection(sketchBoard);
