@@ -169,10 +169,10 @@ namespace Lan.Shapes.Custom
             {
                 if (buttonState == MouseButtonState.Pressed)
                 {
-                    IsBeingDraggedOrPanMoving = true;
 
                     if (SelectedDragHandle != null)
                     {
+                        IsBeingDraggedOrPanMoving = true;
                         if (SelectedDragHandle.Id == 99)
                         {
                             if (OldPointForTranslate != null)

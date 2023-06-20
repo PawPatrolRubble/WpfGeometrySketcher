@@ -34,7 +34,12 @@
                 <imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    DataContext="{Binding SelectedImageViewModel}" />
+                    DataContext="{Binding Camera2}" />
+
+                <imageViewer:ImageViewerControl
+                    Margin="5"
+                    Padding="10"
+                    DataContext="{Binding Camera1}" />
 
                 <!--<imageViewer:ImageViewerBasic
                 Background="Black"

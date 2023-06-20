@@ -40,7 +40,7 @@ namespace Lan.SketchBoard
             set => SetValue(ImageProperty, value);
         }
 
-        public ISketchBoardDataManager SketchBoardDataManager
+        public ISketchBoardDataManager? SketchBoardDataManager
         {
             get => (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty);
             set => SetValue(SketchBoardDataManagerProperty, value);
@@ -51,19 +51,18 @@ namespace Lan.SketchBoard
 
         public SketchBoard()
         {
-            Loaded += (s, e) =>
-            {
-                if (Application.Current.MainWindow != null)
-                    Application.Current.MainWindow.KeyDown += (s, e) =>
-                    {
-                        if (e.Key == Key.Delete && SketchBoardDataManager.SelectedGeometry != null)
-                        {
-                            SketchBoardDataManager?.RemoveShape(SketchBoardDataManager.SelectedGeometry);
-                        }
-                    };
-            };
-
             SizeChanged += SketchBoard_SizeChanged;
+        }
+
+        /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
+        /// <param name="e">The <see cref="T:System.Windows.Input.KeyEventArgs" /> that contains the event data.</param>
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Delete && SketchBoardDataManager?.SelectedGeometry != null)
+            {
+                SketchBoardDataManager?.RemoveShape(SketchBoardDataManager.SelectedGeometry);
+            }
         }
 
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -142,6 +141,7 @@ namespace Lan.SketchBoard
         {
             try
             {
+                this.Focus();
                 SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
 
                 if (SketchBoardDataManager.SelectedGeometry == null)

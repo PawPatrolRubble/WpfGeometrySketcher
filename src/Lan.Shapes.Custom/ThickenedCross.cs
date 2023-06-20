@@ -16,6 +16,8 @@ namespace Lan.Shapes.Custom
     public class ThickenedCross : CustomGeometryBase, IDataExport<PointsData>
     {
         #region fields
+        //水平与
+        private const int MinPixelDistance = 100;
 
         private readonly bool _isSquare;
         private readonly CombinedGeometry? _combinedGeometry;
@@ -424,7 +426,7 @@ namespace Lan.Shapes.Custom
             {
                 if (!IsGeometryRendered)
                 {
-                    VerticalBottomRight = point;
+                    VerticalBottomRight = GetValidValueFromPoint(DragLocations.VBottomRight,point);
                     UpdateVisual();
                 }
                 else if (SelectedDragHandle != null)
@@ -434,19 +436,22 @@ namespace Lan.Shapes.Custom
                     switch ((DragLocations)SelectedDragHandle.Id)
                     {
                         case DragLocations.VTopLeft:
-                            VerticalTopLeft = point;
+                            VerticalTopLeft = GetValidValueFromPoint(DragLocations.VTopLeft, point);
                             break;
                         case DragLocations.VBottomRight:
-                            VerticalBottomRight = point;
+
+                            VerticalBottomRight = GetValidValueFromPoint(DragLocations.VBottomRight, point);
+
                             break;
                         case DragLocations.HTopLeft:
 
-                            HorizontalTopLeft = point;
+                            HorizontalTopLeft = GetValidValueFromPoint(DragLocations.HTopLeft, point);
 
                             break;
                         case DragLocations.HBottomRight:
 
-                            HorizontalBottomRight = point;
+                            HorizontalBottomRight = GetValidValueFromPoint(DragLocations.HBottomRight, point);
+
                             break;
                         case DragLocations.ResizeHandle:
 
@@ -470,6 +475,64 @@ namespace Lan.Shapes.Custom
                 }
             }
         }
+
+
+        private Point GetValidValueFromPoint(DragLocations dragLocation, Point point)
+        {
+            switch (dragLocation)
+            {
+                case DragLocations.VTopLeft:
+                    return ForcePointInRange(point,
+                        HorizontalTopLeft.X + MinPixelDistance,
+                        VerticalBottomRight.X - MinPixelDistance,
+                        0,
+                        HorizontalTopLeft.Y - MinPixelDistance);
+
+                case DragLocations.VBottomRight:
+
+                    return ForcePointInRange(
+                        point,
+                        VerticalTopLeft.X + MinPixelDistance,
+                        HorizontalBottomRight.X - MinPixelDistance,
+                        HorizontalBottomRight.Y + MinPixelDistance,
+                        point.Y);
+
+                case DragLocations.HTopLeft:
+                    return ForcePointInRange(
+                        point,
+                        point.X,
+                        VerticalTopLeft.X - MinPixelDistance,
+                        VerticalTopLeft.Y + MinPixelDistance,
+                        HorizontalBottomRight.Y - MinPixelDistance);
+                case DragLocations.HBottomRight:
+
+                    return ForcePointInRange(
+                        point,
+                        VerticalBottomRight.X + MinPixelDistance,
+                        point.X,
+                        HorizontalTopLeft.Y + MinPixelDistance,
+                        VerticalBottomRight.Y - MinPixelDistance);
+                default:
+                    return point;
+            }
+        }
+
+        private double EnsureNumberWithinRange(double value, double min, double max)
+        {
+            value = Math.Min(value, max);
+            value = Math.Max(value, min);
+            return value;
+        }
+
+        private Point ForcePointInRange(Point point, double minX, double maxX, double minY, double maxY)
+        {
+            var x = point.X;
+            var y = point.Y;
+            x = EnsureNumberWithinRange(x, minX, maxX);
+            y = EnsureNumberWithinRange(y, minY, maxY);
+            return new Point(x, y);
+        }
+
 
 
         public override void UpdateVisual()
