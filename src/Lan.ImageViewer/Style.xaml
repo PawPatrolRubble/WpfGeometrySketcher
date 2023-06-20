@@ -85,6 +85,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
+                            Focusable="True"
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
                             ClipToBounds="True"

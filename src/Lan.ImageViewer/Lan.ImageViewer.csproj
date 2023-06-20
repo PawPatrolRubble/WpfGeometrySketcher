@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.4-preview06</PackageVersion>
-		  <Description>更新固定圆图标</Description>
+		  <PackageVersion>1.0.4-preview11</PackageVersion>
+		  <Description>在画十字时增加对各个点的相对位置检查</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 
 	  </PropertyGroup>
@@ -34,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
+	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
