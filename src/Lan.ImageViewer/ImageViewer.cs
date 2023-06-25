@@ -11,28 +11,25 @@ using Lan.SketchBoard;
 
 #endregion
 
-namespace Lan.ImageViewer
-{
+namespace Lan.ImageViewer {
     [TemplatePart(Type = typeof(Canvas), Name = "containerCanvas")]
     [TemplatePart(Type = typeof(Image), Name = "ImageViewer")]
     [TemplatePart(Type = typeof(Grid), Name = "GridContainer")]
     [TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
     [TemplatePart(Type = typeof(Button), Name = "BtnFit")]
-    public class ImageViewer : ImageViewerBasic
-    {
+    public class ImageViewer : ImageViewerBasic {
         #region fields
 
         #endregion
 
         #region Constructors
 
-        static ImageViewer()
-        {
+        static ImageViewer() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ImageViewer),
                 new FrameworkPropertyMetadata(typeof(ImageViewer)));
         }
 
-   
+
 
         #endregion
 
@@ -64,10 +61,20 @@ namespace Lan.ImageViewer
 
         public static readonly DependencyProperty SketchBoardDataManagerProperty = DependencyProperty.Register(
             "SketchBoardDataManager", typeof(ISketchBoardDataManager), typeof(ImageViewer),
-            new PropertyMetadata(default(ISketchBoardDataManager)));
+            new PropertyMetadata(default(ISketchBoardDataManager), OnSketchBoardChangeCallBack));
 
-        public ISketchBoardDataManager SketchBoardDataManager
-        {
+        private static void OnSketchBoardChangeCallBack(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            if (d is ImageViewer imageViewer && e.NewValue is ISketchBoardDataManager sketchBoardDataManager) {
+                imageViewer.PropertyChanged += (s, e) => {
+                    if (e.PropertyName.Equals("LocalScale")) {
+
+                        sketchBoardDataManager.OnImageViewerPropertyChanged(imageViewer.LocalScale);
+                    }
+                };
+            }
+        }
+
+        public ISketchBoardDataManager SketchBoardDataManager {
             get => (ISketchBoardDataManager)GetValue(SketchBoardDataManagerProperty);
             set => SetValue(SketchBoardDataManagerProperty, value);
         }

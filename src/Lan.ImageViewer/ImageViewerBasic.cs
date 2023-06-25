@@ -433,7 +433,10 @@ namespace Lan.ImageViewer
         public double LocalScale
         {
             get => _localScale;
-            set => SetField(ref _localScale, value);
+            set
+            {
+                SetField(ref _localScale, value);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
