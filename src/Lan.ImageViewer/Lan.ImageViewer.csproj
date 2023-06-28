@@ -4,16 +4,17 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.5-preview05</PackageVersion>
-		  <Description>auto scale dragbox based on image scale</Description>
-		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-		  <IncludeReferencedProjects>true</IncludeReferencedProjects>
+		  <PackageVersion>1.1.0</PackageVersion>
+		  <Description>增加文字，矩形增加拖动限制</Description>
+		  <!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
+		  <!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 
 	  </PropertyGroup>
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 	</PropertyGroup>
+
 	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
 		<ItemGroup>
 			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
@@ -33,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
+	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All"/>
 	</ItemGroup>
 
 	<ItemGroup>

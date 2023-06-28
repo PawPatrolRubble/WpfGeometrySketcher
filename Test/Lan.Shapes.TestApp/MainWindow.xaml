@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard"
     Title="MainWindow"
     Width="800"
     Height="450"

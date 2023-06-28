@@ -5,19 +5,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
+using Ellipse = Lan.Shapes.Shapes.Ellipse;
+using Path = System.IO.Path;
+using Polygon = Lan.Shapes.Shapes.Polygon;
+using Rectangle = Lan.Shapes.Shapes.Rectangle;
 
 #endregion
 
