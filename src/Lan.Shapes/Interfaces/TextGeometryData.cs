@@ -16,14 +16,13 @@ namespace Lan.Shapes.Interfaces
         public string Content { get; set; }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TextGeometryData(Point location, string textContent, double fontSize,double strokeThickness) 
+        public TextGeometryData(Point location, string textContent, double fontSize) 
         {
             Location = location;
             Content = textContent;
             FontSize = fontSize;
-            StrokeThickness = strokeThickness;
         }
 
-        public double StrokeThickness { get; set; }
+        public double StrokeThickness { get; set; } = 10;
     }
 }

@@ -107,7 +107,7 @@ namespace Lan.Shapes.App
             //})); 
             
             
-            Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(new TextGeometryData(new Point(200,200),"helllo workd 1233",300,10));
+            Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(new TextGeometryData(new Point(200,200),"helllo workd 1233",300));
 
 
             //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
