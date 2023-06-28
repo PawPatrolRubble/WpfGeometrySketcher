@@ -299,7 +299,7 @@ namespace Lan.SketchBoard {
             foreach (var shapeStyler in CurrentShapeLayer.Stylers) {
                 shapeStyler.Value.SketchPen.Thickness = 0.5/scale;
                 shapeStyler.Value.DragHandleSize = 8 / scale;
-                Console.WriteLine($"dragSize{shapeStyler.Value.DragHandleSize}");
+                //Console.WriteLine($"dragSize{shapeStyler.Value.DragHandleSize}");
             }
 
         }
