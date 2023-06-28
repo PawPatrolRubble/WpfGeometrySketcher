@@ -100,50 +100,54 @@ namespace Lan.Shapes.App
         public RelayCommand LoadFromParameterCommand { get; private set; }
         private void LoadFromParameterCommandImpl()
         {
-            Camera1.SketchBoardDataManager.LoadShape<Rectangle, PointsData>(new PointsData(1, new List<Point>()
-            {
-                new Point(10,10),
-                new Point(50,50)
-            }));
-
-            Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
-            {
-                Center = new Point(150, 150),
-                RadiusX = 100,
-                RadiusY = 100,
-            });
-
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedCross, PointsData>(new PointsData(10, new List<Point>()
-            {
-                new Point(152,52),
-                new Point(359,463),
-                new Point(50,154),
-                new Point(461,361),
-            }));
-
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle, EllipseData>(new EllipseData()
-            {
-                Center = new Point(400, 400),
-                StrokeThickness = 10,
-                RadiusX = 150,
-                RadiusY = 150
-            });
-
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedRectangle, PointsData>(new PointsData(10,
-                new List<Point>()
-            {
-                new Point(600,600),
-                new Point(800,800),
-            }));
+            //Camera1.SketchBoardDataManager.LoadShape<Rectangle, PointsData>(new PointsData(1, new List<Point>()
+            //{
+            //    new Point(10,10),
+            //    new Point(50,50)
+            //})); 
+            
+            
+            Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(new TextGeometryData(new Point(200,200),"helllo workd 1233",300,10));
 
 
-            Camera1.SketchBoardDataManager.LoadShape<ThickenedLine, PointsData>(new PointsData(10,
-                new List<Point>()
-            {
-                new Point(600,600),
-                new Point(800,800),
-            }));
-            Camera1.SketchBoardDataManager.Shapes[0].Lock();
+            //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
+            //{
+            //    Center = new Point(150, 150),
+            //    RadiusX = 100,
+            //    RadiusY = 100,
+            //});
+
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedCross, PointsData>(new PointsData(10, new List<Point>()
+            //{
+            //    new Point(152,52),
+            //    new Point(359,463),
+            //    new Point(50,154),
+            //    new Point(461,361),
+            //}));
+
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle, EllipseData>(new EllipseData()
+            //{
+            //    Center = new Point(400, 400),
+            //    StrokeThickness = 10,
+            //    RadiusX = 150,
+            //    RadiusY = 150
+            //});
+
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedRectangle, PointsData>(new PointsData(10,
+            //    new List<Point>()
+            //{
+            //    new Point(600,600),
+            //    new Point(800,800),
+            //}));
+
+
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedLine, PointsData>(new PointsData(10,
+            //    new List<Point>()
+            //{
+            //    new Point(600,600),
+            //    new Point(800,800),
+            //}));
+            //Camera1.SketchBoardDataManager.Shapes[0].Lock();
         }
 
         public RelayCommand LockEditCommand { get; private set; }

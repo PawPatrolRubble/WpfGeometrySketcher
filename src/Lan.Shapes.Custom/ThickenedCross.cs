@@ -517,21 +517,6 @@ namespace Lan.Shapes.Custom
             }
         }
 
-        private double EnsureNumberWithinRange(double value, double min, double max)
-        {
-            value = Math.Min(value, max);
-            value = Math.Max(value, min);
-            return value;
-        }
-
-        private Point ForcePointInRange(Point point, double minX, double maxX, double minY, double maxY)
-        {
-            var x = point.X;
-            var y = point.Y;
-            x = EnsureNumberWithinRange(x, minX, maxX);
-            y = EnsureNumberWithinRange(y, minY, maxY);
-            return new Point(x, y);
-        }
 
 
 

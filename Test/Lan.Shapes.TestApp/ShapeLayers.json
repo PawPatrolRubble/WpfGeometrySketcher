@@ -48,37 +48,37 @@
   {
     "StyleSchema": {
       "Normal": {
-        "FillColor": "#a6f5f5",
+        "FillColor": "#0c0d0d",
         "StrokeColor": "#0c0d0d",
-        "StrokeThickness": 1.0,
+        "StrokeThickness": 10.0,
         "DashStyle": "Solid",
         "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "FillOpacity": 1
       },
       "MouseOver": {
         "FillColor": "#2c0ec2",
-        "StrokeColor": "#e00926",
+        "StrokeColor": "#2c0ec2",
         "StrokeThickness": 1.0,
         "DashStyle": "Dot",
         "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "FillOpacity": 1
       },
 
       "Selected": {
         "FillColor": "#2c0ec2",
-        "StrokeColor": "#e00926",
+        "StrokeColor": "#2c0ec2",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
         "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "FillOpacity": 1
       },
       "Locked": {
         "FillColor": "#d6d4d4",
-        "StrokeColor": "#a83232",
+        "StrokeColor": "#d6d4d4",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
         "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "FillOpacity": 1
       }
     },
     "LayerId": 2,

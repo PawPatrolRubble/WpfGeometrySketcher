@@ -383,7 +383,6 @@ namespace Lan.Shapes
         /// </summary>
         protected virtual void UpdateGeometryGroup()
         {
-            throw new NotImplementedException();
         }
 
         public void UpdateMouseCursor(DragLocation dragLocation)
@@ -437,6 +436,33 @@ namespace Lan.Shapes
         }
 
         #endregion
+
+        protected double EnsureNumberWithinRange(double value, double min, double max)
+        {
+            value = Math.Min(value, max);
+            value = Math.Max(value, min);
+            return value;
+        }
+
+        /// <summary>
+        /// if the point passed is out of the range defined after,
+        /// it will used the maximum valid value
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="minX"></param>
+        /// <param name="maxX"></param>
+        /// <param name="minY"></param>
+        /// <param name="maxY"></param>
+        /// <returns></returns>
+        protected Point ForcePointInRange(Point point, double minX, double maxX, double minY, double maxY)
+        {
+            var x = point.X;
+            var y = point.Y;
+            x = EnsureNumberWithinRange(x, minX, maxX);
+            y = EnsureNumberWithinRange(y, minY, maxY);
+            return new Point(x, y);
+        }
+
 
         protected void AddTagText(DrawingContext renderContext, Point location)
         {
