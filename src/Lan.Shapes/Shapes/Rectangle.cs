@@ -119,18 +119,22 @@ namespace Lan.Shapes.Shapes
                 switch (SelectedDragHandle.Id)
                 {
                     case 1:
-                        TopLeft = point;
+                        TopLeft = ForcePointInRange(point, 0, BottomRight.X, 0, BottomRight.Y);
                         break;
                     case 2:
-                        TopLeft = new Point(TopLeft.X, point.Y);
-                        BottomRight = new Point(point.X, BottomRight.Y);
+
+                        var validPointTopRight = ForcePointInRange(point, TopLeft.X, point.X, 0, BottomRight.Y);
+                        TopLeft = new Point(TopLeft.X, validPointTopRight.Y);
+                        BottomRight = new Point(validPointTopRight.X, BottomRight.Y);
                         break;
                     case 3:
-                        BottomRight = point;
+                        BottomRight = ForcePointInRange(point,TopLeft.X,point.X, TopLeft.Y, point.Y);
                         break;
                     case 4:
-                        TopLeft = new Point(point.X, TopLeft.Y);
-                        BottomRight = new Point(BottomRight.X, point.Y);
+                        var validPointBottomLeft = ForcePointInRange(point, 0, BottomRight.X, TopLeft.Y, point.Y);
+
+                        TopLeft = new Point(validPointBottomLeft.X, TopLeft.Y);
+                        BottomRight = new Point(BottomRight.X, validPointBottomLeft.Y);
                         break;
                 }
         }
@@ -182,7 +186,7 @@ namespace Lan.Shapes.Shapes
             {
                 if (!IsGeometryRendered)
                 {
-                    BottomRight = point;
+                    BottomRight = ForcePointInRange(point, TopLeft.X, point.X, TopLeft.Y, point.Y);
                 }
                 else if (SelectedDragHandle != null)
                 {
@@ -233,8 +237,8 @@ namespace Lan.Shapes.Shapes
                 return;
             }
 
-
             var renderContext = RenderOpen();
+
             if (ShapeStyler != null)
             {
                 AddTagText(renderContext, TopLeft - new Vector(0, ShapeLayer.TagFontSize));
@@ -246,6 +250,8 @@ namespace Lan.Shapes.Shapes
 
             renderContext.Close();
         }
+
+
 
         #endregion
 

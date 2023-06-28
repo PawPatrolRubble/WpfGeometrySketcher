@@ -34,6 +34,7 @@
                 <imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
+                    
                     DataContext="{Binding Camera2}" />
 
                 <imageViewer:ImageViewerControl

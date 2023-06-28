@@ -240,6 +240,7 @@ namespace Lan.SketchBoard {
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
+            
         }
 
         /// <summary>

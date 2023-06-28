@@ -4,9 +4,10 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.0.4-preview11</PackageVersion>
-		  <Description>在画十字时增加对各个点的相对位置检查</Description>
+		  <PackageVersion>1.0.5-preview05</PackageVersion>
+		  <Description>auto scale dragbox based on image scale</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+		  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 
 	  </PropertyGroup>
 
@@ -19,10 +20,8 @@
 		</ItemGroup>
 	</Target>
 
-	
-
 	<Target Name="PushPackage" AfterTargets="Pack">
-		<Exec Command="dotnet nuget push &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(AssemblyName).$(PackageVersion).nupkg&quot; -s http://192.168.3.116:8081/repository/nuget-hosted/ -k b3872fec-fe9e-3ef6-8b79-2d7a8a9b5839" />
+		<Exec Command="dotnet nuget push &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(AssemblyName).$(PackageVersion).nupkg&quot; -s http://112.81.76.101:8081/repository/nuget-hosted/ -k b3872fec-fe9e-3ef6-8b79-2d7a8a9b5839" />
 	</Target>
 
 	<ItemGroup>
