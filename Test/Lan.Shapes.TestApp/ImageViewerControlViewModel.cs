@@ -126,6 +126,20 @@ namespace Lan.Shapes.App
             }
         }
 
+        private Point _mouseDoubleClickPosition;
+
+        /// <summary>
+        /// 双击相对于图片位置
+        /// </summary>
+        public Point MouseDoubleClickPosition
+        {
+            get => _mouseDoubleClickPosition;
+            set
+            {
+                _mouseDoubleClickPosition = value;
+            }
+        }
+
         /// <summary>
         ///
         /// </summary>
