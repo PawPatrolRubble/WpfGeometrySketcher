@@ -79,7 +79,7 @@ namespace Lan.Shapes.App
             CreateGeometryTypeList();
 
             //Image = CreateEmptyImageSource(512, 480);
-            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "TestFull.bmp"));
+            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "test0.bmp"));
 
             ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });
 
