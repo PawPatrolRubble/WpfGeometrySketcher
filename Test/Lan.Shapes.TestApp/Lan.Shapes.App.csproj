@@ -36,6 +36,9 @@
       <None Update="test0.bmp">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="TestFull.bmp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ProjectExtensions><VisualStudio><UserProperties shapelayers_1json__JsonSchema="https://blockprotocol.org/schemas/block-metadata.json" /></VisualStudio></ProjectExtensions>

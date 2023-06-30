@@ -21,21 +21,21 @@ namespace Lan.Shapes.App
     {
         private readonly IShapeLayerManager _shapeLayerManager;
         public IImageViewerViewModel Camera1 { get; set; }
-        public IImageViewerViewModel Camera2 { get; set; }
+        //public IImageViewerViewModel Camera2 { get; set; }
 
         public MainWindowViewModel(
             IServiceProvider serviceProvider,
             IShapeLayerManager shapeLayerManager)
         {
             Camera1 = serviceProvider.GetService<IImageViewerViewModel>();
-            Camera2 = serviceProvider.GetService<IImageViewerViewModel>();
+            //Camera2 = serviceProvider.GetService<IImageViewerViewModel>();
             _shapeLayerManager = shapeLayerManager;
 
             Camera1.Layers = _shapeLayerManager.Layers;
             Camera1.SelectedShapeLayer = Camera1.Layers[0];
 
-            Camera2.Layers = _shapeLayerManager.Layers;
-            Camera2.SelectedShapeLayer = Camera2.Layers[0];
+            //Camera2.Layers = _shapeLayerManager.Layers;
+            //Camera2.SelectedShapeLayer = Camera2.Layers[0];
 
 
             //Camera1 = camera;
@@ -48,7 +48,7 @@ namespace Lan.Shapes.App
             SetTagNameCommand = new RelayCommand(SetTagNameCommandImpl);
 
             ImageViewerViewModels.Add(Camera1);
-            ImageViewerViewModels.Add(Camera2);
+            //ImageViewerViewModels.Add(Camera2);
 
         }
 

@@ -28,13 +28,13 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <UniformGrid Columns="2" Rows="2">
+            <UniformGrid >
 
-                <imageViewer:ImageViewerControl
+                <!--<imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
                     
-                    DataContext="{Binding Camera2}" />
+                    DataContext="{Binding Camera2}" />-->
 
                 <imageViewer:ImageViewerControl
                     Margin="5"
