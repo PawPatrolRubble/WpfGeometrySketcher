@@ -17,7 +17,7 @@ namespace Lan.Shapes.Custom
     {
         #region fields
         //水平与
-        private const int MinPixelDistance = 100;
+        private const int MinPixelDistance = 1;
 
         private readonly bool _isSquare;
         private readonly CombinedGeometry? _combinedGeometry;
@@ -500,7 +500,7 @@ namespace Lan.Shapes.Custom
                 case DragLocations.HTopLeft:
                     return ForcePointInRange(
                         point,
-                        point.X,
+                        0,
                         VerticalTopLeft.X - MinPixelDistance,
                         VerticalTopLeft.Y + MinPixelDistance,
                         HorizontalBottomRight.Y - MinPixelDistance);
