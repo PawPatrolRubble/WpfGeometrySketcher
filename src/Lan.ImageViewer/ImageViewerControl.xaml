@@ -39,6 +39,7 @@
             <local:ImageViewer
                 BorderBrush="LightGray"
                 BorderThickness="0"
+                MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 ImageSource="{Binding Image}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes;
@@ -41,6 +42,11 @@ namespace Lan.ImageViewer
         /// 当前选中的layer
         /// </summary>
         ShapeLayer SelectedShapeLayer { get; set; }
+
+        /// <summary>
+        /// 双击相对于图片位置
+        /// </summary>
+        Point MouseDoubleClickPosition { get; set; }
 
         #region commands
 
