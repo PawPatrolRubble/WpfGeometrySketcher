@@ -267,8 +267,8 @@ namespace Lan.ImageViewer
 
             if (e.NewValue is BitmapSource source)
             {
-                pixelWidth = source.Width;
-                pixelHeight = source.Height;
+                pixelWidth = source.PixelWidth;
+                pixelHeight = source.PixelHeight;
             }
 
             if (e.NewValue is DrawingImage drawingImage)
