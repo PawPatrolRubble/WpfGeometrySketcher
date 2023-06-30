@@ -308,7 +308,8 @@ namespace Lan.ImageViewer
         /// <param name="e">The event data.</param>
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
         {
-            MouseDoubleClickPosition = e.GetPosition(this);
+            MouseDoubleClickPosition = e.GetPosition(_image);
+            //Console.WriteLine($"mouse dbc pos: {MouseDoubleClickPosition}");
         }
 
 
