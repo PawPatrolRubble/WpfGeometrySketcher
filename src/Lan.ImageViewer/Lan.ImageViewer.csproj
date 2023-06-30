@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.2.1</PackageVersion>
-		  <Description>fix mousedoubleclick position issue</Description>
+		  <PackageVersion>1.1.3.1</PackageVersion>
+		  <Description>added MouseDoubleClickPosition to ImageViewerControl</Description>
 		  <!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		  <!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 
