@@ -17,6 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Lan.ImageViewer\Lan.ImageViewer.csproj" />
       <ProjectReference Include="..\..\src\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
+      <ProjectReference Include="..\..\src\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" />
       <ProjectReference Include="..\..\src\Lan.SketchBoard\Lan.SketchBoard.csproj" />
     </ItemGroup>
 
@@ -29,6 +30,9 @@
     <ItemGroup>
       <None Update="1.bmp">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="996.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="ShapeLayers.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

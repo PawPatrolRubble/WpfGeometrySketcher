@@ -195,7 +195,7 @@ namespace Lan.Shapes
 
         protected virtual void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
 
