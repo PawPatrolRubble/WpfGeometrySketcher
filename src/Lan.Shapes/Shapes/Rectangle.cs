@@ -41,7 +41,6 @@ namespace Lan.Shapes.Shapes
                     UpdateHandleLocation();
                     UpdateVisual();
                 }
-
             }
         }
 
@@ -244,6 +243,7 @@ namespace Lan.Shapes.Shapes
                 AddTagText(renderContext, TopLeft - new Vector(0, ShapeLayer.TagFontSize));
 
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _rectangleGeometry);
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometryGroup);
                 foreach (var dragHandle in Handles)
                     renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, dragHandle.HandleGeometry);
             }

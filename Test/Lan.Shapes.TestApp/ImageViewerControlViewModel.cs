@@ -16,12 +16,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
+using Lan.Shapes.DialogGeometry;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 using Ellipse = Lan.Shapes.Shapes.Ellipse;
 using Path = System.IO.Path;
 using Polygon = Lan.Shapes.Shapes.Polygon;
 using Rectangle = Lan.Shapes.Shapes.Rectangle;
+using RelayCommand = Lan.Shapes.DialogGeometry.Dialog.RelayCommand;
 
 #endregion
 
@@ -78,12 +80,12 @@ namespace Lan.Shapes.App
             ShowSimpleCanvas = true;
             CreateGeometryTypeList();
 
-            //Image = CreateEmptyImageSource(512, 480);
-            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "test0.bmp"));
+            Image = CreateEmptyImageSource(2048, 2048);
+            //Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "996.png"));
 
             ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });
 
-            ChooseGeometryTypeCommand = new RelayCommand<GeometryType>(ChooseGeometryTypeCommandImpl);
+            ChooseGeometryTypeCommand = new DialogGeometry.Dialog.RelayCommand<GeometryType>(ChooseGeometryTypeCommandImpl);
 
             ZoomInCommand = new RelayCommand(() => { Scale *= 1 + ScaleIncremental; });
 
@@ -255,6 +257,8 @@ namespace Lan.Shapes.App
             }
 
 
+            _geometryTypeManager.RegisterGeometryType<GridGeometry>();
+            _geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
 

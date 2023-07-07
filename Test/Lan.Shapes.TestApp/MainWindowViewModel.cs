@@ -1,12 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Lan.ImageViewer;
-using Lan.Shapes.Custom;
-using Lan.Shapes.Interfaces;
-using Lan.Shapes.Shapes;
-using Microsoft.Extensions.DependencyInjection;
+﻿#nullable enable
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -14,13 +7,29 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Lan.ImageViewer;
+using Lan.Shapes.Custom;
+using Lan.Shapes.DialogGeometry.Dialog;
+using Lan.Shapes.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lan.Shapes.App
 {
     public class MainWindowViewModel : ObservableObject
     {
+        #region fields
+
         private readonly IShapeLayerManager _shapeLayerManager;
-        public IImageViewerViewModel Camera1 { get; set; }
+
+        private Point _mouseDblPosition;
+
+        private IImageViewerViewModel? _selectedImageViewModel;
+
+        #endregion
+
+        #region constructors
+
         //public IImageViewerViewModel Camera2 { get; set; }
 
         public MainWindowViewModel(
@@ -37,7 +46,6 @@ namespace Lan.Shapes.App
             //Camera2.Layers = _shapeLayerManager.Layers;
             //Camera2.SelectedShapeLayer = Camera2.Layers[0];
 
-
             //Camera1 = camera;
             SelectOneShapeCommand = new RelayCommand(SelectOneShapeCommandImpl);
             GetShapeInfoCommand = new RelayCommand(GetShapeInfoCommandImpl);
@@ -49,8 +57,53 @@ namespace Lan.Shapes.App
 
             ImageViewerViewModels.Add(Camera1);
             //ImageViewerViewModels.Add(Camera2);
-
+            SelectedImageViewModel = ImageViewerViewModels[0];
         }
+
+        #endregion
+
+        #region properties
+
+        public IImageViewerViewModel Camera1 { get; set; }
+
+        public IImageViewerViewModel? SelectedImageViewModel
+        {
+            get => _selectedImageViewModel;
+            set => SetProperty(ref _selectedImageViewModel, value);
+        }
+
+        public ObservableCollection<IImageViewerViewModel> ImageViewerViewModels { get; set; } =
+            new ObservableCollection<IImageViewerViewModel>();
+
+
+        public ICommand SelectOneShapeCommand { get; }
+
+        public ICommand GetShapeInfoCommand { get; }
+
+        public ICommand SetTagNameCommand { get; }
+
+        public RelayCommand LoadFromParameterCommand { get; }
+
+        public RelayCommand LockEditCommand { get; }
+
+
+        public RelayCommand UnlockEditCommand { get; }
+
+        public RelayCommand FilterShapeTypeCommand { get; }
+
+        public Point MouseDblPosition
+        {
+            get => _mouseDblPosition;
+            set
+            {
+                SetProperty(ref _mouseDblPosition, value);
+                Console.WriteLine(_mouseDblPosition);
+            }
+        }
+
+        #endregion
+
+        #region all other members
 
         private ImageSource CreateImageSourceFromFile(string filePath)
         {
@@ -65,39 +118,28 @@ namespace Lan.Shapes.App
             }
         }
 
-        private IImageViewerViewModel _selectedImageViewModel;
-
-        public IImageViewerViewModel SelectedImageViewModel
-        {
-            get => _selectedImageViewModel;
-            set { SetProperty(ref _selectedImageViewModel, value); }
-        }
-
-        public ObservableCollection<IImageViewerViewModel> ImageViewerViewModels { get; set; } =
-            new ObservableCollection<IImageViewerViewModel>();
-
-
-        public ICommand SelectOneShapeCommand { get; private set; }
         private void SelectOneShapeCommandImpl()
         {
-
         }
 
-        public ICommand GetShapeInfoCommand { get; private set; }
         private void GetShapeInfoCommandImpl()
         {
-
         }
-
-        public ICommand SetTagNameCommand { get; private set; }
 
 
         private void SetTagNameCommandImpl()
         {
-            SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry.Tag = "absdasdasd";
+            try
+            {
+                if (SelectedImageViewModel?.SketchBoardDataManager.SelectedGeometry != null)
+                    SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry.Tag = "absdasdasd";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
-        public RelayCommand LoadFromParameterCommand { get; private set; }
         private void LoadFromParameterCommandImpl()
         {
             //Camera1.SketchBoardDataManager.LoadShape<Rectangle, PointsData>(new PointsData(1, new List<Point>()
@@ -105,9 +147,10 @@ namespace Lan.Shapes.App
             //    new Point(10,10),
             //    new Point(50,50)
             //})); 
-            
-            
-            Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(new TextGeometryData(new Point(200,200),"helllo workd 1233",300));
+
+
+            Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(
+                new TextGeometryData(new Point(200, 200), "Hello world", 50));
 
 
             //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
@@ -150,35 +193,21 @@ namespace Lan.Shapes.App
             //Camera1.SketchBoardDataManager.Shapes[0].Lock();
         }
 
-        public RelayCommand LockEditCommand { get; private set; }
         private void LockEditCommandImpl()
         {
-            SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry?.Lock();
+            SelectedImageViewModel?.SketchBoardDataManager.SelectedGeometry?.Lock();
         }
 
-
-        public RelayCommand UnlockEditCommand { get; private set; }
         private void UnlockEditCommandImpl()
         {
-            SelectedImageViewModel.SketchBoardDataManager.Shapes.Last().UnLock();
+            SelectedImageViewModel?.SketchBoardDataManager.Shapes.Last().UnLock();
         }
 
-        public RelayCommand FilterShapeTypeCommand { get; private set; }
         private void FilterShapeTypeCommandImpl()
         {
-            SelectedImageViewModel.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
+            SelectedImageViewModel?.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
         }
 
-        private Point _mouseDblPosition;
-
-        public Point MouseDblPosition
-        {
-            get => _mouseDblPosition;
-            set
-            {
-                SetProperty(ref _mouseDblPosition, value);
-                Console.WriteLine(_mouseDblPosition);
-            }
-        }
+        #endregion
     }
 }

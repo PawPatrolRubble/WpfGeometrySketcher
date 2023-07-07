@@ -348,3 +348,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/Test/Lan.Shapes.TestApp/1.bmp
+/Test/Lan.Shapes.TestApp/996.png
+/Test/Lan.Shapes.TestApp/TestFull.bmp
+/Test/Lan.Shapes.TestApp/test0.bmp

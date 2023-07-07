@@ -85,10 +85,10 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
-                            Focusable="True"
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
                             ClipToBounds="True"
+                            Focusable="True"
                             IsHitTestVisible="True">
 
                             <Line
@@ -135,13 +135,13 @@
                                 <Button
                                     x:Name="BtnFit"
                                     Grid.Column="1"
+                                    VerticalAlignment="Top"
                                     Panel.ZIndex="1"
                                     imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
                                     imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
                                     BorderBrush="Lime"
                                     BorderThickness="2"
                                     Foreground="Lime"
-                                    VerticalAlignment="Top"
                                     Style="{StaticResource IconButton}" />
                             </Grid>
 
