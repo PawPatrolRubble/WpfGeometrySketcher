@@ -1,31 +1,67 @@
+#region
+
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Shapes;
 
+#endregion
+
 namespace Lan.Shapes.DialogGeometry
 {
     public class GridData
     {
+        #region Propeties
+
+        public Point BottomRight { get; set; }
         public int Id { get; set; }
         public Point TopLeft { get; set; }
-        public Point BottomRight { get; set; }
 
+        #endregion
     }
 
     public class GriddedRectangle : Rectangle
     {
+        #region fields
+
+        private List<LineGeometry> _verticalLines = new List<LineGeometry>();
+        private List<LineGeometry> _horizontalLines = new List<LineGeometry>();
+
+        private readonly GridGeometryParameter _gridGeometryParameter = new GridGeometryParameter();
         private GridData[,] _lines;
 
-        public int RowGap { get; set; }
+        #endregion
+
+        #region Propeties
+
         public int ColumnGap { get; set; }
 
-        private GridGeometryParameter _gridGeometryParameter = new GridGeometryParameter();
+        public int RowGap { get; set; }
+
+        private Point TopRight
+        {
+            get => new Point(BottomRight.X, TopLeft.Y);
+        }
+
+        private Point BottomLeft
+        {
+            get => new Point(TopLeft.X, BottomRight.Y);
+        }
+
+
+        #endregion
+
+        #region Constructors
 
         public GriddedRectangle(ShapeLayer layer) : base(layer)
         {
-
         }
+
+        #endregion
+
+        #region local methods
 
         /// <summary>
         /// when mouse left button up
@@ -43,8 +79,7 @@ namespace Lan.Shapes.DialogGeometry
                 });
                 BottomRight = newPoint;
 
-                RowGap = (int)((BottomRight.Y - TopLeft.Y) / _gridGeometryParameter.RowCount);
-                ColumnGap = (int)((BottomRight.X - TopLeft.X) / _gridGeometryParameter.ColumnCount);
+
 
                 UpdateOrAddLineGeometries();
                 //RenderGeometryGroup.Children.AddRange(_horizontalLines);
@@ -56,15 +91,32 @@ namespace Lan.Shapes.DialogGeometry
 
         private void UpdateOrAddLineGeometries()
         {
+            RowGap = (int)((BottomRight.Y - TopLeft.Y) / _gridGeometryParameter.RowCount);
+            ColumnGap = (int)((BottomRight.X - TopLeft.X) / _gridGeometryParameter.ColumnCount);
+
             if (_lines == null)
             {
                 _lines = new GridData[_gridGeometryParameter.RowCount, _gridGeometryParameter.ColumnCount];
+                _verticalLines.AddRange(Enumerable.Range(0, _gridGeometryParameter.ColumnCount).Select(x => new LineGeometry()));
+                _horizontalLines.AddRange(Enumerable.Range(0, _gridGeometryParameter.RowCount).Select(x => new LineGeometry()));
+
+                RenderGeometryGroup.Children.AddRange(_verticalLines);
+                RenderGeometryGroup.Children.AddRange(_horizontalLines);
             }
 
             for (var rowIndex = 0; rowIndex < _gridGeometryParameter.RowCount; rowIndex++)
             {
+                _horizontalLines[rowIndex].StartPoint = TopLeft + new Vector(0, RowGap * rowIndex);
+                _horizontalLines[rowIndex].EndPoint = TopRight + new Vector(0, RowGap * rowIndex);
+
                 for (var colIndex = 0; colIndex < _gridGeometryParameter.ColumnCount; colIndex++)
                 {
+                    if (rowIndex == 0)
+                    {
+                        _verticalLines[colIndex].StartPoint = TopLeft + new Vector(ColumnGap * colIndex, 0);
+                        _verticalLines[colIndex].EndPoint = BottomLeft + new Vector(ColumnGap * colIndex, 0);
+
+                    }
                     if (_lines[rowIndex, colIndex] == null)
                     {
                         _lines[rowIndex, colIndex] ??= new GridData();
@@ -78,7 +130,15 @@ namespace Lan.Shapes.DialogGeometry
             }
         }
 
+        public override void UpdateVisual()
+        {
+            if (IsGeometryRendered)
+            {
+                UpdateOrAddLineGeometries();
+            }
+            base.UpdateVisual();
+        }
 
-
+        #endregion
     }
 }

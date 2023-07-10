@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -12,7 +13,9 @@ using Lan.ImageViewer;
 using Lan.Shapes.Custom;
 using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 
 namespace Lan.Shapes.App
 {
@@ -54,6 +57,8 @@ namespace Lan.Shapes.App
             UnlockEditCommand = new RelayCommand(UnlockEditCommandImpl);
             FilterShapeTypeCommand = new RelayCommand(FilterShapeTypeCommandImpl);
             SetTagNameCommand = new RelayCommand(SetTagNameCommandImpl);
+            ChooseFileDialogCommand = new RelayCommand(ChooseFileDialogCommandImpl);
+            ClearAllShapesCommand = new RelayCommand(ClearAllShapesCommandImpl);
 
             ImageViewerViewModels.Add(Camera1);
             //ImageViewerViewModels.Add(Camera2);
@@ -90,6 +95,49 @@ namespace Lan.Shapes.App
         public RelayCommand UnlockEditCommand { get; }
 
         public RelayCommand FilterShapeTypeCommand { get; }
+        public RelayCommand ChooseFileDialogCommand { get; private set; }
+
+        public RelayCommand ClearAllShapesCommand { get; private set; }
+
+
+        private void ClearAllShapesCommandImpl()
+        {
+            if (SelectedImageViewModel!=null)
+            {
+                SelectedImageViewModel.SketchBoardDataManager.ClearAllShapes();
+            }
+        }
+        private string _imagePath;
+
+        public string ImagePath
+        {
+            get => _imagePath;
+            set { SetProperty(_imagePath, value, changed => UpdateImageSource(changed)); }
+        }
+
+        private void UpdateImageSource(string changed)
+        {
+            if (SelectedImageViewModel != null && !string.IsNullOrEmpty(changed))
+            {
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = new MemoryStream(File.ReadAllBytes(changed));
+                bitmapImage.EndInit();
+                SelectedImageViewModel.Image = bitmapImage;
+            }
+        }
+
+        private void ChooseFileDialogCommandImpl()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            openFileDialog.Filter = "JPEG files (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG files (*.png)|*.png|BMP files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ImagePath = openFileDialog.FileName;
+            }
+        }
+
 
         public Point MouseDblPosition
         {
@@ -205,7 +253,7 @@ namespace Lan.Shapes.App
 
         private void FilterShapeTypeCommandImpl()
         {
-            SelectedImageViewModel?.FilterGeometryTypes(x => !x.Name.Equals(nameof(ThickenedCross)));
+            SelectedImageViewModel?.FilterGeometryTypes(x => x.Name.Equals(nameof(Rectangle)));
         }
 
         #endregion

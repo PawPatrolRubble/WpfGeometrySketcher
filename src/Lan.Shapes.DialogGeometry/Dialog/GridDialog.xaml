@@ -15,24 +15,42 @@
     <UserControl.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
         </Style>
 
         <Style TargetType="Button">
-
-            <Setter Property="Margin" Value="2" />
-
+            <Setter Property="Margin" Value="2,5,2,5" />
+            <Setter Property="FontSize" Value="18" />
         </Style>
     </UserControl.Resources>
 
 
     <StackPanel>
-        <TextBox Text="{Binding RowCount}" />
-        <TextBox Text="{Binding ColCount}" />
-        <TextBox Text="{Binding VerticalGap}" />
-        <TextBox Text="{Binding HorizontalGap}" />
 
-        <Button Command="{Binding OkCommand}" Content="Ok" />
-        <Button Command="{Binding CloseCommand}" Content="Cancel" />
+        <TextBlock Text="row count" />
+        <TextBox 
+            Text="{Binding RowCount}" />
+        <TextBlock Text="col count" />
+        <TextBox Text="{Binding ColCount}" />
+
+        <!--<TextBlock Text="vertical gap" />
+        <TextBox Text="{Binding VerticalGap}" />
+        <TextBlock Text="horizontal gap" />
+        <TextBox Text="{Binding HorizontalGap}" />-->
+
+        <UniformGrid Rows="1" Margin="0 35 0 0 ">
+
+            <Button
+                Background="#989898"
+                Command="{Binding OkCommand}"
+                Content="Ok" />
+            <Button Command="{Binding CloseCommand}" Content="Cancel" />
+        </UniformGrid>
 
     </StackPanel>
 </UserControl>

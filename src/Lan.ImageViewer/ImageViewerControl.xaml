@@ -39,6 +39,7 @@
             <local:ImageViewer
                 BorderBrush="LightGray"
                 BorderThickness="0"
+                ShowCrossLine="False"
                 ImageSource="{Binding Image}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

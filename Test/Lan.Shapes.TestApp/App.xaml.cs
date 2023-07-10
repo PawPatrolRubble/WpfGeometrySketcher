@@ -8,25 +8,17 @@ using Lan.SketchBoard;
 
 namespace Lan.Shapes.App
 {
-    public class App : Application
+    public partial class App : Application
     {
 
-        private IServiceProvider _serviceProvider;
+        public static IServiceProvider ServiceProvider;
         private readonly IServiceCollection _serviceCollection = new ServiceCollection();
         
         protected override void OnStartup(StartupEventArgs e)
         {
             ConfigServices();
-
-            //initialize shape layer data
-            _serviceProvider.GetService<IShapeLayerManager>().ReadShapeLayers("ShapeLayers.json");
-            _serviceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
-
-            var currentShapeLayer = _serviceProvider.GetRequiredService<IShapeLayerManager>().Layers[0];
-            var shape = new ThickenedCircle(currentShapeLayer);
-
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            ServiceProvider.GetService<IShapeLayerManager>().ReadShapeLayers("ShapeLayers.json");
+            ServiceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
         }   
 
         private void ConfigServices()
@@ -46,17 +38,17 @@ namespace Lan.Shapes.App
             _serviceCollection.AddTransient<IImageViewerViewModel, ImageViewerControlViewModel>();
             _serviceCollection.AddTransient<ISketchBoardDataManager, SketchBoardDataManager>();
 
-            _serviceProvider = _serviceCollection.BuildServiceProvider();
+            ServiceProvider = _serviceCollection.BuildServiceProvider();
         }
     }
 
-    public class Program
-    {
-        [STAThread]
-        public static void Main(params string[] args)
-        {
-            var app = new App();
-            app.Run();
-        }
-    }
+    //public class Program
+    //{
+    //    [STAThread]
+    //    public static void Main(params string[] args)
+    //    {
+    //        var app = new App();
+    //        app.Run();
+    //    }
+    //}
 }
