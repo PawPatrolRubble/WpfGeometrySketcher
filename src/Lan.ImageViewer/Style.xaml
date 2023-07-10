@@ -15,7 +15,7 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <system:Double x:Key="FontSize">18</system:Double>
-    <system:Double x:Key="IconSize">16</system:Double>
+    <system:Double x:Key="IconSize">22</system:Double>
     <GridLength x:Key="TextBlockWidth">310</GridLength>
 
     <Style x:Key="IconButton" TargetType="Button">
@@ -302,52 +302,54 @@
         </Setter>
     </Style>
 
+
+    <DropShadowEffect
+        x:Key="DropShadowEffect"
+        BlurRadius="3"
+        Opacity="1"
+        ShadowDepth="0"
+        Color="White" />
+
     <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type imageViewer:GeometryType}">
-        <Button
+
+        <Border
+            x:Name="Container"
             Margin="2"
-            Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
-            CommandParameter="{Binding}">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="2" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border
-                                    x:Name="Container"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    ToolTip="{Binding Description}">
+            BorderThickness="1"
+            CornerRadius="3"
+            ToolTip="{Binding Description}">
+            <Border.InputBindings>
+                <MouseBinding
+                    Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
+                    CommandParameter="{Binding}"
+                    MouseAction="LeftClick" />
+            </Border.InputBindings>
 
-                                    <StackPanel Orientation="Horizontal">
-                                        <Path
-                                            Width="{StaticResource IconSize}"
-                                            Height="{StaticResource IconSize}"
-                                            Margin="5"
-                                            Data="{Binding IconGeometry}"
-                                            Stretch="Uniform"
-                                            Stroke="{TemplateBinding Foreground}"
-                                            StrokeThickness="1" />
-                                    </StackPanel>
+            <Path
+                x:Name="Path"
+                Width="{StaticResource IconSize}"
+                Height="{StaticResource IconSize}"
+                Margin="5"
+                HorizontalAlignment="Center"
+                Data="{Binding IconGeometry}"
+                Stretch="Uniform"
+                StrokeThickness="1" />
 
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
+        </Border>
 
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="Lime" />
-                            <Setter Property="BorderBrush" Value="Lime" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                <Setter TargetName="Container" Property="BorderBrush" Value="#006cbe" />
+                <Setter TargetName="Container" Property="Background" Value="#006cbe" />
+                <Setter TargetName="Path" Property="Fill" Value="White" />
+                <Setter TargetName="Container" Property="Effect" Value="{StaticResource DropShadowEffect}" />
+            </DataTrigger>
 
+            <DataTrigger Binding="{Binding IsSelected}" Value="false">
+                <Setter TargetName="Container" Property="Background" Value="#eeeef2" />
+                <Setter TargetName="Path" Property="Fill" Value="Black" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type shapes:Rectangle}">
@@ -355,7 +357,8 @@
             <TextBlock Text="Rectangle: " />
             <TextBlock>
                 <Run Text="{Binding Id, Mode=OneWay}" />
-                <Run Text="{Binding TopLeft, StringFormat='; {}{0:f2};'}" />
+                <LineBreak />
+                <Run Text="{Binding TopLeft, StringFormat='{}{0:f2} ,'}" />
                 <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
             </TextBlock>
         </StackPanel>

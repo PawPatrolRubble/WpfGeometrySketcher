@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.5.1</PackageVersion>
-		  <Description>十字左右边距离最小改为1pixel</Description>
+		  <PackageVersion>1.1.5.2</PackageVersion>
+		  <Description>更新图标显示样式</Description>
 		  <!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		  <!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 

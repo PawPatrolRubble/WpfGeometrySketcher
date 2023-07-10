@@ -1,21 +1,14 @@
 ﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lan.Shapes.App
 {
     public partial class MainWindow : Window
     {
-     
-
-
-
-
-        public MainWindow(MainWindowViewModel viewModel)
+        public MainWindow()
         {
-            DataContext = viewModel;
             InitializeComponent();
+            DataContext = App.ServiceProvider.GetRequiredService<MainWindowViewModel>();
         }
-
-       
-
     }
 }
