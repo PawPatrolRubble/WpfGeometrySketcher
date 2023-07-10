@@ -40,6 +40,7 @@
                 BorderBrush="LightGray"
                 BorderThickness="0"
                 ShowCrossLine="False"
+                Style="{StaticResource ImageViewer.Compact}"
                 ImageSource="{Binding Image}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

@@ -4,8 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,44 +23,20 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(Canvas), Name = "containerCanvas")]
     [TemplatePart(Type = typeof(Image), Name = "ImageViewer")]
     [TemplatePart(Type = typeof(Grid), Name = "GridContainer")]
-    [TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
+    //[TemplatePart(Type = typeof(TextBlock), Name = "TbMousePosition")]
     [TemplatePart(Type = typeof(Button), Name = "BtnFit")]
     [TemplatePart(Type = typeof(Border), Name = "BorderContainer")]
     [TemplatePart(Type = typeof(Line), Name = "VerticalLine")]
     [TemplatePart(Type = typeof(Line), Name = "HorizontalLine")]
-    public class ImageViewerBasic : Control,INotifyPropertyChanged
+    public class ImageViewerBasic : Control, INotifyPropertyChanged
     {
         #region fields
 
-
-
-        private readonly MatrixTransform _matrixTransform = new MatrixTransform();
-        private readonly ScaleTransform _scaleTransform = new ScaleTransform();
-        private readonly TranslateTransform _translateTransform = new TranslateTransform();
-        private readonly TransformGroup _transformGroup = new TransformGroup();
-        private Canvas? _containerCanvas;
-
-        private bool _disablePropertyChangeCallback;
-        private Grid? _gridContainer;
-        private Image? _image;
-        private bool _isImageScaledByMouseWheel;
-        private bool _isMouseFirstClick = true;
-        private Point? _lastMouseDownPoint;
-        private Point? _mousePos;
-        private TextBlock? _textBlock;
-        private Button? _fitButton;
-        private Border? _borderContainer;
-
-        private Line? _verticalLineGeometry;
-        private Line? _horizontalLineGeometry;
-        #endregion
-
-        #region Propeties
-
         public static readonly DependencyProperty MouseDoubleClickPositionProperty = DependencyProperty.Register(
-            nameof(MouseDoubleClickPosition), typeof(Point), typeof(ImageViewerBasic), new FrameworkPropertyMetadata(default(Point))
+            nameof(MouseDoubleClickPosition), typeof(Point), typeof(ImageViewerBasic),
+            new FrameworkPropertyMetadata(default(Point))
             {
-                DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
 
@@ -96,45 +70,49 @@ namespace Lan.ImageViewer
         public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
             nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(1.0));
 
-        public double StrokeThickness
-        {
-            get { return (double)GetValue(StrokeThicknessProperty); }
-            set { SetValue(StrokeThicknessProperty, value); }
-        }
-
         public static readonly DependencyProperty CrossLineColorProperty = DependencyProperty.Register(
             nameof(CrossLineColor), typeof(Brush), typeof(ImageViewerBasic), new PropertyMetadata(Brushes.Lime));
 
-        public Brush CrossLineColor
-        {
-            get { return (Brush)GetValue(CrossLineColorProperty); }
-            set { SetValue(CrossLineColorProperty, value); }
-        }
-
         public static readonly DependencyProperty StrokeDashArrayProperty = DependencyProperty.Register(
-            nameof(StrokeDashArray), typeof(DoubleCollection), typeof(ImageViewerBasic), new PropertyMetadata(default(DoubleCollection)));
-
-        public DoubleCollection StrokeDashArray
-        {
-            get { return (DoubleCollection)GetValue(StrokeDashArrayProperty); }
-            set { SetValue(StrokeDashArrayProperty, value); }
-        }
+            nameof(StrokeDashArray), typeof(DoubleCollection), typeof(ImageViewerBasic),
+            new PropertyMetadata(default(DoubleCollection)));
 
 
         public static readonly DependencyProperty ShowCrossLineProperty = DependencyProperty.Register(
             nameof(ShowCrossLine), typeof(bool), typeof(ImageViewerBasic), new PropertyMetadata(true));
 
-        public bool ShowCrossLine
-        {
-            get { return (bool)GetValue(ShowCrossLineProperty); }
-            set { SetValue(ShowCrossLineProperty, value); }
-        }
+
+        private readonly MatrixTransform _matrixTransform = new MatrixTransform();
+        private readonly ScaleTransform _scaleTransform = new ScaleTransform();
+        private readonly TransformGroup _transformGroup = new TransformGroup();
+        private readonly TranslateTransform _translateTransform = new TranslateTransform();
+        private Border? _borderContainer;
+        private Canvas? _containerCanvas;
+
+        private bool _disablePropertyChangeCallback;
+        private Button? _fitButton;
+        private Grid? _gridContainer;
+        private Line? _horizontalLineGeometry;
+        private Image? _image;
+        private bool _isImageScaledByMouseWheel;
+        private bool _isMouseFirstClick = true;
+        private Point? _lastMouseDownPoint;
 
 
-        public Point MouseDoubleClickPosition
+        private double _localScale;
+        private Point? _mousePos;
+        //private TextBlock? _textBlock;
+
+        private Line? _verticalLineGeometry;
+
+        #endregion
+
+        #region Propeties
+
+        public Brush CrossLineColor
         {
-            get { return (Point)GetValue(MouseDoubleClickPositionProperty); }
-            set { SetValue(MouseDoubleClickPositionProperty, value); }
+            get => (Brush)GetValue(CrossLineColorProperty);
+            set => SetValue(CrossLineColorProperty, value);
         }
 
 
@@ -142,6 +120,19 @@ namespace Lan.ImageViewer
         {
             get => (ImageSource)GetValue(ImageSourceProperty);
             set => SetValue(ImageSourceProperty, value);
+        }
+
+        public double LocalScale
+        {
+            get => _localScale;
+            set => SetField(ref _localScale, value);
+        }
+
+
+        public Point MouseDoubleClickPosition
+        {
+            get => (Point)GetValue(MouseDoubleClickPositionProperty);
+            set => SetValue(MouseDoubleClickPositionProperty, value);
         }
 
         public double PixelHeight
@@ -160,8 +151,43 @@ namespace Lan.ImageViewer
             set => SetValue(ScaleProperty, value);
         }
 
+        public bool ShowCrossLine
+        {
+            get => (bool)GetValue(ShowCrossLineProperty);
+            set => SetValue(ShowCrossLineProperty, value);
+        }
+
+        public DoubleCollection StrokeDashArray
+        {
+            get => (DoubleCollection)GetValue(StrokeDashArrayProperty);
+            set => SetValue(StrokeDashArrayProperty, value);
+        }
+
+        public double StrokeThickness
+        {
+            get => (double)GetValue(StrokeThicknessProperty);
+            set => SetValue(StrokeThicknessProperty, value);
+        }
+
+
+        private Point _mousePositionToImage;
+        public Point MousePositionToImage
+        {
+            get => _mousePositionToImage;
+            set => SetField(ref _mousePositionToImage, value);
+        }
+
+        private string? _pixelValueString;
+
+        public string? PixelValueString
+        {
+            get => _pixelValueString;
+            set { SetField(ref _pixelValueString, value); }
+        }
+
         #endregion
 
+        #region Constructors
 
         public ImageViewerBasic()
         {
@@ -178,9 +204,36 @@ namespace Lan.ImageViewer
             };
         }
 
+        #endregion
+
+        #region Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region local methods
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #endregion
+
         #region others
-
-
 
         private void AutoScaleImageToFit(double width, double height, double pixelWidth, double pixelHeight)
         {
@@ -208,7 +261,7 @@ namespace Lan.ImageViewer
             _image = GetTemplateChild("ImageViewer") as Image;
 
             _gridContainer ??= GetTemplateChild("GridContainer") as Grid;
-            _textBlock ??= GetTemplateChild("TbMousePosition") as TextBlock;
+            //_textBlock ??= GetTemplateChild("TbMousePosition") as TextBlock;
             _fitButton ??= GetTemplateChild("BtnFit") as Button;
             _borderContainer ??= GetTemplateChild("BorderContainer") as Border;
             _horizontalLineGeometry ??= GetTemplateChild("HorizontalLine") as Line;
@@ -238,7 +291,8 @@ namespace Lan.ImageViewer
 
                     if (PixelHeight != 0 && PixelWidth != 0)
                     {
-                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth, PixelHeight);
+                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth,
+                            PixelHeight);
                     }
                 };
 
@@ -255,7 +309,10 @@ namespace Lan.ImageViewer
                     };
                 }
 
-                if (_gridContainer != null) _gridContainer.RenderTransform = _transformGroup;
+                if (_gridContainer != null)
+                {
+                    _gridContainer.RenderTransform = _transformGroup;
+                }
             }
         }
 
@@ -277,10 +334,11 @@ namespace Lan.ImageViewer
                 pixelHeight = drawingImage.Height;
             }
 
-            if (imageViewer._borderContainer != null && (Math.Abs(imageViewer.PixelWidth - pixelWidth) > Double.Epsilon
-                                                         || Math.Abs(imageViewer.PixelHeight - pixelHeight) > double.Epsilon))
+            if (imageViewer._borderContainer != null && (Math.Abs(imageViewer.PixelWidth - pixelWidth) > double.Epsilon
+                                                         || Math.Abs(imageViewer.PixelHeight - pixelHeight) >
+                                                         double.Epsilon))
             {
-                Console.WriteLine($"auto fit in image source change");
+                Console.WriteLine("auto fit in image source change");
                 imageViewer.AutoScaleImageToFit(
                     imageViewer._borderContainer.ActualWidth,
                     imageViewer._borderContainer.ActualHeight,
@@ -317,30 +375,22 @@ namespace Lan.ImageViewer
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs" /> that contains the event data.</param>
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            var p = e.GetPosition(_image);
-            var p1 = e.GetPosition(_borderContainer);
+            MousePositionToImage = e.GetPosition(_image);
             var mousePositionRelativeToCanvas = e.GetPosition(_containerCanvas);
 
 
 
-            if (_textBlock != null)
+            if (ImageSource is BitmapSource image)
             {
-                if (ImageSource is BitmapSource image)
+                if (image.PixelHeight > (int)MousePositionToImage.Y && image.PixelWidth > (int)MousePositionToImage.X && MousePositionToImage.Y >= 0 && MousePositionToImage.X >= 0)
                 {
-                    //Console.WriteLine($"{p1}, {p}");
-                    if (image.PixelHeight > (int)p.Y && image.PixelWidth > (int)p.X && p.Y >= 0 && p.X >= 0)
-                    {
-                        var pixelValue = GetPixelValue(image, (int)p.X, (int)p.Y);
-                        _textBlock.Text = $"X:{p.X:f0}, Y:{p.Y:f0}, {pixelValue}";
-                    }
-                }
-                else
-                {
-                    _textBlock.Text = $"X:{p.X:f0}, Y:{p.Y:f0}";
+                    PixelValueString = GetPixelValue(image, (int)MousePositionToImage.X, (int)MousePositionToImage.Y);
+                    //_textBlock.Text = $"X:{p.X:f0}, Y:{p.Y:f0}, {pixelValue}";
                 }
             }
 
-            if (Keyboard.IsKeyDown(Key.LeftCtrl))
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 Mouse.SetCursor(Cursors.Hand);
 
@@ -365,10 +415,10 @@ namespace Lan.ImageViewer
             var rect = new Int32Rect(x, y, 1, 1);
 
             bitmap.CopyPixels(rect, bytes, bytesPerPixel, 0);
-            
+
             if (bytes.Length >= 3)
             {
-                return $"R:{bytes[2]},G:{bytes[1]},B:{bytes[0]}";
+                return $"[{bytes[2]:000}, {bytes[1]:000}, {bytes[0]:000}]";
             }
 
             return string.Join(',', bytes);
@@ -425,34 +475,6 @@ namespace Lan.ImageViewer
             _matrixTransform.Matrix = matrix;
         }
 
-
         #endregion
-
-
-        private double _localScale;
-
-        public double LocalScale
-        {
-            get => _localScale;
-            set
-            {
-                SetField(ref _localScale, value);
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
     }
 }
