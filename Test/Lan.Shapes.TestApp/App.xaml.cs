@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
 using Lan.SketchBoard;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Lan.Shapes.App
 {
@@ -18,7 +20,22 @@ namespace Lan.Shapes.App
         {
             ConfigServices();
             ServiceProvider.GetService<IShapeLayerManager>().ReadShapeLayers("ShapeLayers.json");
-            ServiceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
+            //ServiceProvider.GetService<IGeometryTypeManager>().ReadGeometryTypesFromAssembly();
+
+            //var shapeLayerManager = ServiceProvider.GetService<IGeometryTypeManager>();
+            //shapeLayerManager.RegisterGeometryType<ThickenedCircle>();
+            //shapeLayerManager.RegisterGeometryType<ThickenedCross>();
+            //shapeLayerManager.RegisterGeometryType<ThickenedRectangle>();
+
+            // Setup the Serilog logger
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Debug()
+                .CreateLogger();
+
+            // Initalie the XamlFlair loggers using the LoggerFactory (with Serilog support)
+            XamlFlair.Animations.InitializeLoggers(new LoggerFactory().AddSerilog());
+
         }   
 
         private void ConfigServices()
