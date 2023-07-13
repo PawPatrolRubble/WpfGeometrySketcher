@@ -1,10 +1,12 @@
 ﻿#nullable enable
+
+#region
+
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,6 +18,8 @@ using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+
+#endregion
 
 namespace Lan.Shapes.App
 {
@@ -30,6 +34,8 @@ namespace Lan.Shapes.App
         private IImageViewerViewModel? _selectedImageViewModel;
 
         #endregion
+
+        #region Constructors
 
         #region constructors
 
@@ -64,6 +70,8 @@ namespace Lan.Shapes.App
             //ImageViewerViewModels.Add(Camera2);
             SelectedImageViewModel = ImageViewerViewModels[0];
         }
+
+        #endregion
 
         #endregion
 
@@ -102,11 +110,12 @@ namespace Lan.Shapes.App
 
         private void ClearAllShapesCommandImpl()
         {
-            if (SelectedImageViewModel!=null)
+            if (SelectedImageViewModel != null)
             {
                 SelectedImageViewModel.SketchBoardDataManager.ClearAllShapes();
             }
         }
+
         private string _imagePath;
 
         public string ImagePath
@@ -129,9 +138,10 @@ namespace Lan.Shapes.App
 
         private void ChooseFileDialogCommandImpl()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            openFileDialog.Filter = "JPEG files (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG files (*.png)|*.png|BMP files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            openFileDialog.Filter =
+                "JPEG files (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG files (*.png)|*.png|BMP files (*.bmp)|*.bmp|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 ImagePath = openFileDialog.FileName;
@@ -180,7 +190,9 @@ namespace Lan.Shapes.App
             try
             {
                 if (SelectedImageViewModel?.SketchBoardDataManager.SelectedGeometry != null)
+                {
                     SelectedImageViewModel.SketchBoardDataManager.SelectedGeometry.Tag = "absdasdasd";
+                }
             }
             catch (Exception e)
             {

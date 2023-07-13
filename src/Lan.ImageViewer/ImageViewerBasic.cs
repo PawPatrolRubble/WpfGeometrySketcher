@@ -378,8 +378,6 @@ namespace Lan.ImageViewer
             MousePositionToImage = e.GetPosition(_image);
             var mousePositionRelativeToCanvas = e.GetPosition(_containerCanvas);
 
-
-
             if (ImageSource is BitmapSource image)
             {
                 if (image.PixelHeight > (int)MousePositionToImage.Y && image.PixelWidth > (int)MousePositionToImage.X && MousePositionToImage.Y >= 0 && MousePositionToImage.X >= 0)
@@ -421,7 +419,9 @@ namespace Lan.ImageViewer
                 return $"[{bytes[2]:000}, {bytes[1]:000}, {bytes[0]:000}]";
             }
 
-            return string.Join(',', bytes);
+            return bytes.Length==1 ? $"{bytes[0]:000}" : string.Empty;
+
+            //return string.Join(',', bytes);
         }
 
 

@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.ImageViewer", "src\Lan.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes.Custom", "src\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj", "{C3A182D6-E5B6-40CB-898E-647C7EED4528}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lan.Shapes.DialogGeometry", "src\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj", "{BD976BF8-49FA-479C-9B1F-59A561F9776E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lan.Shapes.DialogGeometry", "src\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj", "{BD976BF8-49FA-479C-9B1F-59A561F9776E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

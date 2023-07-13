@@ -263,10 +263,16 @@ namespace Lan.Shapes.App
 
             _geometryTypeManager.RegisterGeometryType<GridGeometry>();
             _geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCircle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
+
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
 
             GeometryTypeList.AddRange(_geometryTypeList);
+
         }
 
         private ImageSource ImageFromFile(string filePath)

@@ -18,6 +18,25 @@
     <system:Double x:Key="IconSize">22</system:Double>
     <GridLength x:Key="TextBlockWidth">50</GridLength>
 
+
+    <Style x:Key="DefaultBorderTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="LimeGreen" />
+        <Setter Property="Margin" Value="2,0,0,0" />
+    </Style>
+
+
+    <Style x:Key="BorderedTextBlock.Compact" TargetType="imageViewer:BorderedTextBlock">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="LimeGreen" />
+        <Setter Property="Width" Value="45" />
+        <Setter Property="TextBlockStyle" Value="{StaticResource DefaultBorderTextBlockStyle}" />
+    </Style>
+
+
     <Style x:Key="IconButton" TargetType="Button">
 
         <Setter Property="Margin" Value="2" />
@@ -290,6 +309,8 @@
     </Style>
 
 
+
+
     <Style x:Key="ImageViewer.Compact" TargetType="imageViewer:ImageViewer">
         <Setter Property="Background" Value="Black" />
         <Setter Property="Template">
@@ -310,6 +331,7 @@
 
                             <Line
                                 x:Name="HorizontalLine"
+                                Panel.ZIndex="1"
                                 Stroke="{TemplateBinding CrossLineColor}"
                                 StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                 StrokeThickness="{TemplateBinding StrokeThickness}"
@@ -326,7 +348,7 @@
                                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <Canvas
                                 x:Name="containerCanvas"
-                                Panel.ZIndex="3"
+                                Panel.ZIndex="0"
                                 ClipToBounds="True"
                                 DockPanel.Dock="Top"
                                 Focusable="True"
@@ -367,24 +389,19 @@
                             </Canvas>
 
                             <StackPanel Grid.Row="1" Orientation="Horizontal">
-
-                                <StackPanel.Resources>
-                                    <Style TargetType="imageViewer:BorderedTextBlock">
-                                        <Setter Property="Margin" Value="2" />
-                                        <Setter Property="BorderThickness" Value="1" />
-                                        <Setter Property="BorderBrush" Value="Lime" />
-                                        <Setter Property="Width" Value="60" />
-                                    </Style>
-                                </StackPanel.Resources>
                                 <!--<Label Content="X" />-->
 
-                                <imageViewer:BorderedTextBlock Text="{Binding MousePositionToImage.X, StringFormat='X: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
-                                <imageViewer:BorderedTextBlock Text="{Binding MousePositionToImage.Y, StringFormat='Y: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
-
-                                <imageViewer:BorderedTextBlock Text="{Binding LocalScale, StringFormat='{}{0:p2}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+                                <imageViewer:BorderedTextBlock Style="{StaticResource BorderedTextBlock.Compact}" Text="{Binding MousePositionToImage.X, StringFormat='X: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+                                <imageViewer:BorderedTextBlock Style="{StaticResource BorderedTextBlock.Compact}" Text="{Binding MousePositionToImage.Y, StringFormat='Y: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
 
                                 <imageViewer:BorderedTextBlock
-                                    Width="130"
+                                    Width="60"
+                                    Style="{StaticResource BorderedTextBlock.Compact}"
+                                    Text="{Binding LocalScale, StringFormat='{}{0:p2}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                <imageViewer:BorderedTextBlock
+                                    Width="120"
+                                    Style="{StaticResource BorderedTextBlock.Compact}"
                                     Text="{Binding PixelValueString, StringFormat='GV: {0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
 
                                 <Button x:Name="BtnFit">
@@ -449,7 +466,7 @@
     </Style>
 
 
-    <Style TargetType="imageViewer:ImageViewer" BasedOn="{StaticResource ImageViewer.Compact}"></Style>
+    <Style BasedOn="{StaticResource ImageViewer.Compact}" TargetType="imageViewer:ImageViewer" />
 
 
     <Style TargetType="imageViewer:ImageViewerBasic">
