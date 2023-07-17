@@ -68,7 +68,10 @@ namespace Lan.ImageViewer
 
 
         public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
-            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(10.0));
+            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4));
+
+        public static readonly DependencyProperty DefaultStrokeThicknessProperty = DependencyProperty.Register(
+            "DefaultStrokeThickness", typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4));
 
         public static readonly DependencyProperty CrossLineColorProperty = DependencyProperty.Register(
             nameof(CrossLineColor), typeof(Brush), typeof(ImageViewerBasic), new PropertyMetadata(Brushes.Lime));
@@ -169,6 +172,11 @@ namespace Lan.ImageViewer
             set => SetValue(StrokeThicknessProperty, value);
         }
 
+        public double DefaultStrokeThickness
+        {
+            get => (double)GetValue(DefaultStrokeThicknessProperty);
+            set => SetValue(DefaultStrokeThicknessProperty, value);
+        }
 
         private Point _mousePositionToImage;
         public Point MousePositionToImage
@@ -247,7 +255,7 @@ namespace Lan.ImageViewer
                 0);
             matrix.Translate((width - pixelWidth * ratio) / 2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
-            StrokeThickness = (double)StrokeThicknessProperty.DefaultMetadata.DefaultValue;
+            StrokeThickness = DefaultStrokeThickness;
         }
 
         private double CalculateAutoFitRatio(double width, double height, double pixelWidth, double pixelHeight)
