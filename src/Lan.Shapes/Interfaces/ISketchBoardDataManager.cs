@@ -39,7 +39,7 @@ namespace Lan.Shapes.Interfaces
         /// <summary>
         /// 当前选中的画图类型
         /// </summary>
-        ShapeVisualBase? CurrentGeometry { get; set; }
+        ShapeVisualBase? CurrentGeometryInEdit { get; set; }
 
         ShapeVisualBase? SelectedGeometry { get; set; }
 

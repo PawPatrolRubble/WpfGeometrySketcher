@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes.Enums;
+using Lan.Shapes.ExtensionMethods;
 using Lan.Shapes.Handle;
 using Lan.Shapes.Interfaces;
 
@@ -25,6 +26,8 @@ namespace Lan.Shapes.Shapes
         private Point _topLeft;
 
         #endregion
+
+        private TagPosition _tagPosition;
 
         #region Propeties
 
@@ -48,7 +51,10 @@ namespace Lan.Shapes.Shapes
         /// <summary>
         /// 
         /// </summary>
-        public override Rect BoundsRect { get => RenderGeometry.Bounds; }
+        public override Rect BoundsRect
+        {
+            get => RenderGeometry.Bounds;
+        }
 
         public Point TopLeft
         {
@@ -67,6 +73,7 @@ namespace Lan.Shapes.Shapes
                 {
                     _rectangleGeometry.Rect = new Rect(value, BottomRight);
                 }
+
                 UpdateHandleLocation();
                 UpdateVisual();
             }
@@ -91,6 +98,8 @@ namespace Lan.Shapes.Shapes
             BottomRight = data.DataPoints[1];
             IsGeometryRendered = true;
 
+            Tag = data.Tag;
+            _tagPosition = data.TagPosition;
         }
 
         /// <summary>
@@ -99,9 +108,9 @@ namespace Lan.Shapes.Shapes
         /// <returns></returns>
         public PointsData GetMetaData()
         {
-            return new PointsData(0, new List<Point> { _rectangleGeometry.Rect.TopLeft, _rectangleGeometry.Rect.BottomRight });
+            return new PointsData(0,
+                new List<Point> { _rectangleGeometry.Rect.TopLeft, _rectangleGeometry.Rect.BottomRight });
         }
-
 
         #endregion
 
@@ -127,7 +136,7 @@ namespace Lan.Shapes.Shapes
                         BottomRight = new Point(validPointTopRight.X, BottomRight.Y);
                         break;
                     case 3:
-                        BottomRight = ForcePointInRange(point,TopLeft.X,point.X, TopLeft.Y, point.Y);
+                        BottomRight = ForcePointInRange(point, TopLeft.X, point.X, TopLeft.Y, point.Y);
                         break;
                     case 4:
                         var validPointBottomLeft = ForcePointInRange(point, 0, BottomRight.X, TopLeft.Y, point.Y);
@@ -240,7 +249,7 @@ namespace Lan.Shapes.Shapes
 
             if (ShapeStyler != null)
             {
-                AddTagText(renderContext, TopLeft - new Vector(0, ShapeLayer.TagFontSize));
+                AddTagText(renderContext, GetTagPosition());
 
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _rectangleGeometry);
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometryGroup);
@@ -251,7 +260,21 @@ namespace Lan.Shapes.Shapes
             renderContext.Close();
         }
 
+        private Point GetTagPosition()
+        {
+            switch (_tagPosition)
+            {
+                case TagPosition.Center:
+                    return TopLeft.MiddleWith(BottomRight) -new Vector(ShapeLayer.TagFontSize/2, ShapeLayer.TagFontSize/2);
 
+                case TagPosition.Top:
+                    return TopLeft - new Vector(0, ShapeLayer.TagFontSize);
+                case TagPosition.Bottom:
+                    return TopLeft + new Vector(0, BottomRight.Y - TopLeft.Y + ShapeLayer.TagFontSize);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         #endregion
 
