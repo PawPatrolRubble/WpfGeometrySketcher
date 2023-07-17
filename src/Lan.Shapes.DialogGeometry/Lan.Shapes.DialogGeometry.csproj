@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
-
 </Project>

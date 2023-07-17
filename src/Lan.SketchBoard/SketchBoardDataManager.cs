@@ -120,20 +120,19 @@ namespace Lan.SketchBoard
         /// </summary>
         public int ShapeCount => VisualCollection.Count;
 
-        private ShapeVisualBase? _currentGeometry;
+        private ShapeVisualBase? _currentGeometryInEdit;
 
         /// <summary>
-        ///     当前选中的画图类型
+        ///  处于编辑状态的图形
         /// </summary>
-        public ShapeVisualBase? CurrentGeometry
+        public ShapeVisualBase? CurrentGeometryInEdit
         {
-            get => _currentGeometry;
+            get => _currentGeometryInEdit;
             set
             {
-                if (_currentGeometry != null) _currentGeometry.State = ShapeVisualState.Normal;
-
-                SetField(ref _currentGeometry, value);
-                if (_currentGeometry != null) _currentGeometry.State = ShapeVisualState.Selected;
+                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Normal;
+                SetField(ref _currentGeometryInEdit, value);
+                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Selected;
             }
         }
 
@@ -176,7 +175,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection.Add(shape);
             Shapes.Add(shape);
-            CurrentGeometry = shape;
+            CurrentGeometryInEdit = shape;
         }
 
         /// <summary>
@@ -188,7 +187,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection.Insert(index, shape);
             Shapes.Insert(index, shape);
-            CurrentGeometry = shape;
+            CurrentGeometryInEdit = shape;
         }
 
         public void RemoveShape(ShapeVisualBase shape)
@@ -223,6 +222,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection?.Clear();
             Shapes?.Clear();
+            CurrentGeometryInEdit = null;
         }
 
         public ShapeVisualBase? GetShapeVisual(int index)
@@ -264,7 +264,7 @@ namespace Lan.SketchBoard
             {
                 shape.ShapeLayer = CurrentShapeLayer;
                 VisualCollection.Add(shape);
-                CurrentGeometry = shape;
+                CurrentGeometryInEdit = shape;
                 Shapes.Add(shape);
             }
 
@@ -281,7 +281,7 @@ namespace Lan.SketchBoard
         /// </summary>
         public void UnselectGeometry()
         {
-            CurrentGeometry = null;
+            CurrentGeometryInEdit = null;
             _currentGeometryType = null;
         }
 

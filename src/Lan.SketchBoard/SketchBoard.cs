@@ -131,7 +131,7 @@ namespace Lan.SketchBoard
         /// <param name="e"></param>
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
-            SketchBoardDataManager?.CurrentGeometry?.OnMouseRightButtonUp(e.GetPosition(this));
+            SketchBoardDataManager?.CurrentGeometryInEdit?.OnMouseRightButtonUp(e.GetPosition(this));
             SketchBoardDataManager?.UnselectGeometry();
 
             base.OnMouseRightButtonUp(e);
@@ -145,7 +145,7 @@ namespace Lan.SketchBoard
                 SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
 
                 if (SketchBoardDataManager.SelectedGeometry == null)
-                    SketchBoardDataManager.SelectedGeometry = SketchBoardDataManager?.CurrentGeometry ??
+                    SketchBoardDataManager.SelectedGeometry = SketchBoardDataManager?.CurrentGeometryInEdit ??
                                                               SketchBoardDataManager?.CreateNewGeometry(e.GetPosition(this));
 
                 //if sketchboard current geometry is not null, it means that it still being sketched
@@ -185,9 +185,9 @@ namespace Lan.SketchBoard
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
 
-                    if (SketchBoardDataManager?.CurrentGeometry != null)
+                    if (SketchBoardDataManager?.CurrentGeometryInEdit != null)
                     {
-                        SketchBoardDataManager?.CurrentGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
+                        SketchBoardDataManager?.CurrentGeometryInEdit?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                     }
                     else
                     {

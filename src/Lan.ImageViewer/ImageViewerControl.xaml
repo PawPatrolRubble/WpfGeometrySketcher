@@ -259,7 +259,7 @@
             <ListBox
                 Grid.Row="1"
                 ItemsSource="{Binding SketchBoardDataManager.Shapes}"
-                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         </Grid>
 

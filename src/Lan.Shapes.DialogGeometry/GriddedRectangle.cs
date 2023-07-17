@@ -36,9 +36,21 @@ namespace Lan.Shapes.DialogGeometry
 
         #region Propeties
 
-        public int ColumnGap { get; set; }
+        private int ColumnGap { get; set; }
+        private int RowGap { get; set; }
 
-        public int RowGap { get; set; }
+        public List<GridData>? GridData
+        {
+            get
+            {
+                if (_lines==null)
+                {
+                    return null;
+                }
+
+                return _lines.Cast<GridData>().ToList();
+            }
+        }
 
         private Point TopRight
         {
