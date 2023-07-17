@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.6.6</PackageVersion>
-		  <Description>十字线居中</Description>
+		  <PackageVersion>1.1.6.7</PackageVersion>
+		  <Description>添加十字线默认粗细控制</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 		  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 		  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
