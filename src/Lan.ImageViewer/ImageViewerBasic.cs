@@ -68,10 +68,10 @@ namespace Lan.ImageViewer
 
 
         public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
-            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4));
+            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4.0));
 
         public static readonly DependencyProperty DefaultStrokeThicknessProperty = DependencyProperty.Register(
-            "DefaultStrokeThickness", typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4));
+            "DefaultStrokeThickness", typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(4.0));
 
         public static readonly DependencyProperty CrossLineColorProperty = DependencyProperty.Register(
             nameof(CrossLineColor), typeof(Brush), typeof(ImageViewerBasic), new PropertyMetadata(Brushes.Lime));
