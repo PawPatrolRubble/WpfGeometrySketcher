@@ -68,7 +68,7 @@ namespace Lan.ImageViewer
 
 
         public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
-            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(1.0));
+            nameof(StrokeThickness), typeof(double), typeof(ImageViewerBasic), new PropertyMetadata(10.0));
 
         public static readonly DependencyProperty CrossLineColorProperty = DependencyProperty.Register(
             nameof(CrossLineColor), typeof(Brush), typeof(ImageViewerBasic), new PropertyMetadata(Brushes.Lime));
@@ -247,6 +247,7 @@ namespace Lan.ImageViewer
                 0);
             matrix.Translate((width - pixelWidth * ratio) / 2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
+            StrokeThickness = (double)StrokeThicknessProperty.DefaultMetadata.DefaultValue;
         }
 
         private double CalculateAutoFitRatio(double width, double height, double pixelWidth, double pixelHeight)
@@ -272,30 +273,36 @@ namespace Lan.ImageViewer
 
             if (_borderContainer != null)
             {
-                _borderContainer.SizeChanged += (s, e) =>
+                _gridContainer.SizeChanged += (s, e) =>
                 {
                     if (_verticalLineGeometry != null && _horizontalLineGeometry != null)
                     {
-                        _verticalLineGeometry.X1 = _borderContainer.ActualWidth / 2;
+                        _verticalLineGeometry.X1 = _gridContainer.ActualWidth / 2;
                         _verticalLineGeometry.Y1 = 0;
 
-                        _verticalLineGeometry.X2 = _borderContainer.ActualWidth / 2;
-                        _verticalLineGeometry.Y2 = _borderContainer.ActualHeight;
+                        _verticalLineGeometry.X2 = _gridContainer.ActualWidth / 2;
+                        _verticalLineGeometry.Y2 = _gridContainer.ActualHeight;
 
                         _horizontalLineGeometry.X1 = 0;
-                        _horizontalLineGeometry.Y1 = _borderContainer.ActualHeight / 2;
+                        _horizontalLineGeometry.Y1 = _gridContainer.ActualHeight / 2;
 
-                        _horizontalLineGeometry.X2 = _borderContainer.ActualWidth;
-                        _horizontalLineGeometry.Y2 = _borderContainer.ActualHeight / 2;
+                        _horizontalLineGeometry.X2 = _gridContainer.ActualWidth;
+                        _horizontalLineGeometry.Y2 = _gridContainer.ActualHeight / 2;
                     }
 
                     if (PixelHeight != 0 && PixelWidth != 0)
                     {
-                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth,
-                            PixelHeight);
+                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth, PixelHeight);
                     }
                 };
 
+                _borderContainer.SizeChanged += (s, e) =>
+                {
+                    if (PixelHeight != 0 && PixelWidth != 0)
+                    {
+                        AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth, PixelHeight);
+                    }
+                };
 
                 if (_fitButton != null)
                 {
@@ -473,6 +480,7 @@ namespace Lan.ImageViewer
             LocalScale = matrix.M11;
             //Debug.WriteLine($"x scale factor: {matrix.M11}");
             _matrixTransform.Matrix = matrix;
+            StrokeThickness /= scaleDelta;
         }
 
         #endregion
