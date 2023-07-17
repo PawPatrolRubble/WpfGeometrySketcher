@@ -6,9 +6,6 @@ to pan move the sketch area you need to press CTRL + Left mouse button pressed.
 
 本项目主要实现如何在wpf下绘制各种图形，基于drawingVisual比wpf自带图形控件性能上更具优势。
 
-![image](https://github.com/PawPatrolRubble/WpfGeometrySketcher/assets/44959548/a2c5f68b-cd2b-4539-8e96-45ecdd3da0c6)
-
-
 
 ## Get started
 
