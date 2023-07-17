@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.6.5</PackageVersion>
-		  <Description>bugFix: set current geomeotry to null when shapes are all cleared</Description>
+		  <PackageVersion>1.1.6.6</PackageVersion>
+		  <Description>十字线居中</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 		  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 		  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -13,6 +13,7 @@
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<!--<Target Name="PushPackage" AfterTargets="Pack">

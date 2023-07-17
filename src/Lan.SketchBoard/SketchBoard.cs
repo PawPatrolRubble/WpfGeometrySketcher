@@ -67,6 +67,7 @@ namespace Lan.SketchBoard
 
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if(SketchBoardDataManager==null)return;
             Console.WriteLine($"new canvas size: {e.NewSize}");
             var scaleFactor = CalculateStrokeThickness();
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;

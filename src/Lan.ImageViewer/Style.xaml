@@ -112,23 +112,6 @@
                             Focusable="True"
                             IsHitTestVisible="True">
 
-                            <Line
-                                x:Name="HorizontalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <Line
-                                x:Name="VerticalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <Border
                                 Canvas.Left="0"
                                 Canvas.Top="0"
@@ -295,6 +278,24 @@
                                     ClipToBounds="True"
                                     Focusable="True"
                                     SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
+
+                                <Line
+                                    x:Name="HorizontalLine"
+                                    Panel.ZIndex="3"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <Line
+                                    x:Name="VerticalLine"
+                                    Panel.ZIndex="3"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
 
@@ -328,24 +329,6 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-
-                            <Line
-                                x:Name="HorizontalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <Line
-                                x:Name="VerticalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <Canvas
                                 x:Name="containerCanvas"
                                 Panel.ZIndex="0"
@@ -383,6 +366,24 @@
                                         ClipToBounds="True"
                                         Focusable="True"
                                         SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
+
+                                    <Line
+                                        x:Name="HorizontalLine"
+                                        Panel.ZIndex="3"
+                                        Stroke="{TemplateBinding CrossLineColor}"
+                                        StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                        StrokeThickness="{TemplateBinding StrokeThickness}"
+                                        Visibility="{TemplateBinding ShowCrossLine,
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <Line
+                                        x:Name="VerticalLine"
+                                        Panel.ZIndex="3"
+                                        Stroke="{TemplateBinding CrossLineColor}"
+                                        StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                        StrokeThickness="{TemplateBinding StrokeThickness}"
+                                        Visibility="{TemplateBinding ShowCrossLine,
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 </Grid>
 
 
@@ -485,24 +486,6 @@
                             Panel.ZIndex="3"
                             ClipToBounds="True"
                             IsHitTestVisible="True">
-
-                            <Line
-                                x:Name="HorizontalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <Line
-                                x:Name="VerticalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-
 
                             <Border
                                 Canvas.Left="10"
@@ -609,6 +592,22 @@
                                     Source="{TemplateBinding ImageSource}"
                                     Stretch="Uniform" />
 
+                                <Line
+                                    x:Name="HorizontalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Line
+                                    x:Name="VerticalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
                         </Canvas>
