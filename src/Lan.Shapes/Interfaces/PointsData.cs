@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using Lan.Shapes.Enums;
 
 namespace Lan.Shapes.Interfaces
 {
@@ -16,6 +17,14 @@ namespace Lan.Shapes.Interfaces
             DataPoints = dataPoints;
         }
 
+
+        public PointsData(string tag, double strokeThickness, List<Point> dataPoints):this(strokeThickness,dataPoints)
+        {
+            Tag = tag;
+        }
+
+        public TagPosition TagPosition { get; set; } = TagPosition.Center;
+        public string Tag { get; set; }
         public double StrokeThickness { get; set; }
         public List<Point> DataPoints { get; set; }
     }

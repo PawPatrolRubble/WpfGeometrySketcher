@@ -14,9 +14,28 @@
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-    <system:Double x:Key="FontSize">18</system:Double>
-    <system:Double x:Key="IconSize">16</system:Double>
-    <GridLength x:Key="TextBlockWidth">310</GridLength>
+    <system:Double x:Key="FontSize">14</system:Double>
+    <system:Double x:Key="IconSize">22</system:Double>
+    <GridLength x:Key="TextBlockWidth">50</GridLength>
+
+
+    <Style x:Key="DefaultBorderTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="LimeGreen" />
+        <Setter Property="Margin" Value="2,0,0,0" />
+    </Style>
+
+
+    <Style x:Key="BorderedTextBlock.Compact" TargetType="imageViewer:BorderedTextBlock">
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="LimeGreen" />
+        <Setter Property="Width" Value="45" />
+        <Setter Property="TextBlockStyle" Value="{StaticResource DefaultBorderTextBlockStyle}" />
+    </Style>
+
 
     <Style x:Key="IconButton" TargetType="Button">
 
@@ -46,6 +65,7 @@
                             <Path
                                 Width="{TemplateBinding imageViewer:GeometryIconElement.IconSize}"
                                 Height="{TemplateBinding imageViewer:GeometryIconElement.IconSize}"
+                                HorizontalAlignment="Center"
                                 Data="{TemplateBinding imageViewer:GeometryIconElement.IconGeometry}"
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
@@ -62,7 +82,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Cursor" Value="Hand" />
-                            <Setter Property="BorderBrush" Value="Lime" />
+                            <Setter Property="Foreground" Value="Lime" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -73,7 +93,8 @@
 
     </Style>
 
-    <Style TargetType="imageViewer:ImageViewer">
+
+    <Style x:Key="ImageViewer.Wide" TargetType="imageViewer:ImageViewer">
         <Setter Property="Background" Value="Black" />
         <Setter Property="Template">
             <Setter.Value>
@@ -85,65 +106,148 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
 
                         <Canvas
-                            Focusable="True"
                             x:Name="containerCanvas"
                             Panel.ZIndex="3"
                             ClipToBounds="True"
+                            Focusable="True"
                             IsHitTestVisible="True">
 
-                            <Line
-                                x:Name="HorizontalLine"
+                            <Border
+                                Canvas.Left="0"
+                                Canvas.Top="0"
                                 Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Background="Black"
+                                BorderBrush="LightGray"
+                                BorderThickness="0,1,1,0">
+                                <Grid>
 
-                            <Line
-                                x:Name="VerticalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <Grid.Resources>
+                                        <Style TargetType="imageViewer:BorderedTextBlock">
+                                            <Setter Property="BorderBrush" Value="LightGray" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
+                                        </Style>
+                                    </Grid.Resources>
 
-                            <Grid Margin="2,5" Panel.ZIndex="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                                <StackPanel Panel.ZIndex="1">
-
-                                    <TextBlock
-                                        x:Name="TbMousePosition"
-                                        VerticalAlignment="Center"
-                                        Panel.ZIndex="1"
-                                        FontSize="{StaticResource FontSize}"
-                                        Foreground="Lime" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="{StaticResource FontSize}"
-                                        Foreground="Lime"
-                                        Text="{Binding Path=LocalScale, StringFormat='Scale: {0:p2}', RelativeSource={RelativeSource TemplatedParent}}" />
-                                </StackPanel>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="25" />
+                                        <ColumnDefinition Width="100" />
+                                    </Grid.ColumnDefinitions>
 
 
+                                    <imageViewer:BorderedTextBlock Background="Transparent" Text="X" />
 
-                                <Button
-                                    x:Name="BtnFit"
-                                    Grid.Column="1"
-                                    Panel.ZIndex="1"
-                                    imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
-                                    imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
-                                    BorderBrush="Lime"
-                                    BorderThickness="2"
-                                    Foreground="Lime"
-                                    VerticalAlignment="Top"
-                                    Style="{StaticResource IconButton}" />
-                            </Grid>
+                                    <!--<Label Content="X" />-->
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Text="{Binding MousePositionToImage.X, StringFormat='{}{0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Text="Y" />
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Text="{Binding MousePositionToImage.Y, StringFormat='{}{0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Text="S" />
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Text="{Binding LocalScale, StringFormat='{}{0:p2}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+
+
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Text="GV" />
+
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Text="{Binding PixelValueString, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+
+                                    <imageViewer:BorderedTextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        Text="Fit" />
+
+
+                                    <Button
+                                        x:Name="BtnFit"
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
+                                        imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}">
+
+                                        <Path
+                                            Width="{StaticResource IconSize}"
+                                            Margin="1"
+                                            Data="{StaticResource AutoFit}"
+                                            Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"
+                                            Stretch="Uniform"
+                                            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
+
+                                        <Button.Style>
+
+                                            <Style TargetType="Button">
+                                                <Setter Property="Margin" Value="0" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderThickness" Value="1,0,0,1" />
+                                                <Setter Property="BorderBrush" Value="LightGray" />
+                                                <Setter Property="Foreground" Value="Lime" />
+
+                                                <Setter Property="Template">
+
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border
+                                                                Margin="{TemplateBinding Margin}"
+                                                                Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                                <ContentPresenter />
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+
+                                                </Setter>
+
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="LimeGreen" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+
+                                            </Style>
+
+                                        </Button.Style>
+
+                                    </Button>
+
+                                </Grid>
+
+                            </Border>
 
                             <Grid x:Name="GridContainer" ClipToBounds="True">
 
@@ -174,6 +278,24 @@
                                     ClipToBounds="True"
                                     Focusable="True"
                                     SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
+
+                                <Line
+                                    x:Name="HorizontalLine"
+                                    Panel.ZIndex="3"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <Line
+                                    x:Name="VerticalLine"
+                                    Panel.ZIndex="3"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
 
@@ -186,6 +308,167 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+
+
+    <Style x:Key="ImageViewer.Compact" TargetType="imageViewer:ImageViewer">
+        <Setter Property="Background" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="imageViewer:ImageViewer">
+                    <Border
+                        x:Name="BorderContainer"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Canvas
+                                x:Name="containerCanvas"
+                                Panel.ZIndex="0"
+                                ClipToBounds="True"
+                                DockPanel.Dock="Top"
+                                Focusable="True"
+                                IsHitTestVisible="True">
+
+                                <Grid x:Name="GridContainer" ClipToBounds="True">
+
+                                    <!--<Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <MatrixTransform x:Name="transform" />
+                                        <ScaleTransform x:Name="scaleTransform" />
+                                    </TransformGroup>
+                                </Grid.RenderTransform>-->
+                                    <Image
+                                        x:Name="ImageViewer"
+                                        Width="{Binding Source.PixelWidth, RelativeSource={RelativeSource Self}}"
+                                        Height="{Binding Source.PixelHeight, RelativeSource={RelativeSource Self}}"
+                                        Panel.ZIndex="1"
+                                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                        RenderOptions.EdgeMode="Aliased"
+                                        SnapsToDevicePixels="True"
+                                        Source="{TemplateBinding ImageSource}"
+                                        Stretch="Uniform" />
+
+                                    <sketchBoard:SketchBoard
+                                        x:Name="SketchBoard"
+                                        Width="{Binding Path=Width, ElementName=ImageViewer}"
+                                        Height="{Binding ElementName=ImageViewer, Path=Height}"
+                                        Margin="2"
+                                        Panel.ZIndex="2"
+                                        Background="Transparent"
+                                        ClipToBounds="True"
+                                        Focusable="True"
+                                        SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
+
+                                    <Line
+                                        x:Name="HorizontalLine"
+                                        Panel.ZIndex="3"
+                                        Stroke="{TemplateBinding CrossLineColor}"
+                                        StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                        StrokeThickness="{TemplateBinding StrokeThickness}"
+                                        Visibility="{TemplateBinding ShowCrossLine,
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <Line
+                                        x:Name="VerticalLine"
+                                        Panel.ZIndex="3"
+                                        Stroke="{TemplateBinding CrossLineColor}"
+                                        StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                        StrokeThickness="{TemplateBinding StrokeThickness}"
+                                        Visibility="{TemplateBinding ShowCrossLine,
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </Grid>
+
+
+                            </Canvas>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <!--<Label Content="X" />-->
+
+                                <imageViewer:BorderedTextBlock Style="{StaticResource BorderedTextBlock.Compact}" Text="{Binding MousePositionToImage.X, StringFormat='X: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+                                <imageViewer:BorderedTextBlock Style="{StaticResource BorderedTextBlock.Compact}" Text="{Binding MousePositionToImage.Y, StringFormat='Y: {0:f0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                <imageViewer:BorderedTextBlock
+                                    Width="60"
+                                    Style="{StaticResource BorderedTextBlock.Compact}"
+                                    Text="{Binding LocalScale, StringFormat='{}{0:p2}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                <imageViewer:BorderedTextBlock
+                                    Width="120"
+                                    Style="{StaticResource BorderedTextBlock.Compact}"
+                                    Text="{Binding PixelValueString, StringFormat='GV: {0}', RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                <Button x:Name="BtnFit">
+                                    <Path
+                                        Width="14"
+                                        Margin="1"
+                                        Data="{StaticResource AutoFit}"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"
+                                        Stretch="Uniform"
+                                        Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
+
+                                    <Button.Style>
+
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Setter Property="BorderBrush" Value="Lime" />
+                                            <Setter Property="Width" Value="40" />
+                                            <Setter Property="Margin" Value="1" />
+                                            <Setter Property="Foreground" Value="Lime" />
+
+                                            <Setter Property="Template">
+
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border
+                                                            Margin="{TemplateBinding Margin}"
+                                                            Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                                            <ContentPresenter />
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+
+                                            </Setter>
+
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="LimeGreen" />
+                                                    <Setter Property="Cursor" Value="Hand" />
+                                                </Trigger>
+                                            </Style.Triggers>
+
+                                        </Style>
+
+                                    </Button.Style>
+
+                                </Button>
+
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+
+    <Style BasedOn="{StaticResource ImageViewer.Compact}" TargetType="imageViewer:ImageViewer" />
+
 
     <Style TargetType="imageViewer:ImageViewerBasic">
         <Setter Property="Template">
@@ -204,50 +487,87 @@
                             ClipToBounds="True"
                             IsHitTestVisible="True">
 
-                            <Line
-                                x:Name="HorizontalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <Line
-                                x:Name="VerticalLine"
-                                Panel.ZIndex="1"
-                                Stroke="{TemplateBinding CrossLineColor}"
-                                StrokeDashArray="{TemplateBinding StrokeDashArray}"
-                                StrokeThickness="{TemplateBinding StrokeThickness}"
-                                Visibility="{TemplateBinding ShowCrossLine,
-                                                             Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-                            <Grid
+                            <Border
                                 Canvas.Left="10"
                                 Canvas.Top="15"
                                 Panel.ZIndex="1"
-                                Background="Transparent">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{StaticResource TextBlockWidth}" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    x:Name="TbMousePosition"
-                                    VerticalAlignment="Center"
-                                    FontSize="{StaticResource FontSize}"
-                                    Foreground="Lime" />
+                                Background="Transparent"
+                                BorderBrush="LightGray"
+                                BorderThickness="1">
+                                <Grid>
 
-                                <Button
-                                    x:Name="BtnFit"
-                                    Grid.Column="1"
-                                    Margin="5,0,0,0"
-                                    imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
-                                    imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
-                                    BorderBrush="Gray"
-                                    BorderThickness="2"
-                                    Foreground="White"
-                                    Style="{StaticResource IconButton}" />
+                                    <Grid.Resources>
+                                        <Style TargetType="Label">
 
-                            </Grid>
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="Background" Value="Black" />
+                                            <Setter Property="BorderBrush" Value="LightGray" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
+
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="X" />
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Content="{Binding MousePositionToImage.X, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Content="Y" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Content="{Binding MousePositionToImage.Y, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Content="缩放倍率" />
+
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Content="{Binding LocalScale, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}}" />
+
+
+                                    <Label
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Content="100%" />
+
+
+                                    <Button
+                                        x:Name="BtnFit"
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
+                                        imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        Foreground="White"
+                                        Style="{StaticResource IconButton}" />
+
+                                </Grid>
+
+                            </Border>
+
 
 
                             <Grid
@@ -272,6 +592,22 @@
                                     Source="{TemplateBinding ImageSource}"
                                     Stretch="Uniform" />
 
+                                <Line
+                                    x:Name="HorizontalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Line
+                                    x:Name="VerticalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
                         </Canvas>
@@ -302,52 +638,54 @@
         </Setter>
     </Style>
 
+
+    <DropShadowEffect
+        x:Key="DropShadowEffect"
+        BlurRadius="3"
+        Opacity="1"
+        ShadowDepth="0"
+        Color="White" />
+
     <DataTemplate x:Key="GeometryTypeTemplate" DataType="{x:Type imageViewer:GeometryType}">
-        <Button
+
+        <Border
+            x:Name="Container"
             Margin="2"
-            Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
-            CommandParameter="{Binding}">
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="2" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border
-                                    x:Name="Container"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    ToolTip="{Binding Description}">
+            BorderThickness="1"
+            CornerRadius="3"
+            ToolTip="{Binding Description}">
+            <Border.InputBindings>
+                <MouseBinding
+                    Command="{Binding Path=DataContext.ChooseGeometryTypeCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}"
+                    CommandParameter="{Binding}"
+                    MouseAction="LeftClick" />
+            </Border.InputBindings>
 
-                                    <StackPanel Orientation="Horizontal">
-                                        <Path
-                                            Width="{StaticResource IconSize}"
-                                            Height="{StaticResource IconSize}"
-                                            Margin="5"
-                                            Data="{Binding IconGeometry}"
-                                            Stretch="Uniform"
-                                            Stroke="{TemplateBinding Foreground}"
-                                            StrokeThickness="1" />
-                                    </StackPanel>
+            <Path
+                x:Name="Path"
+                Width="{StaticResource IconSize}"
+                Height="{StaticResource IconSize}"
+                Margin="5"
+                HorizontalAlignment="Center"
+                Data="{Binding IconGeometry}"
+                Stretch="Uniform"
+                StrokeThickness="1" />
 
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
+        </Border>
 
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="Lime" />
-                            <Setter Property="BorderBrush" Value="Lime" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                <Setter TargetName="Container" Property="BorderBrush" Value="#006cbe" />
+                <Setter TargetName="Container" Property="Background" Value="#006cbe" />
+                <Setter TargetName="Path" Property="Fill" Value="White" />
+                <Setter TargetName="Container" Property="Effect" Value="{StaticResource DropShadowEffect}" />
+            </DataTrigger>
 
+            <DataTrigger Binding="{Binding IsSelected}" Value="false">
+                <Setter TargetName="Container" Property="Background" Value="#eeeef2" />
+                <Setter TargetName="Path" Property="Fill" Value="Black" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type shapes:Rectangle}">
@@ -355,7 +693,8 @@
             <TextBlock Text="Rectangle: " />
             <TextBlock>
                 <Run Text="{Binding Id, Mode=OneWay}" />
-                <Run Text="{Binding TopLeft, StringFormat='; {}{0:f2};'}" />
+                <LineBreak />
+                <Run Text="{Binding TopLeft, StringFormat='{}{0:f2} ,'}" />
                 <Run Text="{Binding BottomRight, StringFormat='{}{0:f2}'}" />
             </TextBlock>
         </StackPanel>

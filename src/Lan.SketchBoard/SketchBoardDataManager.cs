@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using Lan.Shapes;
 using Lan.Shapes.Custom;
@@ -19,11 +18,11 @@ using Lan.Shapes.Styler;
 
 #endregion
 
-namespace Lan.SketchBoard {
-    public class SketchBoardDataManager : ISketchBoardDataManager, INotifyPropertyChanged {
+namespace Lan.SketchBoard
+{
+    public class SketchBoardDataManager : ISketchBoardDataManager, INotifyPropertyChanged
+    {
         #region fields
-
-        private SketchBoard? _sketchBoardOwner;
 
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
 
@@ -33,11 +32,15 @@ namespace Lan.SketchBoard {
         private Type? _currentGeometryType;
 
         /// <summary>
-        /// 当前图层
+        ///     当前图层
         /// </summary>
         private ShapeLayer? _currentShapeLayer;
 
+        private SketchBoard? _sketchBoardOwner;
+
         #endregion
+
+        #region interface implementations
 
         #region Implementations
 
@@ -45,16 +48,18 @@ namespace Lan.SketchBoard {
 
         #endregion
 
+        #endregion
+
         #region local methods
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
-            if (EqualityComparer<T>.Default.Equals(field, value)) {
-                return false;
-            }
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
 
             field = value;
             OnPropertyChanged(propertyName);
@@ -64,10 +69,11 @@ namespace Lan.SketchBoard {
         #region others
 
         /// <summary>
-        /// select one shape to draw
+        ///     select one shape to draw
         /// </summary>
         /// <param name="drawingTool"></param>
-        public void SetGeometryType(string drawingTool) {
+        public void SetGeometryType(string drawingTool)
+        {
             Debug.Assert(_currentShapeLayer != null, nameof(_currentShapeLayer) + " != null");
 
             //it is not true when select one new geometry type means the user will create a new shape, it is completely possible that the user
@@ -76,12 +82,10 @@ namespace Lan.SketchBoard {
 
             //todo set current geometry type
             //
-            if (_drawingTools.ContainsKey(drawingTool)) {
+            if (_drawingTools.ContainsKey(drawingTool))
                 _currentGeometryType = _drawingTools[drawingTool];
-            }
-            else {
+            else
                 throw new Exception("the drawing tool does not exist");
-            }
         }
 
         #endregion
@@ -91,217 +95,213 @@ namespace Lan.SketchBoard {
         #region implementations
 
         /// <summary>
-        /// bindable collection of shapes
+        ///     bindable collection of shapes
         /// </summary>
         public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
 
 
-        private VisualCollection _visualCollection;
-
         /// <summary>
-        /// this is used to hold all shapes
+        ///     this is used to hold all shapes
         /// </summary>
-        public VisualCollection VisualCollection {
-            get => _visualCollection;
-            private set => _visualCollection = value;
-        }
+        public VisualCollection VisualCollection { get; private set; }
 
         /// <summary>
-        /// get all shapes defined in canvas
+        ///     get all shapes defined in canvas
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ShapeVisualBase> GetSketchBoardVisuals() {
+        public IEnumerable<ShapeVisualBase> GetSketchBoardVisuals()
+        {
             // return VisualCollection;
             return null;
         }
 
         /// <summary>
-        /// shape count
+        ///     shape count
         /// </summary>
-        public int ShapeCount {
-            get => VisualCollection.Count;
-        }
+        public int ShapeCount => VisualCollection.Count;
 
-        private ShapeVisualBase? _currentGeometry;
+        private ShapeVisualBase? _currentGeometryInEdit;
 
         /// <summary>
-        /// 当前选中的画图类型
+        ///  处于编辑状态的图形
         /// </summary>
-        public ShapeVisualBase? CurrentGeometry {
-            get => _currentGeometry;
-            set {
-                if (_currentGeometry != null) {
-                    _currentGeometry.State = ShapeVisualState.Normal;
-                }
-
-                SetField(ref _currentGeometry, value);
-                if (_currentGeometry != null) {
-                    _currentGeometry.State = ShapeVisualState.Selected;
-                }
+        public ShapeVisualBase? CurrentGeometryInEdit
+        {
+            get => _currentGeometryInEdit;
+            set
+            {
+                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Normal;
+                SetField(ref _currentGeometryInEdit, value);
+                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Selected;
             }
         }
 
         private ShapeVisualBase? _selectedGeometry;
 
-        public ShapeVisualBase? SelectedGeometry {
+        public ShapeVisualBase? SelectedGeometry
+        {
             get => _selectedGeometry;
-            set {
-                if (_selectedGeometry != null) {
+            set
+            {
+                if (_selectedGeometry != null)
                     _selectedGeometry.State =
                         _selectedGeometry.State == ShapeVisualState.Locked
                             ? ShapeVisualState.Locked
                             : ShapeVisualState.Normal;
-                }
 
                 _selectedGeometry = value;
 
-                if (_selectedGeometry != null) {
-                    _selectedGeometry.State = ShapeVisualState.Selected;
-                }
+                if (_selectedGeometry != null) _selectedGeometry.State = ShapeVisualState.Selected;
             }
         }
 
 
-        public void SetGeometryType(Type type) {
+        public void SetGeometryType(Type type)
+        {
             _currentGeometryType = type;
         }
 
         /// <summary>
-        /// 当前使用图层
+        ///     当前使用图层
         /// </summary>
-        public ShapeLayer? CurrentShapeLayer {
-            get => _currentShapeLayer;
-        }
+        public ShapeLayer? CurrentShapeLayer => _currentShapeLayer;
 
 
         /// <summary>
-        /// 由sketchboard 向此添加,可用于初始化时加载现有图形
+        ///     由sketchboard 向此添加,可用于初始化时加载现有图形
         /// </summary>
         /// <param name="shape"></param>
-        public void AddShape(ShapeVisualBase shape) {
+        public void AddShape(ShapeVisualBase shape)
+        {
             VisualCollection.Add(shape);
             Shapes.Add(shape);
-            CurrentGeometry = shape;
+            CurrentGeometryInEdit = shape;
         }
 
         /// <summary>
-        /// 指定集合位置添加一个新图形
+        ///     指定集合位置添加一个新图形
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="index"></param>
-        public void AddShape(ShapeVisualBase shape, int index) {
+        public void AddShape(ShapeVisualBase shape, int index)
+        {
             VisualCollection.Insert(index, shape);
             Shapes.Insert(index, shape);
-            CurrentGeometry = shape;
+            CurrentGeometryInEdit = shape;
         }
 
-        public void RemoveShape(ShapeVisualBase shape) {
+        public void RemoveShape(ShapeVisualBase shape)
+        {
             VisualCollection.Remove(shape);
             Shapes.Remove(shape);
         }
 
-        public void RemoveAt(int index) {
+        public void RemoveAt(int index)
+        {
             VisualCollection.RemoveAt(index);
             Shapes.RemoveAt(index);
         }
 
 
         /// <summary>
-        /// not supported
+        ///     not supported
         /// </summary>
         /// <param name="index"></param>
         /// <param name="count"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void RemoveAt(int index, int count) {
+        public void RemoveAt(int index, int count)
+        {
             throw new NotImplementedException();
         }
 
 
         /// <summary>
-        /// clear all shapes on canvas
+        ///     clear all shapes on canvas
         /// </summary>
-        public void ClearAllShapes() {
+        public void ClearAllShapes()
+        {
             VisualCollection?.Clear();
             Shapes?.Clear();
+            CurrentGeometryInEdit = null;
         }
 
-        public ShapeVisualBase? GetShapeVisual(int index) {
+        public ShapeVisualBase? GetShapeVisual(int index)
+        {
             return VisualCollection[index] as ShapeVisualBase;
         }
 
         /// <summary>
-        /// add a specific geometry with specific data
+        ///     add a specific geometry with specific data
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
         public void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>
-            where TP : IGeometryMetaData {
+            where TP : IGeometryMetaData
+        {
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
-            
         }
 
         /// <summary>
-        /// 设置图层
+        ///     设置图层
         /// </summary>
         /// <param name="layer"></param>
-        public void SetShapeLayer(ShapeLayer layer) {
+        public void SetShapeLayer(ShapeLayer layer)
+        {
             _currentShapeLayer = layer;
         }
 
 
-        public ShapeVisualBase? CreateNewGeometry(Point mousePosition) {
-            if (_currentGeometryType == null || _currentShapeLayer == null) {
-                return null;
-            }
+        public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
+        {
+            if (_currentGeometryType == null || _currentShapeLayer == null) return null;
 
             var shape = Activator.CreateInstance(_currentGeometryType, CurrentShapeLayer) as ShapeVisualBase;
 
-            if (shape != null) {
+            if (shape != null)
+            {
                 shape.ShapeLayer = CurrentShapeLayer;
                 VisualCollection.Add(shape);
-                CurrentGeometry = shape;
+                CurrentGeometryInEdit = shape;
                 Shapes.Add(shape);
             }
 
-            if (shape is FixedCenterCircle fixedCenterCircle) {
-                if (_sketchBoardOwner != null) {
+            if (shape is FixedCenterCircle fixedCenterCircle)
+                if (_sketchBoardOwner != null)
                     fixedCenterCircle.Center =
                         new Point(_sketchBoardOwner.ActualWidth / 2, _sketchBoardOwner.ActualHeight / 2);
-                }
-            }
 
             return shape;
         }
 
         /// <summary>
-        /// set current geometry as null
+        ///     set current geometry as null
         /// </summary>
-        public void UnselectGeometry() {
-            CurrentGeometry = null;
+        public void UnselectGeometry()
+        {
+            CurrentGeometryInEdit = null;
             _currentGeometryType = null;
         }
 
-        public void InitializeVisualCollection(Visual visual) {
+        public void InitializeVisualCollection(Visual visual)
+        {
             VisualCollection = new VisualCollection(visual);
             Shapes ??= new ObservableCollection<ShapeVisualBase>();
             Shapes.Clear();
 
-            if (visual is SketchBoard sketchBoard) {
-                _sketchBoardOwner = sketchBoard;    
-            }
+            if (visual is SketchBoard sketchBoard) _sketchBoardOwner = sketchBoard;
         }
 
-        public void OnImageViewerPropertyChanged(double scale) {
-
-            foreach (var shapeStyler in CurrentShapeLayer.Stylers) {
-                shapeStyler.Value.SketchPen.Thickness = 0.5/scale;
+        public void OnImageViewerPropertyChanged(double scale)
+        {
+            foreach (var shapeStyler in CurrentShapeLayer.Stylers)
+            {
+                shapeStyler.Value.SketchPen.Thickness = 0.5 / scale;
                 shapeStyler.Value.DragHandleSize = 8 / scale;
                 //Console.WriteLine($"dragSize{shapeStyler.Value.DragHandleSize}");
             }
-
         }
 
         #endregion

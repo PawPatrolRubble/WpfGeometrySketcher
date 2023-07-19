@@ -8,15 +8,26 @@
 
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview2" />
+      <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+      <PackageReference Include="Serilog" Version="3.0.1" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
+      <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
+      <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Include="App.xaml" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Lan.ImageViewer\Lan.ImageViewer.csproj" />
       <ProjectReference Include="..\..\src\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
+      <ProjectReference Include="..\..\src\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" />
       <ProjectReference Include="..\..\src\Lan.SketchBoard\Lan.SketchBoard.csproj" />
     </ItemGroup>
 
@@ -29,6 +40,9 @@
     <ItemGroup>
       <None Update="1.bmp">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="996.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="ShapeLayers.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -5,6 +5,7 @@
     xmlns:app="clr-namespace:Lan.Shapes.App"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
     Width="800"
@@ -16,7 +17,13 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Style.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
+
+            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -28,18 +35,18 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
-            <UniformGrid >
+            <UniformGrid>
 
                 <!--<imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    
+
                     DataContext="{Binding Camera2}" />-->
 
                 <imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    DataContext="{Binding Camera1}" />
+                    DataContext="{Binding SelectedImageViewModel}" />
 
                 <!--<imageViewer:ImageViewerBasic
                 Background="Black"
@@ -60,25 +67,32 @@
 
             <StackPanel Grid.Column="1">
                 <ComboBox ItemsSource="{Binding ImageViewerViewModels}" SelectedItem="{Binding SelectedImageViewModel}" />
+                <Button Command="{Binding LoadFromParameterCommand}" Content="load from parameter" />
+                <Button Command="{Binding LockEditCommand}" Content="lock" />
+                <Button Command="{Binding UnlockEditCommand}" Content="Unlock" />
+                <Button Command="{Binding FilterShapeTypeCommand}" Content="Filter" />
+                <Button Command="{Binding SetTagNameCommand}" Content="Set Tag" />
+                <Button Content="clear all" Command="{Binding ClearAllShapesCommand}" />
 
-                <Button
-                    Margin="5"
-                    Command="{Binding LoadFromParameterCommand}"
-                    Content="load from parameter" />
-                <Button
-                    Margin="5"
-                    Command="{Binding LockEditCommand}"
-                    Content="lock" />
-                <Button
-                    Margin="5"
-                    Command="{Binding UnlockEditCommand}"
-                    Content="Unlock" />
-                <Button
-                    Margin="5"
-                    Command="{Binding FilterShapeTypeCommand}"
-                    Content="Filter" />
 
-                <Button Content="Set Tag" Command="{Binding SetTagNameCommand}" />
+
+                <TextBox
+                    VerticalAlignment="Center"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding ImagePath}">
+
+                    <TextBox.InputBindings>
+                        <MouseBinding Command="{Binding ChooseFileDialogCommand}" MouseAction="LeftDoubleClick" />
+                    </TextBox.InputBindings>
+
+                    <materialDesign:HintAssist.Hint>
+                        <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AccessPoint" />
+                            <TextBlock Text="double click to choose image " />
+                        </StackPanel>
+                    </materialDesign:HintAssist.Hint>
+                </TextBox>
 
             </StackPanel>
 

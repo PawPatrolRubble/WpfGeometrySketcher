@@ -11,17 +11,14 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
+using Lan.Shapes.DialogGeometry;
+using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
-using Ellipse = Lan.Shapes.Shapes.Ellipse;
-using Path = System.IO.Path;
-using Polygon = Lan.Shapes.Shapes.Polygon;
-using Rectangle = Lan.Shapes.Shapes.Rectangle;
+using Microsoft.Win32;
 
 #endregion
 
@@ -38,8 +35,8 @@ namespace Lan.Shapes.App
         #region fields
 
         private readonly IGeometryTypeManager _geometryTypeManager;
-        private readonly IShapeLayerManager _shapeLayerManager;
         private readonly ResourceDictionary _resourceDictionary;
+        private readonly IShapeLayerManager _shapeLayerManager;
 
         private double _scale;
 
@@ -78,8 +75,8 @@ namespace Lan.Shapes.App
             ShowSimpleCanvas = true;
             CreateGeometryTypeList();
 
-            //Image = CreateEmptyImageSource(512, 480);
-            Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "test0.bmp"));
+            Image = CreateEmptyImageSource(2048, 2048);
+            //Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "996.png"));
 
             ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });
 
@@ -106,10 +103,7 @@ namespace Lan.Shapes.App
         /// <summary>
         /// geometry type list
         /// </summary>
-        public ObservableCollection<GeometryType> GeometryTypeList
-        {
-            get;
-        }
+        public ObservableCollection<GeometryType> GeometryTypeList { get; }
 
 
         public ObservableCollection<ShapeLayer> Layers { get; set; }
@@ -134,10 +128,7 @@ namespace Lan.Shapes.App
         public Point MouseDoubleClickPosition
         {
             get => _mouseDoubleClickPosition;
-            set
-            {
-                _mouseDoubleClickPosition = value;
-            }
+            set => _mouseDoubleClickPosition = value;
         }
 
         /// <summary>
@@ -160,7 +151,13 @@ namespace Lan.Shapes.App
         /// <summary>
         /// the image displayed
         /// </summary>
-        public ImageSource Image { get; set; }
+        private ImageSource _image;
+        public ImageSource Image
+        {
+            get => _image;
+            set { SetProperty(ref _image, value); }
+        }
+
 
         public double Scale
         {
@@ -201,14 +198,23 @@ namespace Lan.Shapes.App
             GeometryTypeList.AddRange(_geometryTypeList.Where(x => func(x)));
         }
 
-
         #endregion
 
         #region others
 
         private void ChooseGeometryTypeCommandImpl(GeometryType? geometryType)
         {
+            if (geometryType == null)
+            {
+                return;
+            }
+            if (SelectedGeometryType != null)
+            {
+                SelectedGeometryType.IsSelected = false;
+            }
+
             SelectedGeometryType = geometryType;
+            SelectedGeometryType.IsSelected = true;
         }
 
         private ImageSource CreateEmptyImageSource(int width, int height)
@@ -254,6 +260,14 @@ namespace Lan.Shapes.App
                 return iconPngsFromResource.ContainsKey(iconName) ? iconPngsFromResource[iconName] : null;
             }
 
+
+            _geometryTypeManager.RegisterGeometryType<GridGeometry>();
+            _geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCircle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
+            _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));

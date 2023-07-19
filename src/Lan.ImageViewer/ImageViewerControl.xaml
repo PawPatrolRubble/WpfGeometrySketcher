@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
     x:Name="Root"
     d:DataContext="{d:DesignInstance local:IImageViewerViewModel}"
     d:DesignHeight="450"
@@ -23,6 +24,27 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+
+            <xamlFlair:Offset x:Key="PositiveOffset" OffsetValue="20" />
+            <xamlFlair:Offset x:Key="NegativeOffset" OffsetValue="-50" />
+
+
+            <system:Double x:Key="SmallScaleFactor">0.75</system:Double>
+
+
+            <xamlFlair:AnimationSettings
+                x:Key="SlideFromTop"
+                Kind="TranslateYFrom"
+                OffsetY="{StaticResource NegativeOffset}" />
+
+            <!--  Scale to a smaller value  -->
+
+            <SolidColorBrush x:Key="Expander.Static.Arrow.Stroke" Color="White" />
+            <SolidColorBrush x:Key="Expander.MouseOver.Arrow.Stroke" Color="Lime" />
+            <SolidColorBrush x:Key="Expander.Pressed.Arrow.Stroke" Color="Lime" />
+            <SolidColorBrush x:Key="Expander.Disabled.Arrow.Stroke" Color="#FF707070" />
+
+
         </ResourceDictionary>
 
     </UserControl.Resources>
@@ -38,30 +60,126 @@
 
             <local:ImageViewer
                 BorderBrush="LightGray"
-                BorderThickness="0"
-                MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                BorderThickness="0" DefaultStrokeThickness="4.0"
                 ImageSource="{Binding Image}"
+                MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ShowCrossLine="True"
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
-            <ItemsControl
-                MinWidth="100"
-                Margin="2,5"
-                Padding="5"
+
+            <Grid
+                Height="45"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                HorizontalContentAlignment="Right"
-                Panel.ZIndex="1"
-                FontSize="15"
-                ItemTemplate="{StaticResource GeometryTypeTemplate}"
-                ItemsSource="{Binding GeometryTypeList}"
-                Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                VerticalAlignment="Top">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton
+                    x:Name="ToolBarSwitch"
+                    Grid.Column="1"
+                    Width="30"
+                    VerticalAlignment="Stretch"
+                    Click="ToolBarSwitch_OnClick"
+                    Foreground="White"
+                    IsChecked="False">
+
+                    <!--
+                        xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource SlideFromTop},
+                        Event=Checked,
+                        Delay=0}"
+                    -->
+                    <!--<Path
+                        Width="20"
+                        Data="{StaticResource DblArrowToLeft}"
+                        Fill="White"
+                        Stretch="Uniform"
+                        Stroke="White"
+                        StrokeThickness="1" />-->
+
+
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+
+                            <Setter Property="Margin" Value="2,0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border
+                                            Margin="{TemplateBinding Margin}"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                                            <Path
+                                                x:Name="arrow"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Data="M 2,3 L 9,10 L 16,3"
+                                                SnapsToDevicePixels="false"
+                                                Stroke="{StaticResource Expander.Static.Arrow.Stroke}"
+                                                StrokeThickness="2" />
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="arrow" Property="Data" Value="M 2,9  L 9,2  L 16,9" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="true">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Pressed.Arrow.Stroke}" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+
+
+                        </Style>
+                    </ToggleButton.Style>
+
+                </ToggleButton>
+
+                <Border
+                    x:Name="ToolsBorder"
+                    Grid.Column="0"
+                    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource SlideFromTop},
+                                                                     Event=Visibility,
+                                                                     Delay=0}"
+                    IsVisibleChanged="ToolsBorder_OnIsVisibleChanged"
+                    Visibility="{Binding ElementName=ToolBarSwitch, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                    <ItemsControl
+                        x:Name="Tools"
+                        MinWidth="100"
+                        Margin="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Right"
+                        Panel.ZIndex="1"
+                        FontSize="15"
+                        ItemTemplate="{StaticResource GeometryTypeTemplate}"
+                        ItemsSource="{Binding GeometryTypeList}"
+                        Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Border>
+            </Grid>
 
         </Grid>
 
@@ -141,7 +259,7 @@
             <ListBox
                 Grid.Row="1"
                 ItemsSource="{Binding SketchBoardDataManager.Shapes}"
-                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         </Grid>
 

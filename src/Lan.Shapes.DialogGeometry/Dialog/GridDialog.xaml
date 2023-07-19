@@ -1,0 +1,56 @@
+﻿<UserControl
+    x:Class="Lan.Shapes.DialogGeometry.Dialog.GridDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Lan.Shapes.DialogGeometry.Dialog"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="500"
+    Height="350"
+    d:DataContext="{d:DesignInstance local:GridDialogDialogViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="2,5,2,5" />
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+    </UserControl.Resources>
+
+
+    <StackPanel>
+
+        <TextBlock Text="row count" />
+        <TextBox 
+            Text="{Binding RowCount}" />
+        <TextBlock Text="col count" />
+        <TextBox Text="{Binding ColCount}" />
+
+        <!--<TextBlock Text="vertical gap" />
+        <TextBox Text="{Binding VerticalGap}" />
+        <TextBlock Text="horizontal gap" />
+        <TextBox Text="{Binding HorizontalGap}" />-->
+
+        <UniformGrid Rows="1" Margin="0 35 0 0 ">
+
+            <Button
+                Background="#989898"
+                Command="{Binding OkCommand}"
+                Content="Ok" />
+            <Button Command="{Binding CloseCommand}" Content="Cancel" />
+        </UniformGrid>
+
+    </StackPanel>
+</UserControl>
