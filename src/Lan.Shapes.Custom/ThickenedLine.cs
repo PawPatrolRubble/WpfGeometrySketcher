@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
@@ -215,14 +216,22 @@ namespace Lan.Shapes.Custom
         }
 
 
+        protected virtual bool CanRenderGeometry()
+        {
+            if (DistanceResizeHandle == null || _leftDragHandle == null || _rightDragHandle == null) {
+                return false;
+            }
+
+            if (ShapeStyler == null) return false;
+            return true;
+        }
+
         public override void UpdateVisual()
         {
-            if (DistanceResizeHandle == null || _leftDragHandle == null || _rightDragHandle == null)
+            if (!CanRenderGeometry())
             {
                 return;
             }
-
-            if (ShapeStyler == null) return;
 
             Pen ??= ShapeStyler.SketchPen.CloneCurrentValue();
             Pen.Thickness = StrokeThickness;

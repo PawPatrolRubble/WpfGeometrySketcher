@@ -267,6 +267,7 @@ namespace Lan.Shapes.App
             _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
             _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
             _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
+            _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
