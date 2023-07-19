@@ -6,7 +6,8 @@ to pan move the sketch area you need to press CTRL + Left mouse button pressed.
 
 本项目主要实现如何在wpf下绘制各种图形，基于drawingVisual比wpf自带图形控件性能上更具优势。
 
-![image](https://user-images.githubusercontent.com/44959548/231935068-9847e6bf-cce8-463a-8426-921ab581b9bf.png)
+![image](https://github.com/PawPatrolRubble/WpfGeometrySketcher/assets/44959548/a2c5f68b-cd2b-4539-8e96-45ecdd3da0c6)
+
 
 
 ## Get started
@@ -32,10 +33,13 @@ Camera1 = new ImageViewerControlViewModel();
 ```
 
 
-### Notice
-this project is still under development, any improvements will be appreciated.
+### Features
+1. extensible to support all kinds of custom geometries 方便扩展，可支持自定义图形
+2. drag handle is auto calculated to ensure unifrom using experience， 根据图形大小自动计算拖拉框
+3. rgb value of pixel is displayed， 显示像素rgb值
+4. scale rate is supported， 显示缩放倍率
 
 
-### Note
+### todo list
+1. add grid rectangle， 添加带格子矩形，带交互对话框，输入行和列数
 
-Polygon geometry is stil not fully supported. translation and scale is not supported yet.
