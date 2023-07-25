@@ -474,7 +474,7 @@ namespace Lan.Shapes
                     FlowDirection.LeftToRight,
                     new Typeface("Verdana"),
                     ShapeLayer.TagFontSize,
-                    Brushes.Lime);
+                    Brushes.Red);
 
                 renderContext.DrawText(formattedText, location);
             }

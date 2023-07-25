@@ -36,8 +36,8 @@ namespace Lan.Shapes.DialogGeometry
 
         #region Propeties
 
-        private int ColumnGap { get; set; }
-        private int RowGap { get; set; }
+        private int _columnGap;
+        private int _rowGap;
 
         public List<GridData>? GridData
         {
@@ -51,6 +51,12 @@ namespace Lan.Shapes.DialogGeometry
                 return _lines.Cast<GridData>().ToList();
             }
         }
+
+        public int TotalRow => _gridGeometryParameter.RowCount;
+        public int TotalCol=>_gridGeometryParameter.ColumnCount;
+        public int RowGap => _rowGap;
+        public int ColGap => _columnGap;
+       
 
         private Point TopRight
         {
@@ -103,8 +109,8 @@ namespace Lan.Shapes.DialogGeometry
 
         private void UpdateOrAddLineGeometries()
         {
-            RowGap = (int)((BottomRight.Y - TopLeft.Y) / _gridGeometryParameter.RowCount);
-            ColumnGap = (int)((BottomRight.X - TopLeft.X) / _gridGeometryParameter.ColumnCount);
+            _rowGap = (int)((BottomRight.Y - TopLeft.Y) / _gridGeometryParameter.RowCount);
+            _columnGap = (int)((BottomRight.X - TopLeft.X) / _gridGeometryParameter.ColumnCount);
 
             if (_lines == null)
             {
@@ -118,15 +124,15 @@ namespace Lan.Shapes.DialogGeometry
 
             for (var rowIndex = 0; rowIndex < _gridGeometryParameter.RowCount; rowIndex++)
             {
-                _horizontalLines[rowIndex].StartPoint = TopLeft + new Vector(0, RowGap * rowIndex);
-                _horizontalLines[rowIndex].EndPoint = TopRight + new Vector(0, RowGap * rowIndex);
+                _horizontalLines[rowIndex].StartPoint = TopLeft + new Vector(0, _rowGap * rowIndex);
+                _horizontalLines[rowIndex].EndPoint = TopRight + new Vector(0, _rowGap * rowIndex);
 
                 for (var colIndex = 0; colIndex < _gridGeometryParameter.ColumnCount; colIndex++)
                 {
                     if (rowIndex == 0)
                     {
-                        _verticalLines[colIndex].StartPoint = TopLeft + new Vector(ColumnGap * colIndex, 0);
-                        _verticalLines[colIndex].EndPoint = BottomLeft + new Vector(ColumnGap * colIndex, 0);
+                        _verticalLines[colIndex].StartPoint = TopLeft + new Vector(_columnGap * colIndex, 0);
+                        _verticalLines[colIndex].EndPoint = BottomLeft + new Vector(_columnGap * colIndex, 0);
 
                     }
                     if (_lines[rowIndex, colIndex] == null)
@@ -135,9 +141,9 @@ namespace Lan.Shapes.DialogGeometry
                         _lines[rowIndex, colIndex].Id = rowIndex * _gridGeometryParameter.ColumnCount + colIndex;
                     }
 
-                    var topLeft = TopLeft + new Vector(colIndex * ColumnGap, rowIndex * RowGap);
+                    var topLeft = TopLeft + new Vector(colIndex * _columnGap, rowIndex * _rowGap);
                     _lines[rowIndex, colIndex].TopLeft = topLeft;
-                    _lines[rowIndex, colIndex].BottomRight = topLeft + new Vector(ColumnGap, RowGap);
+                    _lines[rowIndex, colIndex].BottomRight = topLeft + new Vector(_columnGap, _rowGap);
                 }
             }
         }
