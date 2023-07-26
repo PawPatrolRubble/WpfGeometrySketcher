@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.IO;
 using Lan.ImageViewer.Prism.Views;
+using Lan.Shapes.Custom;
+using Lan.Shapes.DialogGeometry;
 using Lan.Shapes.Interfaces;
 using Lan.SketchBoard;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +19,15 @@ namespace Lan.ImageViewer.Prism {
             var shapeLayerJsonFilePath = containerProvider.Resolve<IConfiguration>().GetSection("shapeLayerPath").Value;
             var fullPath = Path.Combine(baseDir, shapeLayerJsonFilePath);
             containerProvider.Resolve<IShapeLayerManager>().ReadShapeLayers(fullPath);
+
+            var _geometryTypeManager = containerProvider.Resolve<IGeometryTypeManager>();
+            _geometryTypeManager.RegisterGeometryType<GridGeometry>();
+            _geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCircle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
+            _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
+
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry) {
