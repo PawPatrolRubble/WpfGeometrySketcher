@@ -2,7 +2,24 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+	  <PackageVersion>1.0.1</PackageVersion>
+	  <Description>image viewer module in prism</Description>
+	  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+	  <IncludeReferencedProjects>true</IncludeReferencedProjects>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
   </PropertyGroup>
+
+	<PropertyGroup>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+		</ItemGroup>
+	</Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
