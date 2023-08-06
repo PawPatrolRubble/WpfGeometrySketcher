@@ -43,17 +43,17 @@
 
                     DataContext="{Binding Camera2}" />-->
 
-                <imageViewer:ImageViewerControl
+                <!--<imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    DataContext="{Binding SelectedImageViewModel}" />
+                    DataContext="{Binding SelectedImageViewModel}" />-->
 
-                <!--<imageViewer:ImageViewerBasic
+                <imageViewer:ImageViewerBasic
                 Background="Black"
                 StrokeDashArray="4 4"
                 ShowCrossLine="True"
                 ImageSource="{Binding Camera1.Image}"
-                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />-->
+                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />
 
                 <!--<imageViewer:ImageViewerControl
                 Margin="5"

@@ -4,8 +4,8 @@
 	  <PropertyGroup>
 		  <TargetFramework>netcoreapp3.1</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.6.7</PackageVersion>
-		  <Description>添加十字线默认粗细控制</Description>
+		  <PackageVersion>1.1.10</PackageVersion>
+		  <Description>更新imageivewerbasic样式</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 		  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 		  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -35,11 +35,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="XamlFlair.WPF" Version="1.2.13" />
+		<PackageReference Include="XamlFlair.WPF" Version="1.2.13" >
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
 	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
 	</ItemGroup>
 
