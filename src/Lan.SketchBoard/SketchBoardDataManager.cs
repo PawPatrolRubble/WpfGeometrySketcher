@@ -97,7 +97,16 @@ namespace Lan.SketchBoard
         /// <summary>
         ///     bindable collection of shapes
         /// </summary>
-        public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
+        //public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
+        private ObservableCollection<ShapeVisualBase> _shapes;
+
+        public ObservableCollection<ShapeVisualBase> Shapes
+        {
+            get => _shapes;
+            set => SetField(ref _shapes, value);
+        }
+
+
 
 
         /// <summary>

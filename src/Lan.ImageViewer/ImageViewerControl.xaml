@@ -62,9 +62,10 @@
                 BorderBrush="LightGray"
                 BorderThickness="0" DefaultStrokeThickness="4.0"
                 ImageSource="{Binding Image}"
+
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ShowCrossLine="True"
+                ShowCrossLine="False"
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
 
@@ -184,8 +185,8 @@
         </Grid>
 
         <Grid
+            MinWidth="230"
             Grid.Column="1"
-            Width="180"
             Margin="5"
             Visibility="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToVisibilityConverter}}">
 
@@ -219,15 +220,20 @@
 
             </ListBox>-->
 
-            <StackPanel>
+            <StackPanel >
 
-                <TextBlock Text="Shape Layer" TextWrapping="Wrap" />
+                <TextBlock Text="图形列表"
+                           FontSize="16"
+                           Margin="2"
+                           ></TextBlock>
+                <!--<TextBlock Text="Shape Layer" TextWrapping="Wrap" />
 
                 <ComboBox
                     Margin="0,5"
                     DisplayMemberPath="Name"
                     ItemsSource="{Binding Layers}"
                     SelectedIndex="0"
+                    IsEditable="False"
                     SelectedItem="{Binding SelectedShapeLayer}" />
 
                 <TextBlock Margin="2" Text="Scale rate" />
@@ -237,7 +243,7 @@
                     Margin="2"
                     VerticalContentAlignment="Center"
                     FontSize="16"
-                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />
+                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />-->
 
 
                 <!--<Button
@@ -257,9 +263,19 @@
             </StackPanel>
 
             <ListBox
+                BorderBrush="LightGray"
+                BorderThickness="1"
                 Grid.Row="1"
+                Margin="2 0 2 0"
                 ItemsSource="{Binding SketchBoardDataManager.Shapes}"
-                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Delete" 
+                                Command="{Binding DeleteShapeCommand}"></KeyBinding>
+                </ListBox.InputBindings>
+
+            </ListBox>
 
         </Grid>
 
