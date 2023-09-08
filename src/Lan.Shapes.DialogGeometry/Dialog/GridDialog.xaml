@@ -32,10 +32,10 @@
 
     <StackPanel>
 
-        <TextBlock Text="row count" />
+        <TextBlock Text="行数" />
         <TextBox 
             Text="{Binding RowCount}" />
-        <TextBlock Text="col count" />
+        <TextBlock Text="列数" />
         <TextBox Text="{Binding ColCount}" />
 
         <!--<TextBlock Text="vertical gap" />

@@ -54,7 +54,7 @@ namespace Lan.ImageViewer
         ICommand ZoomInCommand { get; }
         ICommand ScaleToOriginalSizeCommand { get; }
         ICommand ScaleToFitCommand { get; }
-
+        ICommand DeleteShapeCommand { get; }
         /// <summary>
         /// if true, it will show canvas only, geometry list will be hidden
         /// </summary>
