@@ -5,9 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Lan.ImageViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    xmlns:xamlFlair="clr-namespace:XamlFlair;assembly=XamlFlair.WPF"
     x:Name="Root"
     d:DataContext="{d:DesignInstance local:IImageViewerViewModel}"
     d:DesignHeight="450"
@@ -24,18 +21,15 @@
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-
-            <xamlFlair:Offset x:Key="PositiveOffset" OffsetValue="20" />
+            <!--<xamlFlair:Offset x:Key="PositiveOffset" OffsetValue="20" />
             <xamlFlair:Offset x:Key="NegativeOffset" OffsetValue="-50" />
 
-
             <system:Double x:Key="SmallScaleFactor">0.75</system:Double>
-
 
             <xamlFlair:AnimationSettings
                 x:Key="SlideFromTop"
                 Kind="TranslateYFrom"
-                OffsetY="{StaticResource NegativeOffset}" />
+                OffsetY="{StaticResource NegativeOffset}" />-->
 
             <!--  Scale to a smaller value  -->
 
@@ -60,9 +54,9 @@
 
             <local:ImageViewer
                 BorderBrush="LightGray"
-                BorderThickness="0" DefaultStrokeThickness="4.0"
+                BorderThickness="0"
+                DefaultStrokeThickness="4.0"
                 ImageSource="{Binding Image}"
-
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ShowCrossLine="False"
@@ -79,7 +73,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <ToggleButton
+                <!--<ToggleButton
                     x:Name="ToolBarSwitch"
                     Grid.Column="1"
                     Width="30"
@@ -87,20 +81,6 @@
                     Click="ToolBarSwitch_OnClick"
                     Foreground="White"
                     IsChecked="False">
-
-                    <!--
-                        xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource SlideFromTop},
-                        Event=Checked,
-                        Delay=0}"
-                    -->
-                    <!--<Path
-                        Width="20"
-                        Data="{StaticResource DblArrowToLeft}"
-                        Fill="White"
-                        Stretch="Uniform"
-                        Stroke="White"
-                        StrokeThickness="1" />-->
-
 
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton">
@@ -155,40 +135,38 @@
                 <Border
                     x:Name="ToolsBorder"
                     Grid.Column="0"
-                    xamlFlair:Animations.Primary="{xamlFlair:Animate BasedOn={StaticResource SlideFromTop},
-                                                                     Event=Visibility,
-                                                                     Delay=0}"
                     IsVisibleChanged="ToolsBorder_OnIsVisibleChanged"
                     Visibility="{Binding ElementName=ToolBarSwitch, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                    <ItemsControl
-                        x:Name="Tools"
-                        MinWidth="100"
-                        Margin="2"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        HorizontalContentAlignment="Right"
-                        Panel.ZIndex="1"
-                        FontSize="15"
-                        ItemTemplate="{StaticResource GeometryTypeTemplate}"
-                        ItemsSource="{Binding GeometryTypeList}"
-                        Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </Border>
+                </Border>-->
+                <ItemsControl
+                    x:Name="Tools"
+                    MinWidth="100"
+                    Margin="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Right"
+                    Panel.ZIndex="1"
+                    FontSize="15"
+                    ItemTemplate="{StaticResource GeometryTypeTemplate}"
+                    ItemsSource="{Binding GeometryTypeList}"
+                    Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
             </Grid>
 
         </Grid>
 
         <Grid
-            MinWidth="230"
             Grid.Column="1"
+            MinWidth="230"
             Margin="5"
-            Visibility="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding ShowSimpleCanvas,Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -220,12 +198,12 @@
 
             </ListBox>-->
 
-            <StackPanel >
+            <StackPanel>
 
-                <TextBlock Text="图形列表"
-                           FontSize="16"
-                           Margin="2"
-                           ></TextBlock>
+                <TextBlock
+                    Margin="2"
+                    FontSize="16"
+                    Text="图形列表" />
                 <!--<TextBlock Text="Shape Layer" TextWrapping="Wrap" />
 
                 <ComboBox
@@ -263,16 +241,15 @@
             </StackPanel>
 
             <ListBox
+                Grid.Row="1"
+                Margin="2,0,2,0"
                 BorderBrush="LightGray"
                 BorderThickness="1"
-                Grid.Row="1"
-                Margin="2 0 2 0"
                 ItemsSource="{Binding SketchBoardDataManager.Shapes}"
                 SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                 <ListBox.InputBindings>
-                    <KeyBinding Key="Delete" 
-                                Command="{Binding DeleteShapeCommand}"></KeyBinding>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteShapeCommand}" />
                 </ListBox.InputBindings>
 
             </ListBox>

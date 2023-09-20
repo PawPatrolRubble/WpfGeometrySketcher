@@ -13,11 +13,10 @@ namespace Lan.Shapes.DialogGeometry.Dialog
 
             view.DataContext = vm;
 
-            var window = new Window();
-            window.Content = view;
-            window.Width = view.Width;
-            window.Height = view.Height;
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            var window = new DialogWindow()
+            {
+                Content = view,
+            };
 
             if (vm is DialogViewModelBase dialogViewModel)
             {
