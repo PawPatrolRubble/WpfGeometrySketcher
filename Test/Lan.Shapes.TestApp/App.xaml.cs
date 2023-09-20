@@ -34,7 +34,7 @@ namespace Lan.Shapes.App
                 .CreateLogger();
 
             // Initalie the XamlFlair loggers using the LoggerFactory (with Serilog support)
-            XamlFlair.Animations.InitializeLoggers(new LoggerFactory().AddSerilog());
+            //XamlFlair.Animations.InitializeLoggers(new LoggerFactory().AddSerilog());
 
         }   
 

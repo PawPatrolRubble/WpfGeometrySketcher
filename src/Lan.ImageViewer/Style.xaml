@@ -556,8 +556,8 @@
                                         imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
                                         BorderBrush="Gray"
                                         BorderThickness="1"
-                                        Foreground="White"
                                         Content="Fit"
+                                        Foreground="White"
                                         Style="{StaticResource IconButton}" />
 
                                 </Grid>

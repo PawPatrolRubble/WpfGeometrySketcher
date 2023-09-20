@@ -138,7 +138,7 @@ namespace Lan.Shapes.DialogGeometry
                     if (_lines[rowIndex, colIndex] == null)
                     {
                         _lines[rowIndex, colIndex] ??= new GridData();
-                        _lines[rowIndex, colIndex].Id = rowIndex * _gridGeometryParameter.ColumnCount + colIndex;
+                        _lines[rowIndex, colIndex].Id = rowIndex * _gridGeometryParameter.ColumnCount + colIndex+1;
                     }
 
                     var topLeft = TopLeft + new Vector(colIndex * _columnGap, rowIndex * _rowGap);

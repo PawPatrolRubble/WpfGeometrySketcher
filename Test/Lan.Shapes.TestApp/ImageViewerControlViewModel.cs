@@ -169,6 +169,7 @@ namespace Lan.Shapes.App
         public ICommand ZoomInCommand { get; set; }
         public ICommand ScaleToOriginalSizeCommand { get; set; }
         public ICommand ScaleToFitCommand { get; set; }
+        public ICommand DeleteShapeCommand { get; }
 
 
         /// <summary>

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Lan.Shapes;
 using Lan.Shapes.Custom;
+using Lan.Shapes.DialogGeometry;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 using Prism.Commands;
@@ -18,11 +19,7 @@ namespace Lan.ImageViewer.Prism;
 
 public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
 {
-    #region fields
-
-    private const double ScaleIncremental = 0.1;
-
-    #endregion
+    #region constructor
 
     #region Constructors
 
@@ -58,9 +55,25 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
 
     #endregion
 
+    #endregion
+
+    #region private fields
+
+    #region fields
+
+    private const double ScaleIncremental = 0.1;
+
+    #endregion
+
+    #endregion
+
+    #region properties
+
     #region Propeties
 
     public ICommand ChooseGeometryTypeCommand { get; }
+
+    #endregion
 
     #endregion
 
@@ -227,7 +240,8 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
             { nameof(ThickenedCross), _resourceDictionary["ThickenedCross"] as Geometry },
             { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
             { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
-            { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry }
+            { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
+            { nameof(GriddedRectangle), _resourceDictionary["Grid"] as Geometry }
         };
 
 
