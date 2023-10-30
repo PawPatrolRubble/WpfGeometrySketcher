@@ -184,7 +184,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection.Add(shape);
             Shapes.Add(shape);
-            CurrentGeometryInEdit = shape;
+            //CurrentGeometryInEdit = shape;
         }
 
         /// <summary>
@@ -245,12 +245,20 @@ namespace Lan.SketchBoard
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
-        public void LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>
+        public ShapeVisualBase LoadShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>
             where TP : IGeometryMetaData
         {
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
+            return shape;
+        }
+
+        public ShapeVisualBase CreateShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP> where TP : IGeometryMetaData
+        {
+            var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
+            shape.FromData(parameter);
+            return shape;
         }
 
         /// <summary>
@@ -301,6 +309,7 @@ namespace Lan.SketchBoard
             Shapes.Clear();
 
             if (visual is SketchBoard sketchBoard) _sketchBoardOwner = sketchBoard;
+            SketchBoardManagerInitialized?.Invoke(this,this);
         }
 
         public void OnImageViewerPropertyChanged(double scale)
@@ -312,6 +321,11 @@ namespace Lan.SketchBoard
                 //Console.WriteLine($"dragSize{shapeStyler.Value.DragHandleSize}");
             }
         }
+
+        /// <summary>
+        /// the skethboard is initialized and can load shape from now on
+        /// </summary>
+        public event EventHandler<ISketchBoardDataManager>? SketchBoardManagerInitialized;
 
         #endregion
     }

@@ -68,7 +68,7 @@ namespace Lan.SketchBoard
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if(SketchBoardDataManager==null)return;
-            Console.WriteLine($"new canvas size: {e.NewSize}");
+            //Console.WriteLine($"new canvas size: {e.NewSize}");
             var scaleFactor = CalculateStrokeThickness();
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
 
@@ -77,7 +77,7 @@ namespace Lan.SketchBoard
                 shapeStyler.Value.SketchPen.Thickness = 2 * scaleFactor;
                 shapeStyler.Value.DragHandleSize = 10 * scaleFactor;
             }
-            Console.WriteLine($"stroke thickness{scaleFactor}");
+            //Console.WriteLine($"stroke thickness{scaleFactor}");
         }
 
         private double CalculateStrokeThickness()
@@ -97,7 +97,6 @@ namespace Lan.SketchBoard
                 dataManager.InitializeVisualCollection(sketchBoard);
                 if (oldShapes != null)
                 {
-
                     foreach (var shape in oldShapes)
                     {
                         dataManager.AddShape(shape);

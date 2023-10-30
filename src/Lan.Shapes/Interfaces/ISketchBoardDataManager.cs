@@ -94,9 +94,21 @@ namespace Lan.Shapes.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TP"></typeparam>
         /// <param name="parameter"></param>
-        void LoadShape<T, TP>(TP parameter) 
+        ShapeVisualBase LoadShape<T, TP>(TP parameter) 
             where T : ShapeVisualBase, IDataExport<TP>
             where TP : IGeometryMetaData;
+        
+        /// <summary>
+        /// create a shape from sketchboard manager
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TP"></typeparam>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        ShapeVisualBase CreateShape<T, TP>(TP parameter) 
+            where T : ShapeVisualBase, IDataExport<TP>
+            where TP : IGeometryMetaData;
+
 
         /// <summary>
         /// create new geometry from mouse down position
@@ -112,5 +124,7 @@ namespace Lan.Shapes.Interfaces
 
         void InitializeVisualCollection(Visual visual);
         void OnImageViewerPropertyChanged(double scale);
+
+        event EventHandler<ISketchBoardDataManager> SketchBoardManagerInitialized;
     }
 }

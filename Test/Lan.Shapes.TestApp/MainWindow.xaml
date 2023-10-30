@@ -7,6 +7,7 @@
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="MainWindow"
     Width="800"
     Height="450"
@@ -33,6 +34,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="150" />
             </Grid.ColumnDefinitions>
             <UniformGrid>
@@ -43,17 +45,18 @@
 
                     DataContext="{Binding Camera2}" />-->
 
-                <!--<imageViewer:ImageViewerControl
+                <imageViewer:ImageViewerControl
                     Margin="5"
                     Padding="10"
-                    DataContext="{Binding SelectedImageViewModel}" />-->
+                    DataContext="{Binding SelectedImageViewModel}"
+                    Loaded="FrameworkElement_OnLoaded" />
 
-                <imageViewer:ImageViewerBasic
-                Background="Black"
-                StrokeDashArray="4 4"
-                ShowCrossLine="True"
-                ImageSource="{Binding Camera1.Image}"
-                MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}" />
+                <!--<imageViewer:ImageViewerBasic
+                    Background="Black"
+                    ImageSource="{Binding Camera1.Image}"
+                    MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}"
+                    ShowCrossLine="True"
+                    StrokeDashArray="4 4" />-->
 
                 <!--<imageViewer:ImageViewerControl
                 Margin="5"
@@ -64,18 +67,17 @@
 
             </UniformGrid>
 
-
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="2">
                 <ComboBox ItemsSource="{Binding ImageViewerViewModels}" SelectedItem="{Binding SelectedImageViewModel}" />
                 <Button Command="{Binding LoadFromParameterCommand}" Content="load from parameter" />
                 <Button Command="{Binding LockEditCommand}" Content="lock" />
                 <Button Command="{Binding UnlockEditCommand}" Content="Unlock" />
                 <Button Command="{Binding FilterShapeTypeCommand}" Content="Filter" />
                 <Button Command="{Binding SetTagNameCommand}" Content="Set Tag" />
-                <Button Content="clear all" Command="{Binding ClearAllShapesCommand}" />
+                <Button Command="{Binding ClearAllShapesCommand}" Content="clear all" />
 
-
-
+                <TextBox materialDesign:HintAssist.Hint="X" Text="{Binding X}" />
+                <TextBox materialDesign:HintAssist.Hint="Y" Text="{Binding Y}" />
                 <TextBox
                     VerticalAlignment="Center"
                     materialDesign:TextFieldAssist.HasClearButton="True"
