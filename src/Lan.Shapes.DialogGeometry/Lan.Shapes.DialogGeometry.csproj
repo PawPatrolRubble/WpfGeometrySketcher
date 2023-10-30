@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HandyControl" Version="3.4.0" />
+    <PackageReference Include="HandyControls" Version="3.4.5" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Lan.ImageViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="Root"
     d:DataContext="{d:DesignInstance local:IImageViewerViewModel}"
     d:DesignHeight="450"
@@ -166,9 +167,10 @@
             Grid.Column="1"
             MinWidth="230"
             Margin="5"
-            Visibility="{Binding ShowSimpleCanvas,Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding ShowSimpleCanvas, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -253,6 +255,14 @@
                 </ListBox.InputBindings>
 
             </ListBox>
+
+
+
+            <xctk:PropertyGrid
+                Grid.Row="2"
+                SelectedObject="{Binding SketchBoardDataManager.CurrentGeometryInEdit}" />
+
+
 
         </Grid>
 

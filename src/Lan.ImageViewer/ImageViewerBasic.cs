@@ -353,7 +353,7 @@ namespace Lan.ImageViewer
                                                          || Math.Abs(imageViewer.PixelHeight - pixelHeight) >
                                                          double.Epsilon))
             {
-                Console.WriteLine("auto fit in image source change");
+                //Console.WriteLine("auto fit in image source change");
                 imageViewer.AutoScaleImageToFit(
                     imageViewer._borderContainer.ActualWidth,
                     imageViewer._borderContainer.ActualHeight,

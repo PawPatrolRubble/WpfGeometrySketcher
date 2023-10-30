@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-	  <PackageVersion>1.0.1</PackageVersion>
-	  <Description>image viewer module in prism</Description>
+	  <PackageVersion>1.1.16</PackageVersion>
+	  <Description>sketboarmanager lifetime changes to transient</Description>
 	  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 	  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -24,9 +24,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Lan.ImageViewer\Lan.ImageViewer.csproj" />
-    <ProjectReference Include="..\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
     <ProjectReference Include="..\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" />
     <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
   </ItemGroup>

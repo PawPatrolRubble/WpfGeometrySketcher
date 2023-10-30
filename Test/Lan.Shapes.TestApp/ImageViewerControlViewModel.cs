@@ -18,7 +18,6 @@ using Lan.Shapes.DialogGeometry;
 using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
-using Microsoft.Win32;
 
 #endregion
 
@@ -26,36 +25,7 @@ namespace Lan.Shapes.App
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
-        #region fields
-
-        private const double ScaleIncremental = 0.1;
-
-        #endregion
-
-        #region fields
-
-        private readonly IGeometryTypeManager _geometryTypeManager;
-        private readonly ResourceDictionary _resourceDictionary;
-        private readonly IShapeLayerManager _shapeLayerManager;
-
-        private double _scale;
-
-
-        private GeometryType? _selectedGeometryType;
-
-        /// <summary>
-        /// 当前选中的layer
-        /// </summary>
-        //public ShapeLayer SelectedShapeLayer { get; set; }
-        private ShapeLayer _selectedShapeLayer;
-
-        #endregion
-
-        #region Propeties
-
-        public ICommand ChooseGeometryTypeCommand { get; private set; }
-
-        #endregion
+        #region constructor
 
         #region Constructors
 
@@ -86,14 +56,57 @@ namespace Lan.Shapes.App
 
             ScaleToFitCommand = new RelayCommand(() => Scale = -1);
             ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
+
+            
         }
+
+        #endregion
+
+        #endregion
+
+        #region private fields
+
+        #region fields
+
+        private const double ScaleIncremental = 0.1;
+
+        #endregion
+
+        #endregion
+
+        #region properties
+
+        #region Propeties
+
+        public ICommand ChooseGeometryTypeCommand { get; }
+
+        #endregion
+
+        #endregion
+
+        #region fields
+
+        private readonly IGeometryTypeManager _geometryTypeManager;
+        private readonly ResourceDictionary _resourceDictionary;
+        private readonly IShapeLayerManager _shapeLayerManager;
+
+        private double _scale;
+
+
+        private GeometryType? _selectedGeometryType;
+
+        /// <summary>
+        ///     当前选中的layer
+        /// </summary>
+        //public ShapeLayer SelectedShapeLayer { get; set; }
+        private ShapeLayer _selectedShapeLayer;
 
         #endregion
 
         #region implementations
 
         /// <summary>
-        /// the sketch boar data manager used to manage sketch board
+        ///     the sketch boar data manager used to manage sketch board
         /// </summary>
         public ISketchBoardDataManager SketchBoardDataManager { get; set; }
 
@@ -101,7 +114,7 @@ namespace Lan.Shapes.App
         private ObservableCollection<GeometryType> _geometryTypeList;
 
         /// <summary>
-        /// geometry type list
+        ///     geometry type list
         /// </summary>
         public ObservableCollection<GeometryType> GeometryTypeList { get; }
 
@@ -110,7 +123,7 @@ namespace Lan.Shapes.App
 
         public ShapeLayer SelectedShapeLayer
         {
-            get => _selectedShapeLayer;
+            get { return _selectedShapeLayer; }
             set
             {
                 if (SetProperty(ref _selectedShapeLayer, value))
@@ -120,23 +133,16 @@ namespace Lan.Shapes.App
             }
         }
 
-        private Point _mouseDoubleClickPosition;
-
         /// <summary>
-        /// 双击相对于图片位置
+        ///     双击相对于图片位置
         /// </summary>
-        public Point MouseDoubleClickPosition
-        {
-            get => _mouseDoubleClickPosition;
-            set => _mouseDoubleClickPosition = value;
-        }
+        public Point MouseDoubleClickPosition { get; set; }
 
         /// <summary>
-        ///
         /// </summary>
         public GeometryType? SelectedGeometryType
         {
-            get => _selectedGeometryType;
+            get { return _selectedGeometryType; }
             set
             {
                 SetProperty(ref _selectedGeometryType, value);
@@ -149,20 +155,21 @@ namespace Lan.Shapes.App
         }
 
         /// <summary>
-        /// the image displayed
+        ///     the image displayed
         /// </summary>
         private ImageSource _image;
+
         public ImageSource Image
         {
-            get => _image;
+            get { return _image; }
             set { SetProperty(ref _image, value); }
         }
 
 
         public double Scale
         {
-            get => _scale;
-            set => SetProperty(ref _scale, value);
+            get { return _scale; }
+            set { SetProperty(ref _scale, value); }
         }
 
         public ICommand ZoomOutCommand { get; set; }
@@ -173,23 +180,23 @@ namespace Lan.Shapes.App
 
 
         /// <summary>
-        /// if true, it will show canvas only, geometry list will be hidden
+        ///     if true, it will show canvas only, geometry list will be hidden
         /// </summary>
         private bool _showSimpleCanvas;
 
         public bool ShowSimpleCanvas
         {
-            get => _showSimpleCanvas;
-            set => SetProperty(ref _showSimpleCanvas, value);
+            get { return _showSimpleCanvas; }
+            set { SetProperty(ref _showSimpleCanvas, value); }
         }
 
         /// <summary>
-        /// use to control the visibility of tools
+        ///     use to control the visibility of tools
         /// </summary>
         public bool ShowShapeTypes { get; set; } = true;
 
         /// <summary>
-        /// show shapes only confirm to the conditions provided
+        ///     show shapes only confirm to the conditions provided
         /// </summary>
         /// <param name="predicate"></param>
         public void FilterGeometryTypes(Expression<Func<GeometryType, bool>> predicate)
@@ -209,6 +216,7 @@ namespace Lan.Shapes.App
             {
                 return;
             }
+
             if (SelectedGeometryType != null)
             {
                 SelectedGeometryType.IsSelected = false;
@@ -269,12 +277,13 @@ namespace Lan.Shapes.App
             _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
             _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
             _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
+            _geometryTypeManager.RegisterGeometryType<Circle>();
+            _geometryTypeManager.RegisterGeometryType<Cross>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));
 
             GeometryTypeList.AddRange(_geometryTypeList);
-
         }
 
         private ImageSource ImageFromFile(string filePath)

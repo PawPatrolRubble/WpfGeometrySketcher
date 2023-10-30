@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using Lan.ImageViewer;
+using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lan.Shapes.App
@@ -9,6 +12,25 @@ namespace Lan.Shapes.App
         {
             InitializeComponent();
             DataContext = App.ServiceProvider.GetRequiredService<MainWindowViewModel>();
+        }
+
+        private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is ImageViewerControl imageViewerControl)
+            {
+                if (imageViewerControl.DataContext is ImageViewerControlViewModel vm)
+                {
+                    vm.SketchBoardDataManager.LoadShape<Cross, CrossData>(new CrossData()
+                    {
+                        Center = new Point(40, 40),
+                        Height = 50,
+                        Width = 50,
+                        StrokeThickness = 1
+                    });
+                }
+                ;
+                //imageViewerControl
+            }
         }
     }
 }

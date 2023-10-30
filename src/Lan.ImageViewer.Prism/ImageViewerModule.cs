@@ -34,7 +34,7 @@ namespace Lan.ImageViewer.Prism {
             containerRegistry.RegisterSingleton<IGeometryTypeManager, GeometryTypeManager>();
             containerRegistry.RegisterSingleton<IShapeLayerManager, ShapeLayerManager>();
             containerRegistry.Register<IImageViewerViewModel, ImageViewerControlViewModel>();
-            containerRegistry.RegisterSingleton<ISketchBoardDataManager, SketchBoardDataManager>();
+            containerRegistry.Register<ISketchBoardDataManager, SketchBoardDataManager>();
         }
     }
 }

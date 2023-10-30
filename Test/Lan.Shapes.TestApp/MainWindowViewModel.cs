@@ -69,6 +69,11 @@ namespace Lan.Shapes.App
             ImageViewerViewModels.Add(Camera1);
             //ImageViewerViewModels.Add(Camera2);
             SelectedImageViewModel = ImageViewerViewModels[0];
+
+            Camera1.SketchBoardDataManager.SketchBoardManagerInitialized += (s, e) =>
+            {
+
+            };
         }
 
         #endregion
@@ -116,6 +121,44 @@ namespace Lan.Shapes.App
             }
         }
 
+
+        private int _x;
+
+        public int X
+        {
+            get => _x;
+            set
+            {
+                SetProperty(ref _x, value);
+                var cross = Camera1.SketchBoardDataManager.Shapes.FirstOrDefault(x =>
+                    x.GetType() == typeof(Cross));
+                if (cross is Cross cr)
+                {
+                    //cr.TopLeft = X;
+                    cr.Center = cr.Center + new Vector(X, Y);
+                }
+            }
+        }
+
+        private int _y;
+
+        public int Y
+        {
+            get => _y;
+            set
+            {
+                SetProperty(ref _y, value);
+                var cross = Camera1.SketchBoardDataManager.Shapes.FirstOrDefault(x =>
+                    x.GetType() == typeof(Cross));
+                if (cross is Cross cr)
+                {
+                    //cr.TopLeft = X;
+                    cr.Center = cr.Center + new Vector(X, Y);
+                }
+            }
+        }
+
+
         private string _imagePath;
 
         public string ImagePath
@@ -155,7 +198,7 @@ namespace Lan.Shapes.App
             set
             {
                 SetProperty(ref _mouseDblPosition, value);
-                Console.WriteLine(_mouseDblPosition);
+                //Console.WriteLine(_mouseDblPosition);
             }
         }
 
@@ -205,12 +248,22 @@ namespace Lan.Shapes.App
             //Camera1.SketchBoardDataManager.LoadShape<Rectangle, PointsData>(new PointsData(1, new List<Point>()
             //{
             //    new Point(10,10),
-            //    new Point(50,50)
+            //    new Polocation: int(50,50)
             //})); 
 
 
             Camera1.SketchBoardDataManager.LoadShape<TextGeometry, TextGeometryData>(
-                new TextGeometryData(new Point(200, 200), "Hello world", 50));
+                new TextGeometryData(new Point(400, 400), "Hello world", 50));
+
+
+            //Camera1.SketchBoardDataManager.LoadShape<Cross, CrossData>(
+            //    new CrossData()
+            //    {
+            //        StrokeThickness = 3,
+            //        Center = new Point(500,500),
+            //        Width = 100,
+            //        Height = 100
+            //    });
 
 
             //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
