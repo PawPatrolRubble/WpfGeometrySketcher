@@ -76,7 +76,7 @@
                 <Button Command="{Binding SetTagNameCommand}" Content="Set Tag" />
                 <Button Command="{Binding ClearAllShapesCommand}" Content="clear all" />
 
-                <TextBox materialDesign:HintAssist.Hint="X" Text="{Binding X}" />
+                <!--<TextBox materialDesign:HintAssist.Hint="X" Text="{Binding X}" />
                 <TextBox materialDesign:HintAssist.Hint="Y" Text="{Binding Y}" />
                 <TextBox
                     VerticalAlignment="Center"
@@ -94,7 +94,7 @@
                             <TextBlock Text="double click to choose image " />
                         </StackPanel>
                     </materialDesign:HintAssist.Hint>
-                </TextBox>
+                </TextBox>-->
 
             </StackPanel>
 

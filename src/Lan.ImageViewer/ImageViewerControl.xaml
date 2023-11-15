@@ -253,16 +253,7 @@
                 <ListBox.InputBindings>
                     <KeyBinding Key="Delete" Command="{Binding DeleteShapeCommand}" />
                 </ListBox.InputBindings>
-
             </ListBox>
-
-
-
-            <xctk:PropertyGrid
-                Grid.Row="2"
-                SelectedObject="{Binding SketchBoardDataManager.CurrentGeometryInEdit}" />
-
-
 
         </Grid>
 

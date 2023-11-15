@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+
 using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Shapes;
 
@@ -11,12 +12,20 @@ using Lan.Shapes.Shapes;
 
 namespace Lan.Shapes.DialogGeometry
 {
-    public class GridData
+    public class GridData : NotifiableObject
     {
+        private int _id;
+
         #region Propeties
 
         public Point BottomRight { get; set; }
-        public int Id { get; set; }
+
+        public int Id
+        {
+            get { return _id; }
+            set { SetProperty(ref _id, value); }
+        }
+
         public Point TopLeft { get; set; }
 
         #endregion
@@ -43,7 +52,7 @@ namespace Lan.Shapes.DialogGeometry
         {
             get
             {
-                if (_lines==null)
+                if (_lines == null)
                 {
                     return null;
                 }
@@ -53,10 +62,10 @@ namespace Lan.Shapes.DialogGeometry
         }
 
         public int TotalRow => _gridGeometryParameter.RowCount;
-        public int TotalCol=>_gridGeometryParameter.ColumnCount;
+        public int TotalCol => _gridGeometryParameter.ColumnCount;
         public int RowGap => _rowGap;
         public int ColGap => _columnGap;
-       
+
 
         private Point TopRight
         {
@@ -89,15 +98,14 @@ namespace Lan.Shapes.DialogGeometry
         {
             if (IsGeometryRendered == false)
             {
-                var dialog = new DialogService();
-                dialog.ShowDialog<GridDialog, GridDialogDialogViewModel>(() => new GridDialogDialogViewModel(), x =>
+                _dialogService.ShowDialog<GridDialog, GridDialogDialogViewModel>(
+                    () => new GridDialogDialogViewModel(), x =>
                 {
                     _gridGeometryParameter.RowCount = x.RowCount;
                     _gridGeometryParameter.ColumnCount = x.ColCount;
                 });
+
                 BottomRight = newPoint;
-
-
 
                 UpdateOrAddLineGeometries();
                 //RenderGeometryGroup.Children.AddRange(_horizontalLines);
@@ -106,6 +114,7 @@ namespace Lan.Shapes.DialogGeometry
 
             base.OnMouseLeftButtonUp(newPoint);
         }
+
 
         private void UpdateOrAddLineGeometries()
         {
@@ -138,7 +147,7 @@ namespace Lan.Shapes.DialogGeometry
                     if (_lines[rowIndex, colIndex] == null)
                     {
                         _lines[rowIndex, colIndex] ??= new GridData();
-                        _lines[rowIndex, colIndex].Id = rowIndex * _gridGeometryParameter.ColumnCount + colIndex+1;
+                        _lines[rowIndex, colIndex].Id = rowIndex * _gridGeometryParameter.ColumnCount + colIndex + 1;
                     }
 
                     var topLeft = TopLeft + new Vector(colIndex * _columnGap, rowIndex * _rowGap);
@@ -155,6 +164,29 @@ namespace Lan.Shapes.DialogGeometry
                 UpdateOrAddLineGeometries();
             }
             base.UpdateVisual();
+        }
+
+
+        private readonly DialogService _dialogService = new DialogService();
+        public override void OnMouseLeftButtonDoubleClick(Point mouseDoubleClickPoint)
+        {
+            base.OnMouseLeftButtonDoubleClick(mouseDoubleClickPoint);
+            _dialogService.ShowDialog<GridDataEditDialog, GridDataEditDialogViewModel>
+            (
+                ()=>
+                {
+                    var vm = new GridDataEditDialogViewModel();
+                    vm.GridDataList.AddRange(GridData);
+                    return vm;
+                },
+                x =>
+                {
+                    if (GridData != null)
+                    {
+                        GridData.Clear();
+                        GridData.AddRange(x.GridDataList);
+                    }
+                });
         }
 
         #endregion

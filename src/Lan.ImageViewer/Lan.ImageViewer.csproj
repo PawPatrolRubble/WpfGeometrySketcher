@@ -35,12 +35,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
-		<PackageReference Include="XamlFlair.WPF" Version="1.2.13">
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
 	</ItemGroup>
 
