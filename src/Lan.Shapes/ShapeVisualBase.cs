@@ -350,6 +350,11 @@ namespace Lan.Shapes
             State = ShapeVisualState.Normal;
         }
 
+        public virtual void OnMouseLeftButtonDoubleClick(Point mouseDoubleClickPoint)
+        {
+            ;
+        }
+
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

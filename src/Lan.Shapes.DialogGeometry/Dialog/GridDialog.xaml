@@ -32,7 +32,7 @@
 
     <StackPanel Margin="0,30,0,10">
 
-        <TextBox
+        <hc:TextBox
             Margin="5"
             hc:InfoElement.HorizontalAlignment="Right"
             hc:InfoElement.ShowClearButton="True"
@@ -40,7 +40,6 @@
             hc:InfoElement.TitlePlacement="Left"
             hc:InfoElement.TitleWidth="80"
             FontSize="18"
-            Style="{StaticResource TextBoxExtend}"
             Text="{Binding RowCount}" />
         <hc:TextBox
             Margin="5"
@@ -50,7 +49,13 @@
             hc:InfoElement.TitlePlacement="Left"
             hc:InfoElement.TitleWidth="80"
             FontSize="18"
-            Text="{Binding ColCount}" />
+            Text="{Binding ColCount}">
+
+            <hc:TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding CloseCommand}" />
+            </hc:TextBox.InputBindings>
+
+        </hc:TextBox>
 
         <!--<TextBlock Text="vertical gap" />
         <TextBox Text="{Binding VerticalGap}" />

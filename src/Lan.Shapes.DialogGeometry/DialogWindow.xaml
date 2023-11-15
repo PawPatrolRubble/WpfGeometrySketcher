@@ -21,7 +21,6 @@
             GlassFrameThickness="0"
             ResizeBorderThickness="6" />
     </WindowChrome.WindowChrome>
-
-
+        
     <Grid />
 </Window>

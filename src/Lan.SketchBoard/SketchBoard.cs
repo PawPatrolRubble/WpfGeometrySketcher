@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using Lan.Shapes;
 using Lan.Shapes.Enums;
 using Lan.Shapes.Interfaces;
@@ -67,7 +68,7 @@ namespace Lan.SketchBoard
 
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(SketchBoardDataManager==null)return;
+            if (SketchBoardDataManager == null) return;
             //Console.WriteLine($"new canvas size: {e.NewSize}");
             var scaleFactor = CalculateStrokeThickness();
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
@@ -137,20 +138,34 @@ namespace Lan.SketchBoard
             base.OnMouseRightButtonUp(e);
         }
 
+
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             try
             {
-                this.Focus();
-                SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
+                Focus();
+                if (SketchBoardDataManager != null)
+                {
+                    SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
 
-                if (SketchBoardDataManager.SelectedGeometry == null)
-                    SketchBoardDataManager.SelectedGeometry = SketchBoardDataManager?.CurrentGeometryInEdit ??
-                                                              SketchBoardDataManager?.CreateNewGeometry(e.GetPosition(this));
+                    if (SketchBoardDataManager.SelectedGeometry == null)
+                        SketchBoardDataManager.SelectedGeometry = SketchBoardDataManager?.CurrentGeometryInEdit ??
+                                                                  SketchBoardDataManager?.CreateNewGeometry(
+                                                                      e.GetPosition(this));
 
-                //if sketchboard current geometry is not null, it means that it still being sketched
-                //and we need to assign it to active shape
-                SketchBoardDataManager.SelectedGeometry?.OnMouseLeftButtonDown(e.GetPosition(this));
+                    //if sketchboard current geometry is not null, it means that it still being sketched
+                    //and we need to assign it to active shape
+
+                    if (e.ClickCount == 2)
+                    {
+                        SketchBoardDataManager?.SelectedGeometry?.OnMouseLeftButtonDoubleClick(e.GetPosition(this));
+                    }
+                    else
+                    {
+                        SketchBoardDataManager?.SelectedGeometry?.OnMouseLeftButtonDown(e.GetPosition(this));
+                    }
+                }
             }
             catch (Exception exception)
             {
