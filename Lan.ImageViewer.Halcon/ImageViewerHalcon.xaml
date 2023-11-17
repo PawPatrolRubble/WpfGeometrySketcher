@@ -1,0 +1,271 @@
+﻿<UserControl
+    x:Class="Lan.ImageViewer.Halcon.ImageViewerHalconControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
+    xmlns:local="clr-namespace:Lan.ImageViewer.Halcon"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance imageViewer:IImageViewerViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Lan.ImageViewer.Halcon;component/Styles.xaml" />
+                <!--<ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />-->
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--<xamlFlair:Offset x:Key="PositiveOffset" OffsetValue="20" />
+            <xamlFlair:Offset x:Key="NegativeOffset" OffsetValue="-50" />
+
+            <system:Double x:Key="SmallScaleFactor">0.75</system:Double>
+
+            <xamlFlair:AnimationSettings
+                x:Key="SlideFromTop"
+                Kind="TranslateYFrom"
+                OffsetY="{StaticResource NegativeOffset}" />-->
+
+            <!--  Scale to a smaller value  -->
+
+            <SolidColorBrush x:Key="Expander.Static.Arrow.Stroke" Color="White" />
+            <SolidColorBrush x:Key="Expander.MouseOver.Arrow.Stroke" Color="Lime" />
+            <SolidColorBrush x:Key="Expander.Pressed.Arrow.Stroke" Color="Lime" />
+            <SolidColorBrush x:Key="Expander.Disabled.Arrow.Stroke" Color="#FF707070" />
+
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+
+            <!--<imageViewer:ImageViewer
+                BorderBrush="LightGray"
+                BorderThickness="0"
+                DefaultStrokeThickness="4.0"
+                ImageSource="{Binding Image}"
+                MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ShowCrossLine="False"
+                SketchBoardDataManager="{Binding SketchBoardDataManager}" />-->
+
+            <!--<halconDotNet:HSmartWindowControlWPF
+                Grid.Row="1">
+
+                <halconDotNet:HIconicDisplayObjectWPF IconicObject="{Binding DisplayImage}" />
+                <halconDotNet:HIconicDisplayObjectWPF
+                    HColor="red"
+                    HDraw="fill"
+                    IconicObject="{Binding DisplayRegion}" />
+
+            </halconDotNet:HSmartWindowControlWPF>-->
+
+            <local:ImageViewerHalcon ImageSource="E:\source codes\ivy\算法采集图片\2023-10-27_13_08_41_600.bmp" SketchBoardDataManager="{Binding SketchBoardDataManager}" />
+
+            <Grid
+                Height="45"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--<ToggleButton
+                    x:Name="ToolBarSwitch"
+                    Grid.Column="1"
+                    Width="30"
+                    VerticalAlignment="Stretch"
+                    Click="ToolBarSwitch_OnClick"
+                    Foreground="White"
+                    IsChecked="False">
+
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+
+                            <Setter Property="Margin" Value="2,0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border
+                                            Margin="{TemplateBinding Margin}"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                                            <Path
+                                                x:Name="arrow"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Data="M 2,3 L 9,10 L 16,3"
+                                                SnapsToDevicePixels="false"
+                                                Stroke="{StaticResource Expander.Static.Arrow.Stroke}"
+                                                StrokeThickness="2" />
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="true">
+                                                <Setter TargetName="arrow" Property="Data" Value="M 2,9  L 9,2  L 16,9" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.MouseOver.Arrow.Stroke}" />
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="true">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Pressed.Arrow.Stroke}" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="false">
+                                                <Setter TargetName="arrow" Property="Stroke" Value="{StaticResource Expander.Disabled.Arrow.Stroke}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+
+
+                        </Style>
+                    </ToggleButton.Style>
+
+                </ToggleButton>
+
+                <Border
+                    x:Name="ToolsBorder"
+                    Grid.Column="0"
+                    IsVisibleChanged="ToolsBorder_OnIsVisibleChanged"
+                    Visibility="{Binding ElementName=ToolBarSwitch, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                </Border>-->
+                <!--<ItemsControl
+                    x:Name="Tools"
+                    MinWidth="100"
+                    Margin="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Right"
+                    Panel.ZIndex="1"
+                    FontSize="15"
+                    ItemTemplate="{StaticResource GeometryTypeTemplate}"
+                    ItemsSource="{Binding GeometryTypeList}"
+                    Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>-->
+
+            </Grid>
+
+        </Grid>
+
+        <Grid
+            Grid.Column="1"
+            MinWidth="230"
+            Margin="5"
+            Visibility="{Binding ShowSimpleCanvas, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--<TextBlock Margin="2,2" Text="Geometry Types" />-->
+            <!--<ListBox
+                Grid.Row="1"
+                MinHeight="150"
+                BorderThickness="1"
+                FontSize="16"
+                ItemContainerStyle="{StaticResource DrawShapeTypeStyle}"
+                ItemTemplate="{StaticResource GeometryTypeTemplate}"
+                ItemsSource="{Binding GeometryTypeList}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItem="{Binding SelectedGeometryType}"
+                Visibility="Collapsed">
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel
+                            Width="350"
+                            FlowDirection="LeftToRight"
+                            Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+
+            </ListBox>-->
+
+            <StackPanel>
+
+                <TextBlock
+                    Margin="2"
+                    FontSize="16"
+                    Text="图形列表" />
+                <!--<TextBlock Text="Shape Layer" TextWrapping="Wrap" />
+
+                <ComboBox
+                    Margin="0,5"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Layers}"
+                    SelectedIndex="0"
+                    IsEditable="False"
+                    SelectedItem="{Binding SelectedShapeLayer}" />
+
+                <TextBlock Margin="2" Text="Scale rate" />
+
+                <TextBox
+                    Height="25"
+                    Margin="2"
+                    VerticalContentAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding Scale, StringFormat='{}{0:p2}'}" />-->
+
+
+                <!--<Button
+                    local:GeometryIconElement.IconGeometry="{StaticResource ZoomIn}"
+                    Command="{Binding ZoomInCommand}"
+                    Content="Zoom In"
+                    Style="{StaticResource IconButton}" />
+
+                <Button
+                    local:GeometryIconElement.IconGeometry="{StaticResource ZoomOut}"
+                    Command="{Binding ZoomOutCommand}"
+                    Content="Zoom Out"
+                    Style="{StaticResource IconButton}" />
+
+                <Separator />-->
+
+            </StackPanel>
+
+            <ListBox
+                Grid.Row="1"
+                Margin="2,0,2,0"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                ItemsSource="{Binding SketchBoardDataManager.Shapes}"
+                SelectedItem="{Binding SketchBoardDataManager.CurrentGeometryInEdit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteShapeCommand}" />
+                </ListBox.InputBindings>
+            </ListBox>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

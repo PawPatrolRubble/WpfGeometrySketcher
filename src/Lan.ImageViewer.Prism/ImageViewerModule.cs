@@ -5,11 +5,13 @@ using Lan.ImageViewer.Prism.Views;
 using Lan.Shapes.Custom;
 using Lan.Shapes.DialogGeometry;
 using Lan.Shapes.Interfaces;
+using Lan.Shapes.Shapes;
 using Lan.SketchBoard;
 using Microsoft.Extensions.Configuration;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Rectangle = Lan.Shapes.Shapes.Rectangle;
 
 namespace Lan.ImageViewer.Prism {
     public class ImageViewerModule : IModule {
@@ -27,7 +29,8 @@ namespace Lan.ImageViewer.Prism {
             _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
             _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
             _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
-
+            _geometryTypeManager.RegisterGeometryType<Rectangle>();
+            _geometryTypeManager.RegisterGeometryType<Circle>();
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry) {

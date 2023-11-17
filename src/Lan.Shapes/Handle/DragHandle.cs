@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
@@ -9,7 +8,7 @@ namespace Lan.Shapes.Handle
     [DebuggerDisplay("{GeometryCenter}")]
     public abstract class DragHandle
     {
-        public int Id { get; }
+        #region constructor
 
         protected DragHandle(Size handleSize, Point geometryCenter, double detectionRange, int id)
         {
@@ -19,15 +18,25 @@ namespace Lan.Shapes.Handle
             Id = id;
         }
 
+        #endregion
+
+        #region private fields
+
+        private Point _geometryCenter;
+
+        #endregion
+
+        #region properties
+
+        public int Id { get; }
+
         public double DetectionRange { get; }
 
         public Size HandleSize { get; }
 
-
-        private Point _geometryCenter;
         public Point GeometryCenter
         {
-            get => _geometryCenter;
+            get { return _geometryCenter; }
             set
             {
                 _geometryCenter = value;
@@ -40,11 +49,17 @@ namespace Lan.Shapes.Handle
 
         public abstract Geometry? HandleGeometry { get; }
 
+        #endregion
+
+        #region other members
+
         protected abstract void SetCenter(Point center);
 
         public virtual bool FillContains(Point checkPoint)
         {
             return HandleGeometry?.FillContains(checkPoint, DetectionRange, ToleranceType.Absolute) ?? false;
         }
+
+        #endregion
     }
 }

@@ -1,0 +1,153 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:halcon="clr-namespace:Lan.ImageViewer.Halcon"
+    xmlns:halconDotNet="clr-namespace:HalconDotNet;assembly=visiondotnet"
+    xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard">
+
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+
+    <Style TargetType="halcon:ImageViewerHalcon">
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="halcon:ImageViewerHalcon">
+
+                    <Border
+                        x:Name="BorderContainer"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+
+              
+
+                            <!--<Border
+                                Canvas.Left="10"
+                                Canvas.Top="15"
+                                Panel.ZIndex="1"
+                                Background="Transparent"
+                                BorderBrush="LightGray"
+                                BorderThickness="1">
+                                <Grid>
+
+                                    <Grid.Resources>
+                                        <Style TargetType="Label">
+
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="Background" Value="Black" />
+                                            <Setter Property="BorderBrush" Value="LightGray" />
+                                            <Setter Property="BorderThickness" Value="1,0,0,1" />
+
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Content="X" />
+
+                                    <Label Grid.Row="0" Grid.Column="1">
+                                        <TextBlock Text="{Binding MousePositionToImage.X, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}, StringFormat='{}{0:f0}'}" />
+
+
+                                    </Label>
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Content="Y" />
+
+                                    <Label Grid.Row="1" Grid.Column="1">
+                                        <TextBlock Text="{Binding MousePositionToImage.Y, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}, StringFormat='{}{0:f0}'}" />
+                                    </Label>
+
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Content="缩放倍率" />
+
+                                    <Label Grid.Row="2" Grid.Column="1">
+
+                                        <TextBlock Text="{Binding LocalScale, RelativeSource={RelativeSource AncestorType=imageViewer:ImageViewerBasic}, StringFormat='{}{0:p2}'}" />
+                                    </Label>
+
+
+                                    <Button
+                                        x:Name="BtnFit"
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        imageViewer:GeometryIconElement.IconGeometry="{StaticResource AutoFit}"
+                                        imageViewer:GeometryIconElement.IconSize="{StaticResource IconSize}"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        Content="Fit"
+                                        Foreground="White"
+                                        Style="{StaticResource IconButton}" />
+
+                                </Grid>
+
+                            </Border>-->
+
+
+                            <Grid
+                                x:Name="GridContainer"
+                                ClipToBounds="True"
+                                Row="0">
+
+                                <halconDotNet:HSmartWindowControlWPF
+                                    x:Name="ImageViewer"
+                                    Panel.ZIndex="1"
+                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                    RenderOptions.EdgeMode="Aliased"
+                                    HImagePart="{TemplateBinding ImagePart}"
+                                    SnapsToDevicePixels="True" />
+
+
+                                <sketchBoard:SketchBoard
+                                    x:Name="SketchBoard"
+                                    Width="{Binding Path=Width, ElementName=ImageViewer}"
+                                    Height="{Binding ElementName=ImageViewer, Path=Height}"
+                                    Panel.ZIndex="2"
+                                    ClipToBounds="True"
+                                    Focusable="True"
+                                    SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
+
+
+                                <!--<Line
+                                    x:Name="HorizontalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <Line
+                                    x:Name="VerticalLine"
+                                    Panel.ZIndex="2"
+                                    Stroke="{TemplateBinding CrossLineColor}"
+                                    StrokeDashArray="{TemplateBinding StrokeDashArray}"
+                                    StrokeThickness="{TemplateBinding StrokeThickness}"
+                                    Visibility="{TemplateBinding ShowCrossLine,
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+                            </Grid>
+
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary>
