@@ -8,10 +8,11 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:viewModels="clr-namespace:Lan.Shapes.App.ViewModels"
     Title="MainWindow"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance app:MainWindowViewModel}"
+    d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
 
     <Window.Resources>

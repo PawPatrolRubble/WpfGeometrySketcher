@@ -1,0 +1,22 @@
+﻿<Window
+    x:Class="Lan.Shapes.App.ImageViewerHalconWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:halcon="clr-namespace:Lan.ImageViewer.Halcon;assembly=Lan.ImageViewer.Halcon"
+    xmlns:local="clr-namespace:Lan.Shapes.App"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:Lan.Shapes.App.ViewModels"
+    Title="ImageViewerHalconWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+    mc:Ignorable="d">
+
+
+    <Grid>
+        <halcon:ImageViewerHalconControl 
+            Loaded="FrameworkElement_OnLoaded"
+            DataContext="{Binding SelectedImageViewModel}" />
+    </Grid>
+</Window>

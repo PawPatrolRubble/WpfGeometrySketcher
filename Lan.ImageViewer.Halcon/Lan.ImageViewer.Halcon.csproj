@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="visiondotnet" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Lan.ImageViewer\Lan.ImageViewer.csproj" />
+    <ProjectReference Include="..\src\Lan.SketchBoard\Lan.SketchBoard.csproj" />
+  </ItemGroup>
+
+</Project>

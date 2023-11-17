@@ -21,7 +21,7 @@ using Microsoft.Win32;
 
 #endregion
 
-namespace Lan.Shapes.App
+namespace Lan.Shapes.App.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Lan.ImageViewer;
+using Lan.Shapes.App.ViewModels;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
 using Microsoft.Extensions.DependencyInjection;

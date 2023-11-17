@@ -21,7 +21,7 @@ using Lan.Shapes.Shapes;
 
 #endregion
 
-namespace Lan.Shapes.App
+namespace Lan.Shapes.App.ViewModels
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
@@ -57,7 +57,7 @@ namespace Lan.Shapes.App
             ScaleToFitCommand = new RelayCommand(() => Scale = -1);
             ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
 
-            
+
         }
 
         #endregion
@@ -279,6 +279,7 @@ namespace Lan.Shapes.App
             _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
             _geometryTypeManager.RegisterGeometryType<Circle>();
             _geometryTypeManager.RegisterGeometryType<Cross>();
+            _geometryTypeManager.RegisterGeometryType<Line>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));

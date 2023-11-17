@@ -91,10 +91,10 @@ namespace Lan.ImageViewer
         private readonly TranslateTransform _translateTransform = new TranslateTransform();
         private Border? _borderContainer;
         private Canvas? _containerCanvas;
+        private Grid? _gridContainer;
 
         private bool _disablePropertyChangeCallback;
         private Button? _fitButton;
-        private Grid? _gridContainer;
         private Line? _horizontalLineGeometry;
         private Image? _image;
         private bool _isImageScaledByMouseWheel;

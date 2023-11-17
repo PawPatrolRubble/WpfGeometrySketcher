@@ -7,6 +7,7 @@ using System.Windows;
 using Lan.SketchBoard;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Lan.Shapes.App.ViewModels;
 
 namespace Lan.Shapes.App
 {
