@@ -234,6 +234,7 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
         var iconPngsFromResource = new Dictionary<string, Geometry?>
         {
             { nameof(Ellipse), _resourceDictionary["Ellipse"] as Geometry },
+            { nameof(Circle), _resourceDictionary["Circle"] as Geometry },
             { nameof(Rectangle), _resourceDictionary["Rectangle"] as Geometry },
             { nameof(Polygon), _resourceDictionary["Polygon"] as Geometry },
             { nameof(ThickenedCircle), _resourceDictionary["ThickenedCircle"] as Geometry },

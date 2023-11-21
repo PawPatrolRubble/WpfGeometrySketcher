@@ -250,7 +250,7 @@ namespace Lan.Shapes.App.ViewModels
 
 
         private void CreateGeometryTypeList()
-        {
+            {
             var iconPngsFromResource = new Dictionary<string, Geometry?>
             {
                 { nameof(Ellipse), _resourceDictionary["Ellipse"] as Geometry },
@@ -260,7 +260,8 @@ namespace Lan.Shapes.App.ViewModels
                 { nameof(ThickenedCross), _resourceDictionary["ThickenedCross"] as Geometry },
                 { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
                 { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
-                { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry }
+                { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
+                { nameof(Circle), _resourceDictionary["Circle"] as Geometry }
             };
 
 
@@ -278,8 +279,10 @@ namespace Lan.Shapes.App.ViewModels
             _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
             _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
             _geometryTypeManager.RegisterGeometryType<Circle>();
+            _geometryTypeManager.RegisterGeometryType<FixedCenterCircle>();
             _geometryTypeManager.RegisterGeometryType<Cross>();
             _geometryTypeManager.RegisterGeometryType<Line>();
+            _geometryTypeManager.RegisterGeometryType<Rectangle>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));

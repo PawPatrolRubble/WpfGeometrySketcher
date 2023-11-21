@@ -60,4 +60,8 @@
 	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
+	</ItemGroup>
+
 </Project>

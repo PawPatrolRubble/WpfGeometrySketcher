@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+
+using Lan.Shapes.Handle;
 using Lan.Shapes.Interfaces;
 
 namespace Lan.Shapes.Shapes
@@ -10,10 +13,13 @@ namespace Lan.Shapes.Shapes
     {
         #region constructor
 
+        private DragHandle _dragHandle;
+
         #region Constructors
 
         public Circle(ShapeLayer shapeLayer) : base(shapeLayer)
         {
+            _dragHandle = new RectDragHandle(DragHandleSize, default, 1);
             RenderGeometryGroup.Children.Add(_ellipseGeometry);
         }
 
@@ -26,8 +32,7 @@ namespace Lan.Shapes.Shapes
         public void FromData(EllipseData data)
         {
             Center = data.Center;
-            RadiusX = data.RadiusX;
-            RadiusY = data.RadiusY;
+            Radius = data.RadiusX;
             IsGeometryRendered = true;
         }
 
@@ -36,8 +41,7 @@ namespace Lan.Shapes.Shapes
             return new EllipseData
             {
                 Center = Center,
-                RadiusX = RadiusX,
-                RadiusY = RadiusY
+                RadiusX = Radius
             };
         }
 
@@ -49,10 +53,8 @@ namespace Lan.Shapes.Shapes
         private readonly LineGeometry _verticalLine = new LineGeometry();
         private readonly LineGeometry _horizontalLine = new LineGeometry();
 
-        private readonly int crossSize = 80;
+        private readonly int crossSize = 40;
         private Point _center;
-        private double _radiusX;
-        private double _radiusY;
 
         #endregion
 
@@ -71,32 +73,20 @@ namespace Lan.Shapes.Shapes
             set
             {
                 SetField(ref _center, value);
-                _ellipseGeometry.Center = value;
-                _verticalLine.StartPoint = new Point(value.X, value.Y) + new Vector(0, -crossSize * 1.0 / 2);
-                _verticalLine.EndPoint = new Point(value.X, value.Y) + new Vector(0, crossSize * 1.0 / 2);
-
-                _horizontalLine.StartPoint = new Point(value.X, value.Y) + new Vector(-crossSize * 1.0 / 2, 0);
-                _horizontalLine.EndPoint = new Point(value.X, value.Y) + new Vector(crossSize * 1.0 / 2, 0);
+                UpdateGeometryGroup();
             }
         }
 
-        public double RadiusX
-        {
-            get { return _radiusX; }
-            set
-            {
-                SetField(ref _radiusX, value);
-                _ellipseGeometry.RadiusX = value;
-            }
-        }
 
-        public double RadiusY
+        private double _radius;
+
+        public double Radius
         {
-            get { return _radiusY; }
+            get { return _radius; }
             set
             {
-                SetField(ref _radiusY, value);
-                _ellipseGeometry.RadiusY = value;
+                SetField(ref _radius, value);
+                UpdateGeometryGroup();
             }
         }
 
@@ -106,44 +96,44 @@ namespace Lan.Shapes.Shapes
 
         protected override void CreateHandles()
         {
+
         }
 
         protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
         {
-            RadiusX = (newPoint.X - oldPoint.X) / 2;
-            RadiusY = (newPoint.Y - oldPoint.Y) / 2;
+            Radius = (newPoint.X - oldPoint.X) / 2;
         }
 
         protected override void HandleResizing(Point point)
         {
-            if (MouseDownPoint != null && OldPointForTranslate != null)
+            if (MouseDownPoint.HasValue)
             {
                 switch (SelectedDragHandle!.Id)
                 {
                     case 2:
-                        RadiusY += OldPointForTranslate.Value.Y - point.Y;
+                        Radius += MouseDownPoint.Value.Y - point.Y;
                         break;
 
                     case 1:
-                        RadiusX += point.X - OldPointForTranslate.Value.X;
+                        Radius += point.X - MouseDownPoint.Value.X;
                         break;
                 }
             }
 
-            OldPointForTranslate = point;
+            MouseDownPoint = point;
         }
 
         protected override void HandleTranslate(Point newPoint)
         {
-            if (!MouseDownPoint.HasValue)
+            if (!OldPointForTranslate.HasValue)
             {
                 return;
             }
 
             var matrix = new Matrix();
-            matrix.Translate(newPoint.X - MouseDownPoint.Value.X, newPoint.Y - MouseDownPoint.Value.Y);
+            matrix.Translate(newPoint.X - OldPointForTranslate.Value.X, newPoint.Y - OldPointForTranslate.Value.Y);
             Center = matrix.Transform(Center);
-            MouseDownPoint = newPoint;
+            OldPointForTranslate = newPoint;
         }
 
         /// <summary>
@@ -171,11 +161,12 @@ namespace Lan.Shapes.Shapes
             }
 
             OldPointForTranslate = mousePoint;
-            MouseDownPoint ??= mousePoint;
+            MouseDownPoint = mousePoint;
         }
 
         public override void FindSelectedHandle(Point p)
         {
+            SelectedDragHandle = _dragHandle.FillContains(p) ? _dragHandle : null;
         }
 
 
@@ -188,21 +179,20 @@ namespace Lan.Shapes.Shapes
             {
                 if (!IsGeometryRendered && OldPointForTranslate.HasValue)
                 {
-                    RadiusX = (point.X - OldPointForTranslate.Value.X) / 2;
-                    RadiusY = (point.Y - OldPointForTranslate.Value.Y) / 2;
+                    Radius = (point.X - OldPointForTranslate.Value.X) / 2;
+                    Radius = (point.Y - OldPointForTranslate.Value.Y) / 2;
                 }
-                //else if (SelectedDragHandle != null)
-                //{
-                //    IsBeingDraggedOrPanMoving = true;
-                //    HandleResizing(point);
-                //}
-                //else
-                //{
-                //    IsBeingDraggedOrPanMoving = true;
-                //    HandleTranslate(point);
-                //}
+                else if (SelectedDragHandle != null)
+                {
+                    IsBeingDraggedOrPanMoving = true;
+                    HandleResizing(point);
+                }
+                else
+                {
+                    IsBeingDraggedOrPanMoving = true;
+                    HandleTranslate(point);
+                }
 
-                UpdateVisual();
             }
         }
 
@@ -218,8 +208,35 @@ namespace Lan.Shapes.Shapes
         /// <summary>
         ///     add geometries to group
         /// </summary>
-        protected override void UpdateGeometryGroup()
+        protected void UpdateGeometryGroup([CallerMemberName] string propertyName = "")
         {
+            switch (propertyName)
+            {
+                case nameof(Center):
+                    _ellipseGeometry.Center = Center;
+                    _dragHandle.GeometryCenter = Center + new Vector(Radius, 0);
+                    _verticalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(0, -crossSize * 1.0 / 2);
+                    _verticalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(0, crossSize * 1.0 / 2);
+
+                    _horizontalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(-crossSize * 1.0 / 2, 0);
+                    _horizontalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(crossSize * 1.0 / 2, 0);
+                    UpdateVisual();
+
+                    break;
+
+                case nameof(Radius):
+
+                    if (Radius > 0)
+                    {
+                        _ellipseGeometry.RadiusX = Radius;
+                        _ellipseGeometry.RadiusY = Radius;
+                        _dragHandle.GeometryCenter = _ellipseGeometry.Center + new Vector(Radius, 0);
+                    }
+                    UpdateVisual();
+                    break;
+
+            }
+
         }
 
         public override void UpdateVisual()
@@ -230,6 +247,10 @@ namespace Lan.Shapes.Shapes
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _verticalLine);
                 renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _horizontalLine);
+                if (_dragHandle?.HandleGeometry != null)
+                {
+                    renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _dragHandle.HandleGeometry);
+                }
 
                 AddTagText(renderContext, Center);
             }

@@ -48,7 +48,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="450" />
         </Grid.ColumnDefinitions>
 
         <Grid Background="Black">
@@ -243,7 +243,9 @@
             </StackPanel>
 
             <ListBox
+                x:Name="ListBox"
                 Grid.Row="1"
+                MinHeight="150"
                 Margin="2,0,2,0"
                 BorderBrush="LightGray"
                 BorderThickness="1"
@@ -254,6 +256,9 @@
                     <KeyBinding Key="Delete" Command="{Binding DeleteShapeCommand}" />
                 </ListBox.InputBindings>
             </ListBox>
+
+            <xctk:PropertyGrid Grid.Row="2" SelectedObject="{Binding Path=SelectedItem, ElementName=ListBox}" />
+
 
         </Grid>
 
