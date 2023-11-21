@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-	  <PackageVersion>1.1.16</PackageVersion>
-	  <Description>sketboarmanager lifetime changes to transient</Description>
+	  <PackageVersion>1.1.17</PackageVersion>
+	  <Description>add new geometry rectangle, circle</Description>
 	  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 	  <IncludeReferencedProjects>true</IncludeReferencedProjects>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
