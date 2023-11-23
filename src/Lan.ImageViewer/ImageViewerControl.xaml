@@ -48,7 +48,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="450" />
+            <ColumnDefinition Width="Auto" MaxWidth="450" />
         </Grid.ColumnDefinitions>
 
         <Grid Background="Black">
@@ -151,7 +151,7 @@
                     FontSize="15"
                     ItemTemplate="{StaticResource GeometryTypeTemplate}"
                     ItemsSource="{Binding GeometryTypeList}"
-                    Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Visibility="{Binding ShowShapeTypes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -165,9 +165,8 @@
 
         <Grid
             Grid.Column="1"
-            MinWidth="230"
             Margin="5"
-            Visibility="{Binding ShowSimpleCanvas, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding ShowSimpleCanvas, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

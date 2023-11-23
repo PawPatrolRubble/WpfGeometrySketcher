@@ -1,0 +1,92 @@
+[
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#a6f5f5",
+        "StrokeColor": "#19bd44",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.5
+      },
+      "MouseOver": {
+        "FillColor": "#6bb599",
+        "StrokeColor": "#e00926",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.5
+      },
+
+      "Selected": {
+        "FillColor": "#6bb599",
+        "StrokeColor": "#a83232",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.5
+      },
+
+      "Locked": {
+        "FillColor": "#d6d4d4",
+        "StrokeColor": "#d6d4d4",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 1,
+    "Name": "default",
+    "Description": "description",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF",
+    "MaximumThickenedShapeWidth": 80,
+    "TagFontSize": 50
+  },
+
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#0c0d0d",
+        "StrokeColor": "#0c0d0d",
+        "StrokeThickness": 10.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 1
+      },
+      "MouseOver": {
+        "FillColor": "#2c0ec2",
+        "StrokeColor": "#2c0ec2",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 1
+      },
+
+      "Selected": {
+        "FillColor": "#2c0ec2",
+        "StrokeColor": "#2c0ec2",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 1
+      },
+      "Locked": {
+        "FillColor": "#d6d4d4",
+        "StrokeColor": "#d6d4d4",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 5,
+        "FillOpacity": 1
+      }
+    },
+    "LayerId": 2,
+    "Name": "layer2",
+    "Description": "description",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF",
+    "MaximumThickenedShapeWidth": 80,
+    "TagFontSize": 50
+  }
+]

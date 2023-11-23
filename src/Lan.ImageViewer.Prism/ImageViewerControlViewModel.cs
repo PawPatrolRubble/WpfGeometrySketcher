@@ -36,7 +36,7 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
         GeometryTypeList = new ObservableCollection<GeometryType>();
 
         Scale = 1;
-        ShowSimpleCanvas = true;
+        ShowSimpleCanvas = false;
         CreateGeometryTypeList();
         Image = CreateEmptyImageSource(2048, 2048);
         SketchBoardDataManager.SetShapeLayer(_shapeLayerManager.Layers[0]);
@@ -169,12 +169,12 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
     /// <summary>
     ///     if true, it will show canvas only, geometry list will be hidden
     /// </summary>
-    private bool _showSimpleCanvas;
+    private bool _hideShapeList;
 
     public bool ShowSimpleCanvas
     {
-        get => _showSimpleCanvas;
-        set => SetProperty(ref _showSimpleCanvas, value);
+        get => _hideShapeList;
+        set => SetProperty(ref _hideShapeList, value);
     }
 
     /// <summary>

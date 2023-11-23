@@ -1,33 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-	  <PackageVersion>1.1.17</PackageVersion>
-	  <Description>add new geometry rectangle, circle</Description>
-	  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-	  <IncludeReferencedProjects>true</IncludeReferencedProjects>
-	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<PackageVersion>1.1.22</PackageVersion>
+		<Description>add new geometry rectangle, circle</Description>
+		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
+		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
+		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+		<IncludeReferencedProjects>true</IncludeReferencedProjects>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-  </PropertyGroup>
+	</PropertyGroup>
+
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
-	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+
+<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
 		<ItemGroup>
 			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-  </ItemGroup>
+	<!--<Target Name="IncludeAllFilesInTargetDir" AfterTargets="Build">
+		<ItemGroup>
+			<None Include="$(TargetDir)\**">
+				<Pack>true</Pack>
+				<PackagePath>tools</PackagePath>
+			</None>
+		</ItemGroup>
+	</Target>-->
 
-  <ItemGroup>
-    <ProjectReference Include="..\Lan.ImageViewer\Lan.ImageViewer.csproj" />
-    <ProjectReference Include="..\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" />
-    <ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Prism.Wpf" Version="8.1.97" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Lan.ImageViewer\Lan.ImageViewer.csproj"  PrivateAssets="All"/>
+		<ProjectReference Include="..\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" PrivateAssets="All"  />
+		<ProjectReference Include="..\Lan.SketchBoard\Lan.SketchBoard.csproj" PrivateAssets="All" />
+	</ItemGroup>
 </Project>
