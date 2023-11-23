@@ -11,19 +11,19 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
 using Lan.Shapes.DialogGeometry;
-using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
+using Prism.Commands;
+using Prism.Mvvm;
 
 #endregion
 
-namespace Lan.Shapes.App.ViewModels
+namespace Lan.Shapes.SimpleApp.ViewModels
 {
-    public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
+    public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
     {
         #region constructor
 
@@ -48,14 +48,14 @@ namespace Lan.Shapes.App.ViewModels
             Image = CreateEmptyImageSource(2048, 2048);
             //Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "996.png"));
 
-            ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });
+            ZoomOutCommand = new DelegateCommand(() => { Scale *= 1 - ScaleIncremental; });
 
-            ChooseGeometryTypeCommand = new RelayCommand<GeometryType>(ChooseGeometryTypeCommandImpl);
+            ChooseGeometryTypeCommand = new DelegateCommand<GeometryType>(ChooseGeometryTypeCommandImpl);
 
-            ZoomInCommand = new RelayCommand(() => { Scale *= 1 + ScaleIncremental; });
+            ZoomInCommand = new DelegateCommand(() => { Scale *= 1 + ScaleIncremental; });
 
-            ScaleToFitCommand = new RelayCommand(() => Scale = -1);
-            ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
+            ScaleToFitCommand = new DelegateCommand(() => Scale = -1);
+            ScaleToOriginalSizeCommand = new DelegateCommand(() => Scale = 0);
 
 
         }
@@ -187,10 +187,7 @@ namespace Lan.Shapes.App.ViewModels
         public bool ShowSimpleCanvas
         {
             get { return _showSimpleCanvas; }
-            set
-            {
-                SetProperty(ref _showSimpleCanvas, value);
-            }
+            set { SetProperty(ref _showSimpleCanvas, value); }
         }
 
         /// <summary>

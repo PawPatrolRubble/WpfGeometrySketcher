@@ -4,7 +4,6 @@
 	  <PropertyGroup>
 		  <TargetFramework>net6.0-windows</TargetFramework>
 		  <UseWPF>true</UseWPF>
-		  <PackageVersion>1.1.14</PackageVersion>
 		  <Description>add create shape method in sketchboard manager interface</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 		  <IncludeReferencedProjects>true</IncludeReferencedProjects>

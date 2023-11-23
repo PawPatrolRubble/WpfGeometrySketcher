@@ -1,0 +1,25 @@
+[
+    {
+        "Name": "SaveImageCamera",
+        "DisplayName": "存图相机",
+        "ConnectionType": 1,
+        "IpAddress": "192.168.0.11",
+        "BrandName": "daheng"
+    },
+
+    {
+        "Name": "MarkLocatingCamera",
+        "DisplayName": "对位相机",
+        "ConnectionType": 0,
+        "IpAddress": "",
+        "BrandName": "daheng",
+        "SerialNumber":"XG0190110429"
+    },
+    {
+        "Name": "BarCodeReader",
+        "DisplayName": "扫码相机",
+        "ConnectionType": 1,
+        "IpAddress": "192.168.0.10",
+        "BrandName": "haikang"
+    }
+]

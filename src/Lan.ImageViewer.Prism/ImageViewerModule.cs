@@ -29,8 +29,12 @@ namespace Lan.ImageViewer.Prism {
             _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
             _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
             _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
-            _geometryTypeManager.RegisterGeometryType<Rectangle>();
+            _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
             _geometryTypeManager.RegisterGeometryType<Circle>();
+            _geometryTypeManager.RegisterGeometryType<FixedCenterCircle>();
+            _geometryTypeManager.RegisterGeometryType<Cross>();
+            _geometryTypeManager.RegisterGeometryType<Line>();
+            _geometryTypeManager.RegisterGeometryType<Rectangle>();
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry) {

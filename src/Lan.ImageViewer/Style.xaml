@@ -16,7 +16,7 @@
     </ResourceDictionary.MergedDictionaries>
 
 
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <imageViewer:BooleanToVisibilityCollapsedInverseConverter x:Key="BooleanToVisibilityCollapsedConverter" />
 
     <system:Double x:Key="FontSize">14</system:Double>
     <system:Double x:Key="IconSize">22</system:Double>
@@ -290,7 +290,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                                 <Line
                                     x:Name="VerticalLine"
@@ -299,7 +299,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
 
 
@@ -378,7 +378,7 @@
                                         StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                         StrokeThickness="{TemplateBinding StrokeThickness}"
                                         Visibility="{TemplateBinding ShowCrossLine,
-                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                     Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                                     <Line
                                         x:Name="VerticalLine"
@@ -387,7 +387,7 @@
                                         StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                         StrokeThickness="{TemplateBinding StrokeThickness}"
                                         Visibility="{TemplateBinding ShowCrossLine,
-                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                     Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 </Grid>
 
 
@@ -599,7 +599,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <Line
                                     x:Name="VerticalLine"
                                     Panel.ZIndex="2"
@@ -607,7 +607,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                             </Grid>
 
                         </Canvas>

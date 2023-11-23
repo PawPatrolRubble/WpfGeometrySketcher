@@ -1,14 +1,62 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<OutputPath>../bin</OutputPath>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Lan.ImageViewer.Halcon\Lan.ImageViewer.Halcon.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
+		<PackageReference Include="Lan.ImageViewer.Prism" Version="1.1.21" />
+		<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
+
+		<PackageReference Include="Prism.Container.Extensions" Version="8.0.62" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.2.0-dev-00752" />
+		<PackageReference Include="Serilog.Expressions" Version="3.4.1" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10338" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="4.0.0-dev-00486" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00910" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+
+
+	<ItemGroup>
+
+		<!--<ProjectReference Include="..\src\Lan.ImageViewer.Prism\Lan.ImageViewer.Prism.csproj" />
+
+		<ProjectReference Include="..\src\Lan.ImageViewer\Lan.ImageViewer.csproj" />
+
+		<ProjectReference Include="..\src\Lan.Shapes.Custom\Lan.Shapes.Custom.csproj" />
+
+		<ProjectReference Include="..\src\Lan.Shapes.DialogGeometry\Lan.Shapes.DialogGeometry.csproj" />
+
+		<ProjectReference Include="..\src\Lan.Shapes\Lan.Shapes.csproj" />-->
+
+
+
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Views\ImageViewerHalconWindow.xaml.cs">
+			<SubType>Code</SubType>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
