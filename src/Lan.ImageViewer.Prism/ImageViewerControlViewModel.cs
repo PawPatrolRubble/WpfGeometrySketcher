@@ -242,7 +242,8 @@ public class ImageViewerControlViewModel : BindableBase, IImageViewerViewModel
             { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
             { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
             { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
-            { nameof(GriddedRectangle), _resourceDictionary["Grid"] as Geometry }
+            { nameof(GriddedRectangle), _resourceDictionary["Grid"] as Geometry },
+            { nameof(Line), _resourceDictionary["Line"] as Geometry }
         };
 
 
