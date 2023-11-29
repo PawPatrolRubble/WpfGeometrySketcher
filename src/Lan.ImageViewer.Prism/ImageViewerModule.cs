@@ -23,16 +23,16 @@ namespace Lan.ImageViewer.Prism {
             containerProvider.Resolve<IShapeLayerManager>().ReadShapeLayers(fullPath);
 
             var _geometryTypeManager = containerProvider.Resolve<IGeometryTypeManager>();
-            _geometryTypeManager.RegisterGeometryType<GridGeometry>();
-            _geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
-            _geometryTypeManager.RegisterGeometryType<ThickenedCircle>();
-            _geometryTypeManager.RegisterGeometryType<ThickenedCross>();
-            _geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
-            _geometryTypeManager.RegisterGeometryType<ThickenedLine>();
-            _geometryTypeManager.RegisterGeometryType<ArrowedLine>();
+            //_geometryTypeManager.RegisterGeometryType<GridGeometry>();
+            //_geometryTypeManager.RegisterGeometryType<GriddedRectangle>();
+            //_geometryTypeManager.RegisterGeometryType<ThickenedCircle>();
+            //_geometryTypeManager.RegisterGeometryType<ThickenedCross>();
+            //_geometryTypeManager.RegisterGeometryType<ThickenedRectangle>();
+            //_geometryTypeManager.RegisterGeometryType<ThickenedLine>();
+            //_geometryTypeManager.RegisterGeometryType<ArrowedLine>();
             _geometryTypeManager.RegisterGeometryType<Circle>();
-            _geometryTypeManager.RegisterGeometryType<FixedCenterCircle>();
-            _geometryTypeManager.RegisterGeometryType<Cross>();
+            //_geometryTypeManager.RegisterGeometryType<FixedCenterCircle>();
+            //_geometryTypeManager.RegisterGeometryType<Cross>();
             _geometryTypeManager.RegisterGeometryType<Line>();
             _geometryTypeManager.RegisterGeometryType<Rectangle>();
         }

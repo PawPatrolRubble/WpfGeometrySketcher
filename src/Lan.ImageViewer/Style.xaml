@@ -17,6 +17,7 @@
 
 
     <imageViewer:BooleanToVisibilityCollapsedInverseConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
 
     <system:Double x:Key="FontSize">14</system:Double>
     <system:Double x:Key="IconSize">22</system:Double>
