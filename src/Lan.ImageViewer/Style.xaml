@@ -291,7 +291,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                 <Line
                                     x:Name="VerticalLine"
@@ -300,7 +300,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
 
@@ -379,7 +379,7 @@
                                         StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                         StrokeThickness="{TemplateBinding StrokeThickness}"
                                         Visibility="{TemplateBinding ShowCrossLine,
-                                                                     Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                     <Line
                                         x:Name="VerticalLine"
@@ -388,7 +388,7 @@
                                         StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                         StrokeThickness="{TemplateBinding StrokeThickness}"
                                         Visibility="{TemplateBinding ShowCrossLine,
-                                                                     Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                     Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 </Grid>
 
 
@@ -600,7 +600,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 <Line
                                     x:Name="VerticalLine"
                                     Panel.ZIndex="2"
@@ -608,7 +608,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
 
                         </Canvas>
