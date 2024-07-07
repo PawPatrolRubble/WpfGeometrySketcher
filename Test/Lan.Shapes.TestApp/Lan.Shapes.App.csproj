@@ -6,6 +6,11 @@
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
+	<PropertyGroup>
+		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+	</PropertyGroup>
+	
+	
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0-preview2" />
       <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />

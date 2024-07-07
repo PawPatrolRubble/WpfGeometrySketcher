@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-	    <PackageVersion>1.1.20</PackageVersion>
-	    <Description>add new geometry rectangle, circle</Description>
+	    <PackageVersion>1.1.22</PackageVersion>
+	    <Description>fixed circle drawing sketch bug</Description>
         <UseWPF>true</UseWPF>
 
     </PropertyGroup>

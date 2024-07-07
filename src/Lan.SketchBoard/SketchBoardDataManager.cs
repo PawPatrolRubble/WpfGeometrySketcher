@@ -22,6 +22,16 @@ namespace Lan.SketchBoard
 {
     public class SketchBoardDataManager : ISketchBoardDataManager, INotifyPropertyChanged
     {
+        #region interface implementation
+
+        #region Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #endregion
+
         #region fields
 
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
@@ -40,16 +50,6 @@ namespace Lan.SketchBoard
 
         #endregion
 
-        #region interface implementations
-
-        #region Implementations
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
-
-        #endregion
-
         #region local methods
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -59,7 +59,10 @@ namespace Lan.SketchBoard
 
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            if (EqualityComparer<T>.Default.Equals(field, value))
+            {
+                return false;
+            }
 
             field = value;
             OnPropertyChanged(propertyName);
@@ -83,9 +86,13 @@ namespace Lan.SketchBoard
             //todo set current geometry type
             //
             if (_drawingTools.ContainsKey(drawingTool))
+            {
                 _currentGeometryType = _drawingTools[drawingTool];
+            }
             else
+            {
                 throw new Exception("the drawing tool does not exist");
+            }
         }
 
         #endregion
@@ -102,11 +109,9 @@ namespace Lan.SketchBoard
 
         public ObservableCollection<ShapeVisualBase> Shapes
         {
-            get => _shapes;
-            set => SetField(ref _shapes, value);
+            get { return _shapes; }
+            set { SetField(ref _shapes, value); }
         }
-
-
 
 
         /// <summary>
@@ -127,21 +132,31 @@ namespace Lan.SketchBoard
         /// <summary>
         ///     shape count
         /// </summary>
-        public int ShapeCount => VisualCollection.Count;
+        public int ShapeCount
+        {
+            get { return VisualCollection.Count; }
+        }
 
         private ShapeVisualBase? _currentGeometryInEdit;
 
         /// <summary>
-        ///  处于编辑状态的图形
+        ///     处于编辑状态的图形
         /// </summary>
         public ShapeVisualBase? CurrentGeometryInEdit
         {
-            get => _currentGeometryInEdit;
+            get { return _currentGeometryInEdit; }
             set
             {
-                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Normal;
+                if (_currentGeometryInEdit != null)
+                {
+                    _currentGeometryInEdit.State = ShapeVisualState.Normal;
+                }
+
                 SetField(ref _currentGeometryInEdit, value);
-                if (_currentGeometryInEdit != null) _currentGeometryInEdit.State = ShapeVisualState.Selected;
+                if (_currentGeometryInEdit != null)
+                {
+                    _currentGeometryInEdit.State = ShapeVisualState.Selected;
+                }
             }
         }
 
@@ -149,18 +164,23 @@ namespace Lan.SketchBoard
 
         public ShapeVisualBase? SelectedGeometry
         {
-            get => _selectedGeometry;
+            get { return _selectedGeometry; }
             set
             {
                 if (_selectedGeometry != null)
+                {
                     _selectedGeometry.State =
                         _selectedGeometry.State == ShapeVisualState.Locked
                             ? ShapeVisualState.Locked
                             : ShapeVisualState.Normal;
+                }
 
                 _selectedGeometry = value;
 
-                if (_selectedGeometry != null) _selectedGeometry.State = ShapeVisualState.Selected;
+                if (_selectedGeometry != null)
+                {
+                    _selectedGeometry.State = ShapeVisualState.Selected;
+                }
             }
         }
 
@@ -173,7 +193,10 @@ namespace Lan.SketchBoard
         /// <summary>
         ///     当前使用图层
         /// </summary>
-        public ShapeLayer? CurrentShapeLayer => _currentShapeLayer;
+        public ShapeLayer? CurrentShapeLayer
+        {
+            get { return _currentShapeLayer; }
+        }
 
 
         /// <summary>
@@ -254,7 +277,8 @@ namespace Lan.SketchBoard
             return shape;
         }
 
-        public ShapeVisualBase CreateShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP> where TP : IGeometryMetaData
+        public ShapeVisualBase CreateShape<T, TP>(TP parameter) where T : ShapeVisualBase, IDataExport<TP>
+            where TP : IGeometryMetaData
         {
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
@@ -273,7 +297,10 @@ namespace Lan.SketchBoard
 
         public ShapeVisualBase? CreateNewGeometry(Point mousePosition)
         {
-            if (_currentGeometryType == null || _currentShapeLayer == null) return null;
+            if (_currentGeometryType == null || _currentShapeLayer == null)
+            {
+                return null;
+            }
 
             var shape = Activator.CreateInstance(_currentGeometryType, CurrentShapeLayer) as ShapeVisualBase;
 
@@ -286,9 +313,13 @@ namespace Lan.SketchBoard
             }
 
             if (shape is FixedCenterCircle fixedCenterCircle)
+            {
                 if (_sketchBoardOwner != null)
+                {
                     fixedCenterCircle.Center =
                         new Point(_sketchBoardOwner.ActualWidth / 2, _sketchBoardOwner.ActualHeight / 2);
+                }
+            }
 
             return shape;
         }
@@ -308,8 +339,12 @@ namespace Lan.SketchBoard
             Shapes ??= new ObservableCollection<ShapeVisualBase>();
             Shapes.Clear();
 
-            if (visual is SketchBoard sketchBoard) _sketchBoardOwner = sketchBoard;
-            SketchBoardManagerInitialized?.Invoke(this,this);
+            if (visual is SketchBoard sketchBoard)
+            {
+                _sketchBoardOwner = sketchBoard;
+            }
+
+            SketchBoardManagerInitialized?.Invoke(this, this);
         }
 
         public void OnImageViewerPropertyChanged(double scale)
@@ -323,7 +358,7 @@ namespace Lan.SketchBoard
         }
 
         /// <summary>
-        /// the skethboard is initialized and can load shape from now on
+        ///     the skethboard is initialized and can load shape from now on
         /// </summary>
         public event EventHandler<ISketchBoardDataManager>? SketchBoardManagerInitialized;
 

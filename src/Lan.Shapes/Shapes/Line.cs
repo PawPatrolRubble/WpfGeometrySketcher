@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using Lan.Shapes.Handle;
+using Lan.Shapes.Interfaces;
 
 namespace Lan.Shapes.Shapes
 {
-    public class Line : ShapeVisualBase
+    public class Line : ShapeVisualBase,IDataExport<PointsData>
     {
         #region constructor
 
@@ -184,5 +186,25 @@ namespace Lan.Shapes.Shapes
         }
 
         #endregion
+
+        public void FromData(PointsData data)
+        {
+            if (data.DataPoints.Count != 2)
+            {
+                throw new Exception($"{nameof(PointsData)} must have 2 elements in  DataPoints");
+            }
+
+            Start = data.DataPoints[0];
+            End = data.DataPoints[1];
+        }
+
+        public PointsData GetMetaData()
+        {
+            return new PointsData(1, new List<Point>()
+            {
+                Start,
+                End
+            });
+        }
     }
 }

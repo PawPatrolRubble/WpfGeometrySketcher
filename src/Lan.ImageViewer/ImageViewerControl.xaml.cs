@@ -19,6 +19,16 @@ namespace Lan.ImageViewer
         public ImageViewerControl()
         {
             InitializeComponent();
+
+            this.ImageViewer.Loaded += (s, e) =>
+            {
+                ;
+            };
+
+            this.ImageViewer.DataContextChanged += (s, e) =>
+            {
+                ;
+            };
         }
 
         #endregion
