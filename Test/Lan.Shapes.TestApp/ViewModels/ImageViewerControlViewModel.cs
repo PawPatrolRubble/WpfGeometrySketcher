@@ -45,7 +45,7 @@ namespace Lan.Shapes.App.ViewModels
             ShowSimpleCanvas = true;
             CreateGeometryTypeList();
 
-            Image = CreateEmptyImageSource(2048, 2048);
+            Image = CreateEmptyImageSource(5120, 5120);
             //Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "996.png"));
 
             ZoomOutCommand = new RelayCommand(() => { Scale *= 1 - ScaleIncremental; });

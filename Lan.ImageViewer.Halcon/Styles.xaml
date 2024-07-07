@@ -6,7 +6,7 @@
     xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard">
 
 
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <Style TargetType="halcon:ImageViewerHalcon">
 
@@ -20,9 +20,9 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
 
-              
 
-                            <!--<Border
+
+                        <!--<Border
                                 Canvas.Left="10"
                                 Canvas.Top="15"
                                 Panel.ZIndex="1"
@@ -100,31 +100,31 @@
                             </Border>-->
 
 
-                            <Grid
-                                x:Name="GridContainer"
+                        <Grid
+                            x:Name="GridContainer"
+                            ClipToBounds="True"
+                            Row="0">
+
+                            <halconDotNet:HSmartWindowControlWPF
+                                x:Name="ImageViewer"
+                                Panel.ZIndex="1"
+                                HImagePart="{TemplateBinding ImagePart}"
+                                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                RenderOptions.EdgeMode="Aliased"
+                                SnapsToDevicePixels="True" />
+
+
+                            <sketchBoard:SketchBoard
+                                x:Name="SketchBoard"
+                                Width="{Binding Path=Width, ElementName=ImageViewer}"
+                                Height="{Binding ElementName=ImageViewer, Path=Height}"
+                                Panel.ZIndex="2"
                                 ClipToBounds="True"
-                                Row="0">
-
-                                <halconDotNet:HSmartWindowControlWPF
-                                    x:Name="ImageViewer"
-                                    Panel.ZIndex="1"
-                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                    RenderOptions.EdgeMode="Aliased"
-                                    HImagePart="{TemplateBinding ImagePart}"
-                                    SnapsToDevicePixels="True" />
+                                Focusable="True"
+                                SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
 
 
-                                <sketchBoard:SketchBoard
-                                    x:Name="SketchBoard"
-                                    Width="{Binding Path=Width, ElementName=ImageViewer}"
-                                    Height="{Binding ElementName=ImageViewer, Path=Height}"
-                                    Panel.ZIndex="2"
-                                    ClipToBounds="True"
-                                    Focusable="True"
-                                    SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
-
-
-                                <!--<Line
+                            <!--<Line
                                     x:Name="HorizontalLine"
                                     Panel.ZIndex="2"
                                     Stroke="{TemplateBinding CrossLineColor}"
@@ -140,7 +140,7 @@
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
                                                                  Converter={StaticResource BooleanToVisibilityConverter}}" />-->
-                            </Grid>
+                        </Grid>
 
                     </Border>
 

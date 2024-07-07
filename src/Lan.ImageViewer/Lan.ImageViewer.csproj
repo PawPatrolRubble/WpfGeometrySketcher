@@ -11,6 +11,11 @@
 	  </PropertyGroup>
 
 	<PropertyGroup>
+		<EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+	</PropertyGroup>
+	
+	
+	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>

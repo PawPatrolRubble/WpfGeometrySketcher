@@ -54,13 +54,14 @@
         <Grid Background="Black">
 
             <local:ImageViewer
+                x:Name="ImageViewer"
                 BorderBrush="LightGray"
                 BorderThickness="0"
                 DefaultStrokeThickness="4.0"
                 ImageSource="{Binding Image}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ShowCrossLine="False"
+                ShowCrossLine="True"
                 SketchBoardDataManager="{Binding SketchBoardDataManager}" />
 
 

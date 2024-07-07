@@ -179,8 +179,8 @@ namespace Lan.Shapes.Shapes
             {
                 if (!IsGeometryRendered && OldPointForTranslate.HasValue)
                 {
-                    Radius = (point.X - OldPointForTranslate.Value.X) / 2;
-                    Radius = (point.Y - OldPointForTranslate.Value.Y) / 2;
+                    Radius = point.X - OldPointForTranslate.Value.X;
+                    Radius = point.Y - OldPointForTranslate.Value.Y;
                 }
                 else if (SelectedDragHandle != null)
                 {
