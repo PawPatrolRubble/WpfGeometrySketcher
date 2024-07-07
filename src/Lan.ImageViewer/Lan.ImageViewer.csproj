@@ -25,9 +25,9 @@
 	</Target>-->
 
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<PackageOutputPath>\\192.168.60.253\运营管理部\IT技术\IT技术个人盘\李万胜\nugets</PackageOutputPath>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
 
 	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
