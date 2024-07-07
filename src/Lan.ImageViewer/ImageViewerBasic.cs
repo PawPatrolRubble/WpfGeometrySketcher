@@ -1,9 +1,12 @@
 ﻿#region
 
 #nullable enable
+using Microsoft.Win32;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,6 +98,7 @@ namespace Lan.ImageViewer
 
         private bool _disablePropertyChangeCallback;
         private Button? _fitButton;
+        private Button? _saveImageButton;
         private Line? _horizontalLineGeometry;
         private Image? _image;
         private bool _isImageScaledByMouseWheel;
@@ -272,6 +276,7 @@ namespace Lan.ImageViewer
             _gridContainer ??= GetTemplateChild("GridContainer") as Grid;
             //_textBlock ??= GetTemplateChild("TbMousePosition") as TextBlock;
             _fitButton ??= GetTemplateChild("BtnFit") as Button;
+            _saveImageButton ??= GetTemplateChild("SaveImageBtn") as Button;
             _borderContainer ??= GetTemplateChild("BorderContainer") as Border;
             _horizontalLineGeometry ??= GetTemplateChild("HorizontalLine") as Line;
             _verticalLineGeometry ??= GetTemplateChild("VerticalLine") as Line;
@@ -327,6 +332,70 @@ namespace Lan.ImageViewer
                 if (_gridContainer != null)
                 {
                     _gridContainer.RenderTransform = _transformGroup;
+                }
+
+                if (_saveImageButton != null)
+                {
+                    _saveImageButton.Click += (s, e) =>
+                    {
+                        if (ImageSource != null)
+                        {
+                            SaveImageSource(ImageSource);
+                        }
+                    };
+                }
+            }
+        }
+
+        private void SaveImageSource(ImageSource imageSource)
+        {
+            // Create Save File Dialog
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "BMP Files (*.bmp)|*.bmp|JPG Files (*.jpg)|*.jpg|PNG Files (*.png)|*.png";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string filePath = saveFileDialog.FileName;
+                BitmapEncoder encoder = null;
+
+                // Determine the encoder to use based on the file extension
+                switch (System.IO.Path.GetExtension(filePath).ToLower())
+                {
+                    case ".bmp":
+                        encoder = new BmpBitmapEncoder();
+                        break;
+                    case ".jpg":
+                    case ".jpeg":
+                        encoder = new JpegBitmapEncoder();
+                        break;
+                    case ".png":
+                        encoder = new PngBitmapEncoder();
+                        break;
+                    default:
+                        MessageBox.Show("Unsupported file format.");
+                        return;
+                }
+
+                // Convert ImageSource to BitmapSource if necessary
+                BitmapSource? bitmapSource = imageSource as BitmapSource;
+                if (bitmapSource == null)
+                {
+                    bitmapSource = new RenderTargetBitmap(
+                        (int)imageSource.Width,
+                        (int)imageSource.Height,
+                        96, 96, PixelFormats.Pbgra32);
+                    DrawingVisual drawingVisual = new DrawingVisual();
+                    using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+                    {
+                        drawingContext.DrawImage(imageSource, new Rect(0, 0, bitmapSource.PixelWidth, bitmapSource.PixelHeight));
+                    }
+                    ((RenderTargetBitmap)bitmapSource).Render(drawingVisual);
+                }
+
+                // Encode the BitmapSource to the chosen image format and save it to a file
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    encoder.Save(fileStream);
                 }
             }
         }
@@ -434,7 +503,7 @@ namespace Lan.ImageViewer
                 return $"[{bytes[2]:000}, {bytes[1]:000}, {bytes[0]:000}]";
             }
 
-            return bytes.Length==1 ? $"{bytes[0]:000}" : string.Empty;
+            return bytes.Length == 1 ? $"{bytes[0]:000}" : string.Empty;
 
             //return string.Join(',', bytes);
         }

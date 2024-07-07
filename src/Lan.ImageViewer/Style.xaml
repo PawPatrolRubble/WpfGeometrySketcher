@@ -41,6 +41,40 @@
         <Setter Property="TextBlockStyle" Value="{StaticResource DefaultBorderTextBlockStyle}" />
     </Style>
 
+    <Style x:Key="ImageViewer.Compact.BottomButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Lime" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="Foreground" Value="Lime" />
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Margin="{TemplateBinding Margin}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="LimeGreen" />
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
+
 
     <Style x:Key="IconButton" TargetType="Button">
 
@@ -456,6 +490,18 @@
 
                                     </Button.Style>
 
+                                </Button>
+
+
+                                <Button x:Name="SaveImageBtn"  Style="{StaticResource ImageViewer.Compact.BottomButton}">
+
+                                    <Path
+                                        Width="14"
+                                        Margin="1"
+                                        Data="{StaticResource Save}"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}"
+                                        Stretch="Uniform"
+                                        Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button, Mode=FindAncestor}}" />
                                 </Button>
 
 

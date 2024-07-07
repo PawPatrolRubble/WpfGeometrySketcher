@@ -7,8 +7,8 @@
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer;assembly=Lan.ImageViewer"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:viewModels="clr-namespace:Lan.Shapes.App.ViewModels"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="MainWindow"
     Width="800"
     Height="450"
@@ -70,6 +70,7 @@
 
             <StackPanel Grid.Column="2">
                 <ComboBox ItemsSource="{Binding ImageViewerViewModels}" SelectedItem="{Binding SelectedImageViewModel}" />
+                
                 <Button Command="{Binding LoadFromParameterCommand}" Content="load from parameter" />
                 <Button Command="{Binding LockEditCommand}" Content="lock" />
                 <Button Command="{Binding UnlockEditCommand}" Content="Unlock" />
@@ -77,25 +78,21 @@
                 <Button Command="{Binding SetTagNameCommand}" Content="Set Tag" />
                 <Button Command="{Binding ClearAllShapesCommand}" Content="clear all" />
 
-                <!--<TextBox materialDesign:HintAssist.Hint="X" Text="{Binding X}" />
-                <TextBox materialDesign:HintAssist.Hint="Y" Text="{Binding Y}" />
                 <TextBox
                     VerticalAlignment="Center"
-                    materialDesign:TextFieldAssist.HasClearButton="True"
-                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                     Text="{Binding ImagePath}">
 
                     <TextBox.InputBindings>
                         <MouseBinding Command="{Binding ChooseFileDialogCommand}" MouseAction="LeftDoubleClick" />
                     </TextBox.InputBindings>
 
-                    <materialDesign:HintAssist.Hint>
+                    <!--<materialDesign:HintAssist.Hint>
                         <StackPanel Margin="-2,0,0,0" Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="AccessPoint" />
                             <TextBlock Text="double click to choose image " />
                         </StackPanel>
-                    </materialDesign:HintAssist.Hint>
-                </TextBox>-->
+                    </materialDesign:HintAssist.Hint>-->
+                </TextBox>
 
             </StackPanel>
 
