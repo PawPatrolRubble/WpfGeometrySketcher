@@ -22,10 +22,10 @@
 
 	<!--<Target Name="PushPackage" AfterTargets="Pack">
 		<Exec Command="dotnet nuget push &quot;$(MSBuildProjectDirectory)\bin\$(Configuration)\$(AssemblyName).$(PackageVersion).nupkg&quot; -s http://112.81.76.101:8081/repository/nuget-hosted/ -k b3872fec-fe9e-3ef6-8b79-2d7a8a9b5839" />
-	</Target>-->
+	</Target>
 
 
-	<!--<PropertyGroup>
+	<PropertyGroup>
 		<PackageOutputPath>\\192.168.60.253\运营管理部\IT技术\IT技术个人盘\李万胜\nugets</PackageOutputPath>
 	</PropertyGroup>-->
 

@@ -455,6 +455,21 @@ namespace Lan.ImageViewer
         }
 
 
+        #region Overrides of UIElement
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.ButtonState == MouseButtonState.Pressed && e.ChangedButton == MouseButton.Right)
+            {
+                MouseDoubleClickPosition = e.GetPosition(_image);
+                //Console.WriteLine($"{MouseDoubleClickPosition}");
+            }
+        }
+
+        #endregion
+
+
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseMove" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
         /// <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs" /> that contains the event data.</param>
         protected override void OnMouseMove(MouseEventArgs e)

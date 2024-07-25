@@ -58,7 +58,7 @@
                 BorderBrush="LightGray"
                 BorderThickness="0"
                 DefaultStrokeThickness="4.0"
-                ImageSource="{Binding Image}"
+                ImageSource="{Binding Image,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ShowCrossLine="True"
