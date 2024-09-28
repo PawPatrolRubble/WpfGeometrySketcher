@@ -47,7 +47,7 @@ namespace Lan.Shapes.App.ViewModels
         {
             Camera1 = serviceProvider.GetService<IImageViewerViewModel>();
 
-            Camera1.ShowSimpleCanvas = false;
+            Camera1.ShowSimpleCanvas = true;
             //Camera2 = serviceProvider.GetService<IImageViewerViewModel>();
             _shapeLayerManager = shapeLayerManager;
 

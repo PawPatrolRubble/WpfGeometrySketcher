@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Lan.ImageViewer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="Root"
     d:DataContext="{d:DesignInstance local:IImageViewerViewModel}"
     d:DesignHeight="450"
@@ -45,17 +45,18 @@
 
                 <StackPanel>
 
-                    <TextBlock Text="Circle"/>
+                    <TextBlock Text="Circle" />
 
 
                     <TextBlock>
-                        <Run Text="{Binding Radius}"/>, 
-                        <Run Text="{Binding Center}"></Run>
+                        <Run Text="{Binding Radius}" />
+                        ,<Run Text="{Binding Center}" />
                     </TextBlock>
 
                 </StackPanel>
 
             </DataTemplate>
+
 
 
         </ResourceDictionary>
@@ -66,7 +67,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="450" />
+            <ColumnDefinition Width="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToGridLengthConverter}}" />
         </Grid.ColumnDefinitions>
 
         <Grid Background="Black">
@@ -76,7 +77,7 @@
                 BorderBrush="LightGray"
                 BorderThickness="0"
                 DefaultStrokeThickness="4.0"
-                ImageSource="{Binding Image,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                ImageSource="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ShowCrossLine="True"
@@ -276,7 +277,7 @@
             </ListBox>
 
             <!--<xctk:PropertyGrid Grid.Row="2"
-                               
+
                                SelectedObject="{Binding Path=SelectedItem, ElementName=ListBox}" />-->
 
 

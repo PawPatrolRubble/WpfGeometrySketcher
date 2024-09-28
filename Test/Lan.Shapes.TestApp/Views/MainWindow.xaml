@@ -48,7 +48,6 @@
 
                 <imageViewer:ImageViewerControl
                     Margin="5"
-                    Padding="10"
                     DataContext="{Binding SelectedImageViewModel}"
                     Loaded="FrameworkElement_OnLoaded" />
 

@@ -4,7 +4,8 @@
     xmlns:imageViewer="clr-namespace:Lan.ImageViewer"
     xmlns:shapes="clr-namespace:Lan.Shapes.Shapes;assembly=Lan.Shapes"
     xmlns:sketchBoard="clr-namespace:Lan.SketchBoard;assembly=Lan.SketchBoard"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:converters="clr-namespace:Lan.ImageViewer.Converters">
 
 
     <ResourceDictionary.MergedDictionaries>
@@ -16,7 +17,8 @@
     </ResourceDictionary.MergedDictionaries>
 
 
-    <imageViewer:BooleanToVisibilityCollapsedInverseConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+    <converters:BooleanToVisibilityCollapsedInverseConverter x:Key="BooleanToVisibilityCollapsedConverter" />
+    <converters:BooleanToGridLengthConverter x:Key="BooleanToGridLengthConverter" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
 
     <system:Double x:Key="FontSize">14</system:Double>
