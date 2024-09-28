@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Media;
 
@@ -77,6 +78,8 @@ namespace Lan.Shapes.Interfaces
         /// <param name="shape"></param>
         void RemoveShape(ShapeVisualBase shape);
 
+        void RemoveShapes(Expression<Func<ShapeVisualBase, bool>> predict);
+
         void RemoveAt(int index);
 
         void RemoveAt(int index, int count);
@@ -124,7 +127,12 @@ namespace Lan.Shapes.Interfaces
 
         void InitializeVisualCollection(Visual visual);
         void OnImageViewerPropertyChanged(double scale);
-
+        
         event EventHandler<ISketchBoardDataManager> SketchBoardManagerInitialized;
+
+        event EventHandler<ShapeVisualBase> ShapeCreated;
+
+        event EventHandler<ShapeVisualBase> ShapeRemoved;
+
     }
 }

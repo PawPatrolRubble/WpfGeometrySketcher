@@ -78,6 +78,16 @@ namespace Lan.Shapes.Shapes
         }
 
 
+        #region Overrides of Object
+
+        public override string ToString()
+        {
+            return $"Circle: {Center.X:f0}, {Center.Y:f0}, Radius: {Radius}";
+        }
+
+        #endregion
+
+
         private double _radius;
 
         public double Radius

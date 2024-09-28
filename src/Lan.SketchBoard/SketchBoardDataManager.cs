@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
@@ -228,6 +229,11 @@ namespace Lan.SketchBoard
             Shapes.Remove(shape);
         }
 
+        public void RemoveShapes(Expression<Func<ShapeVisualBase, bool>> predict)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveAt(int index)
         {
             VisualCollection.RemoveAt(index);
@@ -361,6 +367,9 @@ namespace Lan.SketchBoard
         ///     the skethboard is initialized and can load shape from now on
         /// </summary>
         public event EventHandler<ISketchBoardDataManager>? SketchBoardManagerInitialized;
+
+        public event EventHandler<ShapeVisualBase>? ShapeCreated;
+        public event EventHandler<ShapeVisualBase>? ShapeRemoved;
 
         #endregion
     }
