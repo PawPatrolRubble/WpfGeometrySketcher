@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.1.30</PackageVersion>
-		<Description>add save image button</Description>
+		<PackageVersion>1.1.33</PackageVersion>
+		<Description>changed the scale of dragsize when image size changes</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>

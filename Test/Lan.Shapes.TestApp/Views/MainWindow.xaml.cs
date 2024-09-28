@@ -28,6 +28,15 @@ namespace Lan.Shapes.App
                         Width = 50,
                         StrokeThickness = 1
                     });
+
+
+                    vm.SketchBoardDataManager.LoadShape<Circle, EllipseData>(new EllipseData()
+                    {
+                        Center = new Point(300, 350),
+                        RadiusX = 20,
+                        RadiusY = 20,
+                        StrokeThickness = 1
+                    });
                 }
                 ;
                 //imageViewerControl

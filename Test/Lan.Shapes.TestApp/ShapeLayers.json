@@ -6,7 +6,7 @@
         "StrokeColor": "#19bd44",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 35,
+        "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
       "MouseOver": {
@@ -14,7 +14,7 @@
         "StrokeColor": "#e00926",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 35,
+        "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
 
@@ -23,7 +23,7 @@
         "StrokeColor": "#a83232",
         "StrokeThickness": 1.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 35,
+        "DragHandleSize": 5,
         "FillOpacity": 0.5
       },
 
