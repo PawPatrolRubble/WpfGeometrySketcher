@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
-		<PackageReference Include="Lan.ImageViewer.Prism" Version="1.1.21" />
+		<PackageReference Include="Lan.ImageViewer.Prism" Version="1.1.33" />
 		<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
 
 		<PackageReference Include="Prism.Container.Extensions" Version="8.0.62" />

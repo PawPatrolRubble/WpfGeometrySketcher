@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Lan.ImageViewer
+namespace Lan.ImageViewer.Converters
 {
     /// <summary>
     /// it is an inverse logic, true means collapsed, false means visible
@@ -40,7 +40,7 @@ namespace Lan.ImageViewer
             object parameter,
             CultureInfo culture)
         {
-            return value is Visibility visibility ? (object)(visibility == Visibility.Collapsed) : (object)false;
+            return value is Visibility visibility ? visibility == Visibility.Collapsed : (object)false;
         }
     }
 }
