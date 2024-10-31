@@ -269,8 +269,10 @@ namespace Lan.Shapes.Shapes
 
                 case TagPosition.Top:
                     return TopLeft - new Vector(0, ShapeLayer.TagFontSize);
+
                 case TagPosition.Bottom:
                     return TopLeft + new Vector(0, BottomRight.Y - TopLeft.Y + ShapeLayer.TagFontSize);
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

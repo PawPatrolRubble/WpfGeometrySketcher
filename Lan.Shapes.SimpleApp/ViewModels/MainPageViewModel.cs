@@ -4,18 +4,22 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
 using Lan.ImageViewer;
 using Lan.Shapes.Custom;
 using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Interfaces;
 using Lan.Shapes.Shapes;
+
 using Microsoft.Win32;
+
 using Prism.Ioc;
 using Prism.Mvvm;
 
@@ -73,6 +77,56 @@ namespace Lan.Shapes.SimpleApp.ViewModels
             {
 
             };
+
+            Camera1.SketchBoardDataManager.ShapeCreated += OnShapeAdded;
+
+        }
+
+        private void OnShapeAdded(object? sender, ShapeVisualBase e)
+        {
+
+            if (sender is ISketchBoardDataManager sketchBoardDataManager &&
+    sketchBoardDataManager.Shapes.Where(x => x.GetType() == typeof(Rectangle))?.Count() > 1)
+            {
+                sketchBoardDataManager.Shapes.RemoveAt(0);
+            }
+
+            if (e is Rectangle rectangle)
+            {
+                if (CurrentRoi != null)
+                {
+                    CurrentRoi.PropertyChanged -= OnRoiUpdateHandler;
+                }
+
+                CurrentRoi = rectangle;
+                CurrentRoi.PropertyChanged += OnRoiUpdateHandler;
+            }
+        }
+
+
+        private Rectangle? _currentRoi;
+        public Rectangle? CurrentRoi
+        {
+            get { return _currentRoi; }
+            set { SetProperty(ref _currentRoi, value); }
+        }
+
+        private void OnRoiUpdateHandler(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != null && (e.PropertyName.Equals(nameof(Rectangle.TopLeft)) || e.PropertyName.Equals(nameof(Rectangle.BottomRight))))
+            {
+                //    CroppedAreaHeight = CurrentRoi.BottomRight.Y - CurrentRoi.TopLeft.Y;
+                //    CroppedAreaWidth = CurrentRoi.BottomRight.X - CurrentRoi.TopLeft.X;
+
+                //    if (ImageViewerViewModel.Image is WriteableBitmap image)
+                //    {
+                //        CroppedArea = Crop(image,
+                //            new Int32Rect((int)CurrentRoi.TopLeft.X, (int)CurrentRoi.TopLeft.Y, (int)CroppedAreaWidth, (int)CroppedAreaHeight));
+
+                //        var rect = CalculateCenterAreaTopLeft(CroppedArea as WriteableBitmap, 0.2, 0.2);
+                //        CenterArea = Crop(CroppedArea as WriteableBitmap, rect);
+                //    }
+            }
         }
 
         #endregion
@@ -163,10 +217,13 @@ namespace Lan.Shapes.SimpleApp.ViewModels
         public string ImagePath
         {
             get => _imagePath;
-            set { SetProperty( ref _imagePath, value, () =>
+            set
+            {
+                SetProperty(ref _imagePath, value, () =>
             {
                 UpdateImageSource(_imagePath);
-            }); }
+            });
+            }
         }
 
         private void UpdateImageSource(string changed)
