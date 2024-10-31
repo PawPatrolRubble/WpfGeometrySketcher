@@ -3,7 +3,7 @@
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<PackageVersion>1.1.36</PackageVersion>
-		<Description>fixed bug of imageviewercontrol</Description>
+		<Description>change cross strokethickness to 1</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>

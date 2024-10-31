@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
+
 using Lan.Shapes;
 using Lan.Shapes.Custom;
 using Lan.Shapes.Enums;
@@ -227,6 +228,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection.Remove(shape);
             Shapes.Remove(shape);
+            ShapeRemoved?.Invoke(this,shape);
         }
 
         public void RemoveShapes(Expression<Func<ShapeVisualBase, bool>> predict)
@@ -327,6 +329,11 @@ namespace Lan.SketchBoard
                 }
             }
 
+            // trigger event
+            if (shape != null)
+            {
+                ShapeCreated?.Invoke(this, shape);
+            }
             return shape;
         }
 
