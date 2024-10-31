@@ -76,7 +76,7 @@
                 x:Name="ImageViewer"
                 BorderBrush="LightGray"
                 BorderThickness="0"
-                DefaultStrokeThickness="4.0"
+                DefaultStrokeThickness="1"
                 ImageSource="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
