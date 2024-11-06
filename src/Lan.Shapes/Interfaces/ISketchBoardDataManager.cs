@@ -134,5 +134,9 @@ namespace Lan.Shapes.Interfaces
 
         event EventHandler<ShapeVisualBase> ShapeRemoved;
 
+        /// <summary>
+        /// triggered when new shape is sketched, right after the mouse up
+        /// </summary>
+         Action<ShapeVisualBase>? NewShapeSketched { get; set; }
     }
 }

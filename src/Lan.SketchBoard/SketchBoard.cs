@@ -221,18 +221,27 @@ namespace Lan.SketchBoard
         {
             try
             {
-                SketchBoardDataManager.SelectedGeometry?.OnMouseLeftButtonUp(e.GetPosition(this));
-                //when the active shape is not a newly created geometry, when mouse left button up 
-                if (SketchBoardDataManager.SelectedGeometry?.IsGeometryRendered ?? false)
+                if (SketchBoardDataManager == null) return;
+
+                var geometry = SketchBoardDataManager.SelectedGeometry;
+                if (geometry == null) return;
+
+                var position = e.GetPosition(this);
+                if (!geometry.IsGeometryRendered)
                 {
-                    SketchBoardDataManager?.UnselectGeometry();
+                    SketchBoardDataManager.NewShapeSketched?.Invoke(geometry);
                 }
 
-                //SketchBoardDataManager?.SelectedShape?.OnMouseLeftButtonUp(e.GetPosition(this));
+                geometry.OnMouseLeftButtonUp(position);
+
+                if (geometry.IsGeometryRendered)
+                {
+                    SketchBoardDataManager.UnselectGeometry();
+                }
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                Console.WriteLine(exception);
+                Console.WriteLine(ex);
             }
         }
 
