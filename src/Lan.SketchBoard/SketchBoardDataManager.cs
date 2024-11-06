@@ -378,6 +378,11 @@ namespace Lan.SketchBoard
         public event EventHandler<ShapeVisualBase>? ShapeCreated;
         public event EventHandler<ShapeVisualBase>? ShapeRemoved;
 
+        /// <summary>
+        /// triggered when new shape is sketched, right after the mouse up
+        /// </summary>
+        public  Action<ShapeVisualBase>? NewShapeSketched { get; set; }
+
         #endregion
     }
 }
