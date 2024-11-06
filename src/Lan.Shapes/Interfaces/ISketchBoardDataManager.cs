@@ -16,6 +16,9 @@ namespace Lan.Shapes.Interfaces
     /// </summary>
     public interface ISketchBoardDataManager
     {
+
+        ISketchBoard SketchBoard { get; }
+
         /// <summary>
         /// bindable collection of shapes
         /// </summary>
@@ -43,6 +46,9 @@ namespace Lan.Shapes.Interfaces
         ShapeVisualBase? CurrentGeometryInEdit { get; set; }
 
         ShapeVisualBase? SelectedGeometry { get; set; }
+
+        
+
 
         /// <summary>
         /// 设置图层

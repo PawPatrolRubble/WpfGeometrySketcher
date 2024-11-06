@@ -11,7 +11,6 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
-
 using Lan.Shapes;
 using Lan.Shapes.Custom;
 using Lan.Shapes.Enums;
@@ -37,8 +36,7 @@ namespace Lan.SketchBoard
         #region fields
 
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
-
-
+        
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
 
         private Type? _currentGeometryType;
@@ -48,7 +46,7 @@ namespace Lan.SketchBoard
         /// </summary>
         private ShapeLayer? _currentShapeLayer;
 
-        private SketchBoard? _sketchBoardOwner;
+        private SketchBoard? _sketchBoard;
 
         #endregion
 
@@ -108,6 +106,8 @@ namespace Lan.SketchBoard
         /// </summary>
         //public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
         private ObservableCollection<ShapeVisualBase> _shapes;
+
+        public ISketchBoard SketchBoard { get => _sketchBoard; }
 
         public ObservableCollection<ShapeVisualBase> Shapes
         {
@@ -228,7 +228,7 @@ namespace Lan.SketchBoard
         {
             VisualCollection.Remove(shape);
             Shapes.Remove(shape);
-            ShapeRemoved?.Invoke(this,shape);
+            ShapeRemoved?.Invoke(this, shape);
         }
 
         public void RemoveShapes(Expression<Func<ShapeVisualBase, bool>> predict)
@@ -322,10 +322,10 @@ namespace Lan.SketchBoard
 
             if (shape is FixedCenterCircle fixedCenterCircle)
             {
-                if (_sketchBoardOwner != null)
+                if (_sketchBoard != null)
                 {
                     fixedCenterCircle.Center =
-                        new Point(_sketchBoardOwner.ActualWidth / 2, _sketchBoardOwner.ActualHeight / 2);
+                        new Point(_sketchBoard.ActualWidth / 2, _sketchBoard.ActualHeight / 2);
                 }
             }
 
@@ -334,6 +334,7 @@ namespace Lan.SketchBoard
             {
                 ShapeCreated?.Invoke(this, shape);
             }
+
             return shape;
         }
 
@@ -348,13 +349,14 @@ namespace Lan.SketchBoard
 
         public void InitializeVisualCollection(Visual visual)
         {
+
             VisualCollection = new VisualCollection(visual);
             Shapes ??= new ObservableCollection<ShapeVisualBase>();
             Shapes.Clear();
 
             if (visual is SketchBoard sketchBoard)
             {
-                _sketchBoardOwner = sketchBoard;
+                _sketchBoard = sketchBoard;
             }
 
             SketchBoardManagerInitialized?.Invoke(this, this);
@@ -379,9 +381,9 @@ namespace Lan.SketchBoard
         public event EventHandler<ShapeVisualBase>? ShapeRemoved;
 
         /// <summary>
-        /// triggered when new shape is sketched, right after the mouse up
+        ///     triggered when new shape is sketched, right after the mouse up
         /// </summary>
-        public  Action<ShapeVisualBase>? NewShapeSketched { get; set; }
+        public Action<ShapeVisualBase>? NewShapeSketched { get; set; }
 
         #endregion
     }
