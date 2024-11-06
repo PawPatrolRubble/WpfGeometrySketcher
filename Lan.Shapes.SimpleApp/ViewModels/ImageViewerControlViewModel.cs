@@ -58,6 +58,9 @@ namespace Lan.Shapes.SimpleApp.ViewModels
             ScaleToOriginalSizeCommand = new DelegateCommand(() => Scale = 0);
 
 
+
+
+
         }
 
         #endregion
