@@ -17,7 +17,7 @@ using Lan.Shapes.Interfaces;
 
 namespace Lan.SketchBoard
 {
-    public class SketchBoard : Canvas
+    public class SketchBoard : Canvas, ISketchBoard
     {
         #region fields
 
