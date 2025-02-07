@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.1.36</PackageVersion>
-		<Description>change cross strokethickness to 1</Description>
+		<PackageVersion>1.2.2</PackageVersion>
+		<Description>circle shape add x,y to enable changing from caller</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -27,9 +27,15 @@
 	</Target>
 
 
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<PackageOutputPath>\\192.168.60.253\运营管理部\IT技术\IT技术个人盘\李万胜\nugets</PackageOutputPath>
-	</PropertyGroup>
+	</PropertyGroup>-->
+
+
+
+	<Target Name="PublishToNexus" AfterTargets="Pack">
+		<Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg&quot; --source Nexus --api-key 648396fd-280e-37c7-8978-9e749499e1f7" />
+	</Target>
 
 
 	<ItemGroup>
