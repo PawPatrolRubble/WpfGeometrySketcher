@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.1.36</PackageVersion>
-		<Description>change cross strokethickness to 1</Description>
+		<PackageVersion>1.2.1</PackageVersion>
+		<Description>Expose sketchboard in sketchboard manager to make it more flexible when needs to respond to mouse actions </Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
