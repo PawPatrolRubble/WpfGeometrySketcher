@@ -147,6 +147,7 @@ namespace Lan.SketchBoard
                 Focus();
                 if (SketchBoardDataManager != null)
                 {
+                    //find the shape clicked my mouse
                     SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
 
                     if (SketchBoardDataManager.SelectedGeometry == null)
