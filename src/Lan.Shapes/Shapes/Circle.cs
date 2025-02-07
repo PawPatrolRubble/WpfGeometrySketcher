@@ -67,6 +67,33 @@ namespace Lan.Shapes.Shapes
             get { return _ellipseGeometry.Bounds; }
         }
 
+        private double _x;
+
+        public double X
+        {
+            get => _x;
+            set
+            {
+                SetField(ref _x, value);
+
+                Center = new Point(_x, Center.Y);
+            }
+        }
+
+        private double _y;
+
+        public double Y
+        {
+            get => _y;
+            set
+            {
+                SetField(ref _y, value); 
+                Center = new Point(Center.X, _y);
+            }
+        }
+
+
+
         public Point Center
         {
             get { return _center; }
@@ -142,7 +169,9 @@ namespace Lan.Shapes.Shapes
 
             var matrix = new Matrix();
             matrix.Translate(newPoint.X - OldPointForTranslate.Value.X, newPoint.Y - OldPointForTranslate.Value.Y);
-            Center = matrix.Transform(Center);
+            var transformedPoint = matrix.Transform(Center);
+            X = transformedPoint.X;
+            Y = transformedPoint.Y;
             OldPointForTranslate = newPoint;
         }
 
