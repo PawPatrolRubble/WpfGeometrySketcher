@@ -259,6 +259,10 @@ namespace Lan.ImageViewer
                 0);
             matrix.Translate((width - pixelWidth * ratio) / 2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
+
+
+            _gridContainer.Width = 500;
+            _gridContainer.Height = 300;
             StrokeThickness = DefaultStrokeThickness;
         }
 
@@ -325,6 +329,7 @@ namespace Lan.ImageViewer
                         {
                             AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth,
                                 PixelHeight);
+                            
                         }
                     };
                 }

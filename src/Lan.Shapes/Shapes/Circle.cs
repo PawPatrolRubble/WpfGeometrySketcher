@@ -31,7 +31,8 @@ namespace Lan.Shapes.Shapes
 
         public void FromData(EllipseData data)
         {
-            Center = data.Center;
+            X = data.Center.X; 
+            Y = data.Center.Y;
             Radius = data.RadiusX;
             IsGeometryRendered = true;
         }
