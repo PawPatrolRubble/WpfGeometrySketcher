@@ -70,10 +70,9 @@
             <ColumnDefinition Width="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToGridLengthConverter}}" />
         </Grid.ColumnDefinitions>
 
-        <Grid Background="Red">
+        <Grid >
 
             <local:ImageViewer
-                Margin="50"
                 x:Name="ImageViewer"
                 BorderBrush="LightGray"
                 BorderThickness="0"
