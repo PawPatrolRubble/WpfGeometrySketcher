@@ -51,12 +51,12 @@
                     DataContext="{Binding SelectedImageViewModel}"
                     Loaded="FrameworkElement_OnLoaded" />
 
-                <!--<imageViewer:ImageViewerBasic
+                <imageViewer:ImageViewerBasic
                     Background="Black"
                     ImageSource="{Binding Camera1.Image}"
                     MouseDoubleClickPosition="{Binding MouseDblPosition, Mode=OneWayToSource}"
                     ShowCrossLine="True"
-                    StrokeDashArray="4 4" />-->
+                    StrokeDashArray="4 4" />
 
                 <!--<imageViewer:ImageViewerControl
                 Margin="5"
