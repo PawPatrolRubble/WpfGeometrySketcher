@@ -320,7 +320,7 @@
                                     Focusable="True"
                                     SketchBoardDataManager="{TemplateBinding SketchBoardDataManager}" />
 
-                                <Line
+                                <!--<Line
                                     x:Name="HorizontalLine"
                                     Panel.ZIndex="3"
                                     Stroke="{TemplateBinding CrossLineColor}"
@@ -336,7 +336,7 @@
                                     StrokeDashArray="{TemplateBinding StrokeDashArray}"
                                     StrokeThickness="{TemplateBinding StrokeThickness}"
                                     Visibility="{TemplateBinding ShowCrossLine,
-                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                                 Converter={StaticResource BooleanToVisibilityConverter}}" />-->
                             </Grid>
 
 
@@ -354,7 +354,7 @@
 
 
     <Style x:Key="ImageViewer.Compact" TargetType="imageViewer:ImageViewer">
-        <Setter Property="Background" Value="IndianRed" />
+        <Setter Property="Background" Value="Black" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="imageViewer:ImageViewer">

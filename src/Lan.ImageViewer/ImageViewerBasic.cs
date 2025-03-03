@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
 #endregion
@@ -214,6 +215,8 @@ namespace Lan.ImageViewer
                         bitmap.PixelHeight);
                 }
             };
+
+
         }
 
         #endregion
@@ -259,11 +262,8 @@ namespace Lan.ImageViewer
                 0);
             matrix.Translate((width - pixelWidth * ratio) / 2, (height - pixelHeight * ratio) / 2);
             _matrixTransform.Matrix = matrix;
-
-
-            _gridContainer.Width = 500;
-            _gridContainer.Height = 300;
             StrokeThickness = DefaultStrokeThickness;
+
         }
 
         private double CalculateAutoFitRatio(double width, double height, double pixelWidth, double pixelHeight)
@@ -285,33 +285,24 @@ namespace Lan.ImageViewer
             _horizontalLineGeometry ??= GetTemplateChild("HorizontalLine") as Line;
             _verticalLineGeometry ??= GetTemplateChild("VerticalLine") as Line;
 
+            //_horizontalLineGeometry.RenderTransform = _transformGroup;
+            //_verticalLineGeometry.RenderTransform = _transformGroup;
+
             _transformGroup.Children.Add(_matrixTransform);
             _transformGroup.Children.Add(_scaleTransform);
 
             if (_borderContainer != null)
             {
+
                 _gridContainer.SizeChanged += (s, e) =>
                 {
-                    if (_verticalLineGeometry != null && _horizontalLineGeometry != null)
-                    {
-                        _verticalLineGeometry.X1 = _gridContainer.ActualWidth / 2;
-                        _verticalLineGeometry.Y1 = 0;
-
-                        _verticalLineGeometry.X2 = _gridContainer.ActualWidth / 2;
-                        _verticalLineGeometry.Y2 = _gridContainer.ActualHeight;
-
-                        _horizontalLineGeometry.X1 = 0;
-                        _horizontalLineGeometry.Y1 = _gridContainer.ActualHeight / 2;
-
-                        _horizontalLineGeometry.X2 = _gridContainer.ActualWidth;
-                        _horizontalLineGeometry.Y2 = _gridContainer.ActualHeight / 2;
-                    }
 
                     if (PixelHeight != 0 && PixelWidth != 0)
                     {
                         AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth, PixelHeight);
                     }
                 };
+
 
                 _borderContainer.SizeChanged += (s, e) =>
                 {
@@ -329,7 +320,7 @@ namespace Lan.ImageViewer
                         {
                             AutoScaleImageToFit(_borderContainer.ActualWidth, _borderContainer.ActualHeight, PixelWidth,
                                 PixelHeight);
-                            
+
                         }
                     };
                 }
@@ -432,6 +423,24 @@ namespace Lan.ImageViewer
                     imageViewer._borderContainer.ActualWidth,
                     imageViewer._borderContainer.ActualHeight,
                     pixelWidth, pixelHeight);
+            }
+
+            if (imageViewer._verticalLineGeometry != null && imageViewer._horizontalLineGeometry != null)
+            {
+                imageViewer._verticalLineGeometry.X1 = pixelWidth / 2;
+                imageViewer._verticalLineGeometry.Y1 = 0;
+
+                imageViewer._verticalLineGeometry.X2 = pixelWidth / 2;
+
+                imageViewer._verticalLineGeometry.Y2 = pixelHeight;
+
+
+                imageViewer._horizontalLineGeometry.X1 = 0;
+                imageViewer._horizontalLineGeometry.Y1 = pixelHeight / 2;
+
+
+                imageViewer._horizontalLineGeometry.X2 = pixelWidth;
+                imageViewer._horizontalLineGeometry.Y2 = pixelHeight / 2;
             }
 
             imageViewer.SetValue(PixelWidthPropertyKey, pixelWidth * 1.0);
