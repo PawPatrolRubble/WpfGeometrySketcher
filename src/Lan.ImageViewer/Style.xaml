@@ -136,7 +136,6 @@
 
 
     <Style x:Key="ImageViewer.Wide" TargetType="imageViewer:ImageViewer">
-        <Setter Property="Background" Value="Blue" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="imageViewer:ImageViewer">

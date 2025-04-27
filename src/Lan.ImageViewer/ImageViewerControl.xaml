@@ -21,6 +21,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Style.xaml" />
                 <ResourceDictionary Source="/Lan.ImageViewer;component/Geometries.xaml" />
+
+
             </ResourceDictionary.MergedDictionaries>
 
             <!--<xamlFlair:Offset x:Key="PositiveOffset" OffsetValue="20" />
@@ -77,6 +79,9 @@
                 BorderBrush="LightGray"
                 BorderThickness="0"
                 DefaultStrokeThickness="1"
+                StrokeThickness="1"
+                CrossLineColor="Lime"
+                Style="{StaticResource ImageViewer.Compact}"
                 ImageSource="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
