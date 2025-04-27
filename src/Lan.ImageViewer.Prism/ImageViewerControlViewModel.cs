@@ -104,7 +104,7 @@ namespace Lan.ImageViewer.Prism
 
             // Try creating a new image with a custom palette.
             var colors = new List<Color>();
-            colors.Add(Colors.LightBlue);
+            colors.Add(Colors.Black);
             colors.Add(Colors.Blue);
             colors.Add(Colors.Green);
             var myPalette = new BitmapPalette(colors);
