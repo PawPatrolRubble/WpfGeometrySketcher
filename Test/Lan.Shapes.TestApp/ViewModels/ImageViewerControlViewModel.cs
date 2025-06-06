@@ -135,7 +135,7 @@ namespace Lan.Shapes.App.ViewModels
         }
 
         /// <summary>
-        ///     双击相对于图片位置
+        /// 双击相对于图片位置
         /// </summary>
         public Point MouseDoubleClickPosition { get; set; }
 

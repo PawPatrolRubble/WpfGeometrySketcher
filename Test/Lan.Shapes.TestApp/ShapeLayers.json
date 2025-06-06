@@ -2,43 +2,41 @@
   {
     "StyleSchema": {
       "Normal": {
-        "FillColor": "#a6f5f5",
-        "StrokeColor": "#19bd44",
-        "StrokeThickness": 1.0,
+        "FillColor": "#77d6d6",
+        "StrokeColor": "#168f4e",
+        "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "DragHandleSize": 30,
+        "FillOpacity": 0.6
       },
       "MouseOver": {
-        "FillColor": "#6bb599",
-        "StrokeColor": "#e00926",
-        "StrokeThickness": 1.0,
-        "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "FillColor": "#4db8a0",
+        "StrokeColor": "#e74c3c",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Dash",
+        "DragHandleSize": 30,
+        "FillOpacity": 0.6
       },
-
       "Selected": {
-        "FillColor": "#6bb599",
-        "StrokeColor": "#a83232",
-        "StrokeThickness": 1.0,
+        "FillColor": "#4db8a0",
+        "StrokeColor": "#c0392b",
+        "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 0.5
+        "DragHandleSize": 30,
+        "FillOpacity": 0.6
       },
-
       "Locked": {
-        "FillColor": "#d6d4d4",
-        "StrokeColor": "#d6d4d4",
+        "FillColor": "#bdc3c7",
+        "StrokeColor": "#7f8c8d",
         "StrokeThickness": 1.0,
-        "DashStyle": "Solid",
+        "DashStyle": "Dot",
         "DragHandleSize": 5,
         "FillOpacity": 0.5
       }
     },
     "LayerId": 1,
     "Name": "default",
-    "Description": "description",
+    "Description": "refined teal tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
@@ -48,42 +46,173 @@
   {
     "StyleSchema": {
       "Normal": {
-        "FillColor": "#0c0d0d",
-        "StrokeColor": "#0c0d0d",
-        "StrokeThickness": 10.0,
+        "FillColor": "#8e44ad",
+        "StrokeColor": "#5e3370",
+        "StrokeThickness": 2.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 1
+        "DragHandleSize": 25,
+        "FillOpacity": 0.7
       },
       "MouseOver": {
-        "FillColor": "#2c0ec2",
-        "StrokeColor": "#2c0ec2",
+        "FillColor": "#a569bd",
+        "StrokeColor": "#884ea0",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Dash",
+        "DragHandleSize": 25,
+        "FillOpacity": 0.7
+      },
+      "Selected": {
+        "FillColor": "#a569bd",
+        "StrokeColor": "#6c3483",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Solid",
+        "DragHandleSize": 25,
+        "FillOpacity": 0.7
+      },
+      "Locked": {
+        "FillColor": "#dcdde1",
+        "StrokeColor": "#7f8c8d",
         "StrokeThickness": 1.0,
         "DashStyle": "Dot",
         "DragHandleSize": 5,
-        "FillOpacity": 1
-      },
-
-      "Selected": {
-        "FillColor": "#2c0ec2",
-        "StrokeColor": "#2c0ec2",
-        "StrokeThickness": 1.0,
-        "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 1
-      },
-      "Locked": {
-        "FillColor": "#d6d4d4",
-        "StrokeColor": "#d6d4d4",
-        "StrokeThickness": 1.0,
-        "DashStyle": "Solid",
-        "DragHandleSize": 5,
-        "FillOpacity": 1
+        "FillOpacity": 0.5
       }
     },
     "LayerId": 2,
     "Name": "layer2",
-    "Description": "description",
+    "Description": "refined purple tone layer",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF",
+    "MaximumThickenedShapeWidth": 80,
+    "TagFontSize": 50
+  },
+
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#f7d794",
+        "StrokeColor": "#e77f24",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Solid",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.6
+      },
+      "MouseOver": {
+        "FillColor": "#ffeaa7",
+        "StrokeColor": "#fd9644",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Dash",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.6
+      },
+      "Selected": {
+        "FillColor": "#fab1a0",
+        "StrokeColor": "#e17055",
+        "StrokeThickness": 1.5,
+        "DashStyle": "Solid",
+        "DragHandleSize": 35,
+        "FillOpacity": 0.6
+      },
+      "Locked": {
+        "FillColor": "#dcdde1",
+        "StrokeColor": "#718093",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 3,
+    "Name": "layer3",
+    "Description": "warm tone layer",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF",
+    "MaximumThickenedShapeWidth": 80,
+    "TagFontSize": 50
+  },
+
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#dfe6e9",
+        "StrokeColor": "#636e72",
+        "StrokeThickness": 2.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 30,
+        "FillOpacity": 0.7
+      },
+      "MouseOver": {
+        "FillColor": "#b2bec3",
+        "StrokeColor": "#2d3436",
+        "StrokeThickness": 2.0,
+        "DashStyle": "DashDot",
+        "DragHandleSize": 30,
+        "FillOpacity": 0.7
+      },
+      "Selected": {
+        "FillColor": "#a4b0be",
+        "StrokeColor": "#2f3542",
+        "StrokeThickness": 2.0,
+        "DashStyle": "Solid",
+        "DragHandleSize": 30,
+        "FillOpacity": 0.7
+      },
+      "Locked": {
+        "FillColor": "#ced6e0",
+        "StrokeColor": "#57606f",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 4,
+    "Name": "layer4",
+    "Description": "grey tone layer",
+    "TextForeground": null,
+    "BorderBackground": "#00FFFFFF",
+    "MaximumThickenedShapeWidth": 80,
+    "TagFontSize": 50
+  },
+
+  {
+    "StyleSchema": {
+      "Normal": {
+        "FillColor": "#c56cf0",
+        "StrokeColor": "#9b59b6",
+        "StrokeThickness": 1.2,
+        "DashStyle": "Solid",
+        "DragHandleSize": 25,
+        "FillOpacity": 0.6
+      },
+      "MouseOver": {
+        "FillColor": "#be2edd",
+        "StrokeColor": "#8e44ad",
+        "StrokeThickness": 1.2,
+        "DashStyle": "Dash",
+        "DragHandleSize": 25,
+        "FillOpacity": 0.6
+      },
+      "Selected": {
+        "FillColor": "#d980fa",
+        "StrokeColor": "#6c3483",
+        "StrokeThickness": 1.2,
+        "DashStyle": "Solid",
+        "DragHandleSize": 25,
+        "FillOpacity": 0.6
+      },
+      "Locked": {
+        "FillColor": "#f0e6f6",
+        "StrokeColor": "#5d3b6d",
+        "StrokeThickness": 1.0,
+        "DashStyle": "Dot",
+        "DragHandleSize": 5,
+        "FillOpacity": 0.5
+      }
+    },
+    "LayerId": 5,
+    "Name": "layer5",
+    "Description": "purple tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,

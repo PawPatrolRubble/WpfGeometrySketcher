@@ -52,7 +52,7 @@ namespace Lan.Shapes.App.ViewModels
             _shapeLayerManager = shapeLayerManager;
 
             Camera1.Layers = _shapeLayerManager.Layers;
-            Camera1.SelectedShapeLayer = Camera1.Layers[0];
+            Camera1.SelectedShapeLayer = Camera1.Layers[4];
 
             //Camera2.Layers = _shapeLayerManager.Layers;
             //Camera2.SelectedShapeLayer = Camera2.Layers[0];
@@ -258,14 +258,14 @@ namespace Lan.Shapes.App.ViewModels
                 new TextGeometryData(new Point(400, 400), "Hello world", 50));
 
 
-            //Camera1.SketchBoardDataManager.LoadShape<Cross, CrossData>(
-            //    new CrossData()
-            //    {
-            //        StrokeThickness = 3,
-            //        Center = new Point(500,500),
-            //        Width = 100,
-            //        Height = 100
-            //    });
+            Camera1.SketchBoardDataManager.LoadShape<Cross, CrossData>(
+                new CrossData()
+                {
+                    StrokeThickness = 3,
+                    Center = new Point(500, 500),
+                    Width = 100,
+                    Height = 100
+                });
 
 
             //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
