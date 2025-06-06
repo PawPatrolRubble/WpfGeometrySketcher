@@ -7,10 +7,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
+
 using Lan.Shapes;
 using Lan.Shapes.Custom;
 using Lan.Shapes.Enums;
@@ -36,7 +38,7 @@ namespace Lan.SketchBoard
         #region fields
 
         private readonly Dictionary<string, Type> _drawingTools = new Dictionary<string, Type>();
-        
+
         private readonly ShapeStylerFactory _shapeStylerFactory = new ShapeStylerFactory();
 
         private Type? _currentGeometryType;
@@ -233,7 +235,11 @@ namespace Lan.SketchBoard
 
         public void RemoveShapes(Expression<Func<ShapeVisualBase, bool>> predict)
         {
-            throw new NotImplementedException();
+            var shapesToRemove = Shapes.Where(predict.Compile()).ToList();
+            foreach (var shape in shapesToRemove)
+            {
+                RemoveShape(shape);
+            }
         }
 
         public void RemoveAt(int index)
@@ -282,6 +288,7 @@ namespace Lan.SketchBoard
             var shape = (T)Activator.CreateInstance(typeof(T), CurrentShapeLayer)!;
             shape.FromData(parameter);
             AddShape(shape);
+            shape.UpdateVisual();
             return shape;
         }
 

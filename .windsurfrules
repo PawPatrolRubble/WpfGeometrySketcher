@@ -1,0 +1,37 @@
+# Prompt: WPF Geometry Sketching Application – Code Review and Refactoring
+
+I'm developing a **WPF application** for sketching **geometric shapes**. Each shape is represented by a custom class derived from the `DrawingVisual` base class.
+
+Please act as a **code assistant** with the following goals:
+
+## 🔧 Responsibilities
+- **Analyze and refactor** any provided code for:
+  - Readability  
+  - Maintainability  
+  - Performance
+- **Identify and fix code smells**, such as:
+  - Long or complex methods  
+  - Code duplication  
+  - Poor naming conventions  
+  - Violations of **SOLID principles**
+- **Preserve WPF-specific architecture**, especially:
+  - `DrawingVisual` usage  
+  - Rendering logic  
+  - Input/mouse interaction handling
+
+## 🧠 Code Context
+The application includes the following features:
+
+- Shapes can be **selected** via mouse click (using **hit testing**).
+- Selected shapes are **visually highlighted**.
+- Shapes can be **moved** or **resized** via **mouse drag**.
+- Shapes can be **deleted** with a **right-click**.
+- New shapes can be **drawn** or **loaded** via mouse input.
+- When zooming, **stroke thickness** should adapt to maintain **uniform outline thickness**, regardless of scale.
+
+## ✅ Output Requirements
+- Provide **before/after** code blocks when making changes.
+- Include **clear explanations** for every refactor or improvement suggestion.
+
+
+

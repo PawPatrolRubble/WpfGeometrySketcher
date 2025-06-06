@@ -23,10 +23,11 @@ namespace Lan.Shapes.Shapes
             RenderGeometryGroup.Children.Add(_leftDragHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_rightDragHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_panHandle.HandleGeometry);
+            
         }
 
         #endregion
-
+        
         #region private fields
 
         private readonly DragHandle _panHandle;

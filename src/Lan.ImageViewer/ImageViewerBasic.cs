@@ -34,6 +34,8 @@ namespace Lan.ImageViewer
     [TemplatePart(Type = typeof(Line), Name = "HorizontalLine")]
     public class ImageViewerBasic : Control, INotifyPropertyChanged
     {
+
+
         #region fields
 
         public static readonly DependencyProperty MouseDoubleClickPositionProperty = DependencyProperty.Register(
@@ -216,7 +218,25 @@ namespace Lan.ImageViewer
                 }
             };
 
-
+            Loaded += (s, e) =>
+            {
+                if (ImageSource is BitmapSource bitmap)
+                {
+                    double pixelWidth = bitmap.PixelWidth;
+                    double pixelHeight = bitmap.PixelHeight;    
+                    if (_verticalLineGeometry != null && _horizontalLineGeometry != null)
+                    {
+                        _verticalLineGeometry.X1 = pixelWidth / 2;
+                        _verticalLineGeometry.Y1 = 0;
+                        _verticalLineGeometry.X2 = pixelWidth / 2;
+                        _verticalLineGeometry.Y2 = pixelHeight;
+                        _horizontalLineGeometry.X1 = 0;
+                        _horizontalLineGeometry.Y1 = pixelHeight / 2;
+                        _horizontalLineGeometry.X2 = pixelWidth;
+                        _horizontalLineGeometry.Y2 = pixelHeight / 2;
+                    }
+                }
+            };
         }
 
         #endregion
@@ -395,6 +415,10 @@ namespace Lan.ImageViewer
                 }
             }
         }
+
+
+        
+
 
         private static void OnImageSourceChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

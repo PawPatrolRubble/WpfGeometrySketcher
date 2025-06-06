@@ -17,9 +17,9 @@ namespace Lan.Shapes.Shapes
     public class Polygon : ShapeVisualBase, IDataExport<PointsData>
     {
         #region fields
-
+        
         private const double Tolerance = 30;
-
+        
         #endregion
 
         #region fields
@@ -58,7 +58,10 @@ namespace Lan.Shapes.Shapes
 
         public void FromData(PointsData data)
         {
-            throw new NotImplementedException();
+            foreach (var point in data.DataPoints)
+            {
+                
+            }
         }
 
         public PointsData GetMetaData()
@@ -80,6 +83,7 @@ namespace Lan.Shapes.Shapes
 
         protected override void CreateHandles()
         {
+
         }
 
 

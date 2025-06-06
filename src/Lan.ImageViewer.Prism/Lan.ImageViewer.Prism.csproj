@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.2.6</PackageVersion>
-		<Description>tried to fix cross line issue</Description>
+		<PackageVersion>1.2.8</PackageVersion>
+		<Description>add show cross line in loaded event</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
