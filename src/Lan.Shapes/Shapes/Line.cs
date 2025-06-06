@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,7 +11,7 @@ using Lan.Shapes.Interfaces;
 
 namespace Lan.Shapes.Shapes
 {
-    public class Line : ShapeVisualBase,IDataExport<PointsData>
+    public class Line : ShapeVisualBase, IDataExport<PointsData>
     {
         #region constructor
 
@@ -23,11 +25,11 @@ namespace Lan.Shapes.Shapes
             RenderGeometryGroup.Children.Add(_leftDragHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_rightDragHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_panHandle.HandleGeometry);
-            
+
         }
 
         #endregion
-        
+
         #region private fields
 
         private readonly DragHandle _panHandle;
@@ -81,7 +83,7 @@ namespace Lan.Shapes.Shapes
             _rightDragHandle.GeometryCenter = End;
             _panHandle.GeometryCenter = new Point((Start.X + End.X) / 2, (Start.Y + End.Y) / 2);
 
-            UpdateVisual();
+            RenderVisualWithLength();
         }
 
         protected override void CreateHandles()
@@ -100,7 +102,7 @@ namespace Lan.Shapes.Shapes
             {
                 Start += newPoint - OldPointForTranslate.Value;
                 End += newPoint - OldPointForTranslate.Value;
-                UpdateVisual();
+                RenderVisualWithLength();
                 OldPointForTranslate = newPoint;
             }
         }
@@ -123,6 +125,7 @@ namespace Lan.Shapes.Shapes
             if (!IsGeometryRendered)
             {
                 Start = mousePoint;
+                End = mousePoint + new Vector(10, 10);
             }
             else
             {
@@ -188,6 +191,42 @@ namespace Lan.Shapes.Shapes
 
         #endregion
 
+        private void RenderVisualWithLength()
+        {
+            if (ShapeStyler == null)
+            {
+                return;
+            }
+
+            var renderContext = RenderOpen();
+            
+            // Draw the line geometry
+            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
+            
+            // Draw the length text
+            var length = Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
+            var formattedText = new FormattedText(
+                length.ToString("f4"),
+                CultureInfo.GetCultureInfo("en-us"),
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                ShapeLayer.TagFontSize,
+                Brushes.Red,
+                96);
+
+            renderContext.DrawText(formattedText, new Point((Start.X + End.X) / 2, (Start.Y + End.Y) / 2));
+            renderContext.Close();
+        }
+        
+        // Kept for backward compatibility but marked as obsolete
+        [Obsolete("Use RenderVisualWithLength instead")]
+        private void ShowLineLength()
+        {
+            // This method is kept for backward compatibility
+            // but should not be used anymore
+            RenderVisualWithLength();
+        }
+
         public void FromData(PointsData data)
         {
             if (data.DataPoints.Count != 2)
@@ -195,8 +234,22 @@ namespace Lan.Shapes.Shapes
                 throw new Exception($"{nameof(PointsData)} must have 2 elements in  DataPoints");
             }
 
+            // Set the points
             Start = data.DataPoints[0];
             End = data.DataPoints[1];
+
+            // Since we can't modify the drag handle size directly (immutable after creation),
+            // we need to recreate the geometry group with properly sized handles
+            RenderGeometryGroup.Children.Clear();
+
+            // Recreate the geometry group with the current drag handle size
+            RenderGeometryGroup.Children.Add(_lineGeometry);
+            RenderGeometryGroup.Children.Add(_leftDragHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_rightDragHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_panHandle.HandleGeometry);
+
+            // Force update of geometry to ensure everything is properly positioned
+            UpdateGeometry();
         }
 
         public PointsData GetMetaData()

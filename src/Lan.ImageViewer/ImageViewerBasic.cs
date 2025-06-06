@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 #nullable enable
 using Microsoft.Win32;
@@ -608,9 +608,11 @@ namespace Lan.ImageViewer
             var matrix = _matrixTransform.Matrix;
             matrix.ScaleAt(scaleDelta, scaleDelta, pos.X, pos.Y);
             LocalScale = matrix.M11;
-            //Debug.WriteLine($"x scale factor: {matrix.M11}");
             _matrixTransform.Matrix = matrix;
-            StrokeThickness /= scaleDelta;
+            
+            // Use the ViewportScalingService to adjust stroke thickness based on scale
+            // This ensures consistent visual appearance regardless of zoom level
+            StrokeThickness = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThickness(LocalScale);
         }
 
         #endregion

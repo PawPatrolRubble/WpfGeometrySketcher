@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -420,9 +421,15 @@ namespace Lan.Shapes.Shapes
             };
         }
 
+        public override void AddText(string content, Point? location = null)
+        {
+
+        }
+
+
         public override void UpdateVisual()
         {
-            //base.UpdateVisual();
+            base.UpdateVisual();
 
             var renderContext = RenderOpen();
             if (ShapeStyler != null)
@@ -433,7 +440,6 @@ namespace Lan.Shapes.Shapes
             }
 
             renderContext.Close();
-
         }
     }
 }
