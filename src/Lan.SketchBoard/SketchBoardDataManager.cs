@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #region
 
@@ -373,9 +373,8 @@ namespace Lan.SketchBoard
         {
             foreach (var shapeStyler in CurrentShapeLayer.Stylers)
             {
-                shapeStyler.Value.SketchPen.Thickness = 0.5 / scale;
-                shapeStyler.Value.DragHandleSize = 8 / scale;
-                //Console.WriteLine($"dragSize{shapeStyler.Value.DragHandleSize}");
+                shapeStyler.Value.SketchPen.Thickness = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThickness(scale);
+                shapeStyler.Value.DragHandleSize = Lan.Shapes.Scaling.ViewportScalingService.CalculateDragHandleSize(scale);
             }
         }
 

@@ -23,6 +23,11 @@ namespace Lan.Shapes.Interfaces
             Tag = tag;
         }
 
+        public PointsData()
+        {
+            
+        }
+
         public TagPosition TagPosition { get; set; } = TagPosition.Center;
         public string Tag { get; set; }
         public double StrokeThickness { get; set; }

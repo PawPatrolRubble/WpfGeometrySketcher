@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #region
 
@@ -438,6 +438,7 @@ namespace Lan.Shapes
             var renderContext = RenderOpen();
             renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
             renderContext.Close();
+
         }
 
         #endregion
@@ -479,7 +480,8 @@ namespace Lan.Shapes
                     FlowDirection.LeftToRight,
                     new Typeface("Verdana"),
                     ShapeLayer.TagFontSize,
-                    Brushes.Red);
+                    Brushes.Red,
+                    40);
 
                 renderContext.DrawText(formattedText, location);
             }
@@ -502,10 +504,56 @@ namespace Lan.Shapes
                     FlowDirection.LeftToRight,
                     new Typeface("Verdana"),
                     ShapeLayer.TagFontSize,
-                    Brushes.Lime);
+                    Brushes.Lime,
+                    96);
 
                 renderContext.DrawText(formattedText, location);
                 renderContext.Pop();
+            }
+        }
+
+
+        protected List<(Point Location, string Content)> _textGeometries = new List<(Point Location, string Content)>();
+        public virtual void AddText(string content, Point? location = null)
+        {
+            if (string.IsNullOrEmpty(content) || location == null)
+            {
+                return;
+            }
+
+            var renderContext = RenderOpen();
+            var formattedText = new FormattedText(
+                content,
+                CultureInfo.GetCultureInfo("en-us"),
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                ShapeLayer.TagFontSize,
+                Brushes.Red,
+                96);
+
+            renderContext.DrawText(formattedText, location.Value);
+            renderContext.Close();
+
+            _textGeometries.Add((location.Value, content));
+        }
+
+
+        protected void DrawText()
+        {
+            foreach (var textGeometry in _textGeometries)
+            {
+                var renderContext = RenderOpen();
+                var formattedText = new FormattedText(
+                    textGeometry.Content,
+                    CultureInfo.GetCultureInfo("en-us"),
+                    FlowDirection.LeftToRight,
+                    new Typeface("Verdana"),
+                    ShapeLayer.TagFontSize,
+                    Brushes.Red,
+                    96);
+
+                renderContext.DrawText(formattedText, textGeometry.Location);
+                renderContext.Close();
             }
         }
     }

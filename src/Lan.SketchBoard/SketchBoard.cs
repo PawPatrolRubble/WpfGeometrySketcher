@@ -69,21 +69,24 @@ namespace Lan.SketchBoard
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (SketchBoardDataManager == null) return;
-            //Console.WriteLine($"new canvas size: {e.NewSize}");
-            var scaleFactor = CalculateStrokeThickness();
+            
+            // Use the ViewportScalingService to calculate appropriate thickness based on viewport size
+            var scaleFactor = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
 
             foreach (var shapeStyler in stylers)
             {
+                // Use consistent base values multiplied by the calculated scale factor
                 shapeStyler.Value.SketchPen.Thickness = 2 * scaleFactor;
                 shapeStyler.Value.DragHandleSize = 10 * scaleFactor;
             }
-            //Console.WriteLine($"stroke thickness{scaleFactor}");
         }
 
+        // This method is now deprecated as we're using ViewportScalingService
+        // Kept for backward compatibility
         private double CalculateStrokeThickness()
         {
-            return Math.Pow(1.8, Math.Log2(ActualWidth + ActualHeight) - 10);
+            return Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
         }
 
         #region others

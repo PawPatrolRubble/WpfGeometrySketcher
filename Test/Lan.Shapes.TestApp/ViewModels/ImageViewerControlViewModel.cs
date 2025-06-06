@@ -57,8 +57,6 @@ namespace Lan.Shapes.App.ViewModels
 
             ScaleToFitCommand = new RelayCommand(() => Scale = -1);
             ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
-
-
         }
 
         #endregion
