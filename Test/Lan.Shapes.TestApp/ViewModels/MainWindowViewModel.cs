@@ -273,52 +273,54 @@ namespace Lan.Shapes.App.ViewModels
 
           cross.AddText("abc");
 
-          Camera1.SketchBoardDataManager.LoadShape<Line, PointsData>(new PointsData()
+         var line = Camera1.SketchBoardDataManager.LoadShape<Line, PointsData>(new PointsData()
           {
               DataPoints = new List<Point>()
               {
-                  new Point(200,100),
-                  new Point(200,100)
+                  new Point(500,100),
+                  new Point(800,1000)
               }
           });
-          //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
-          //{
-          //    Center = new Point(150, 150),
-          //    RadiusX = 100,
-          //    RadiusY = 100,
-          //});
 
-          //Camera1.SketchBoardDataManager.LoadShape<ThickenedCross, PointsData>(new PointsData(10, new List<Point>()
-          //{
-          //    new Point(152,52),
-          //    new Point(359,463),
-          //    new Point(50,154),
-          //    new Point(461,361),
-          //}));
+         line.Lock();
+            //Camera1.SketchBoardDataManager.LoadShape<Ellipse, EllipseData>(new EllipseData()
+            //{
+            //    Center = new Point(150, 150),
+            //    RadiusX = 100,
+            //    RadiusY = 100,
+            //});
 
-          //Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle, EllipseData>(new EllipseData()
-          //{
-          //    Center = new Point(400, 400),
-          //    StrokeThickness = 10,
-          //    RadiusX = 150,
-          //    RadiusY = 150
-          //});
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedCross, PointsData>(new PointsData(10, new List<Point>()
+            //{
+            //    new Point(152,52),
+            //    new Point(359,463),
+            //    new Point(50,154),
+            //    new Point(461,361),
+            //}));
 
-          //Camera1.SketchBoardDataManager.LoadShape<ThickenedRectangle, PointsData>(new PointsData(10,
-          //    new List<Point>()
-          //{
-          //    new Point(600,600),
-          //    new Point(800,800),
-          //}));
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedCircle, EllipseData>(new EllipseData()
+            //{
+            //    Center = new Point(400, 400),
+            //    StrokeThickness = 10,
+            //    RadiusX = 150,
+            //    RadiusY = 150
+            //});
+
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedRectangle, PointsData>(new PointsData(10,
+            //    new List<Point>()
+            //{
+            //    new Point(600,600),
+            //    new Point(800,800),
+            //}));
 
 
-          //Camera1.SketchBoardDataManager.LoadShape<ThickenedLine, PointsData>(new PointsData(10,
-          //    new List<Point>()
-          //{
-          //    new Point(600,600),
-          //    new Point(800,800),
-          //}));
-          //Camera1.SketchBoardDataManager.Shapes[0].Lock();
+            //Camera1.SketchBoardDataManager.LoadShape<ThickenedLine, PointsData>(new PointsData(10,
+            //    new List<Point>()
+            //{
+            //    new Point(600,600),
+            //    new Point(800,800),
+            //}));
+            //Camera1.SketchBoardDataManager.Shapes[0].Lock();
         }
 
         private void LockEditCommandImpl()

@@ -116,13 +116,17 @@ namespace Lan.Shapes
             get => _state;
             set
             {
+                var oldState = _state;
                 _state = value;
-                UpdateVisual();
-                //update handle size
-                if (ShapeLayer != null)
+                if (oldState != value)
                 {
-                    DragHandleSize = ShapeStyler?.DragHandleSize ?? 0;
-                    OnDragHandleSizeChanges(DragHandleSize);
+                    UpdateVisualOnStateChanged();
+                    //update handle size
+                    if (ShapeLayer != null)
+                    {
+                        DragHandleSize = ShapeStyler?.DragHandleSize ?? 0;
+                        OnDragHandleSizeChanges(DragHandleSize);
+                    }
                 }
             }
         }
@@ -165,6 +169,30 @@ namespace Lan.Shapes
         #endregion
 
         #region others
+
+        protected virtual void UpdateVisualOnStateChanged()
+        {
+            switch (State)
+            {
+                case ShapeVisualState.Selected:
+                case ShapeVisualState.MouseOver:
+                case ShapeVisualState.Normal:
+                    UpdateVisual();
+                    break;
+                case ShapeVisualState.Locked:
+                    UpdateVisualOnLocked();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected virtual void UpdateVisualOnLocked()
+        {
+            //do nothing, but child classes can override to remove some geometries when locked
+            UpdateVisual();
+        }
+
 
         public virtual void Lock()
         {
