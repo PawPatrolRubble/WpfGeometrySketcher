@@ -203,8 +203,15 @@ namespace Lan.Shapes.Shapes
             // Draw the line geometry
             renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
             
+            DrawLengthText(renderContext);
+            renderContext.Close();
+        }
+
+        private void DrawLengthText(DrawingContext renderContext)
+        {
             // Draw the length text
             var length = Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
+            
             var formattedText = new FormattedText(
                 length.ToString("f4"),
                 CultureInfo.GetCultureInfo("en-us"),
@@ -215,9 +222,8 @@ namespace Lan.Shapes.Shapes
                 96);
 
             renderContext.DrawText(formattedText, new Point((Start.X + End.X) / 2, (Start.Y + End.Y) / 2));
-            renderContext.Close();
         }
-        
+
         // Kept for backward compatibility but marked as obsolete
         [Obsolete("Use RenderVisualWithLength instead")]
         private void ShowLineLength()
@@ -226,6 +232,22 @@ namespace Lan.Shapes.Shapes
             // but should not be used anymore
             RenderVisualWithLength();
         }
+
+        #region Overrides of ShapeVisualBase
+
+        protected override void UpdateVisualOnLocked()
+        {
+            //base.UpdateVisualOnLocked();
+            var renderContext = RenderOpen();
+            // Draw the line geometry
+            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _lineGeometry);
+            DrawLengthText(renderContext);
+            renderContext.Close();
+
+        }
+
+        #endregion
+
 
         public void FromData(PointsData data)
         {
@@ -250,6 +272,7 @@ namespace Lan.Shapes.Shapes
 
             // Force update of geometry to ensure everything is properly positioned
             UpdateGeometry();
+            IsGeometryRendered = true;
         }
 
         public PointsData GetMetaData()
