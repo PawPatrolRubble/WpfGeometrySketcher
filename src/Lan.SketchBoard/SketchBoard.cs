@@ -211,7 +211,7 @@ namespace Lan.SketchBoard
                     else
                     {
                         //SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
-                        SketchBoardDataManager.SelectedGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
+                        SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                     }
                 }
             }
