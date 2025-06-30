@@ -263,7 +263,8 @@ namespace Lan.Shapes.App.ViewModels
                 { nameof(ThickenedRectangle), _resourceDictionary["ThickenedRectangle"] as Geometry },
                 { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
                 { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
-                { nameof(Circle), _resourceDictionary["Circle"] as Geometry }
+                { nameof(Circle), _resourceDictionary["Circle"] as Geometry },
+                {nameof(Line),_resourceDictionary["LineSegment"] as Geometry}
             };
 
 
