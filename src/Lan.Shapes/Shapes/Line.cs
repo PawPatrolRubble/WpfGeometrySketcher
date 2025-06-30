@@ -17,6 +17,7 @@ namespace Lan.Shapes.Shapes
 
         public Line(ShapeLayer layer) : base(layer)
         {
+            DragHandleSize = DragHandleSize ==0? 15: DragHandleSize;
             _leftDragHandle = new RectDragHandle(DragHandleSize, default, 1);
             _rightDragHandle = new RectDragHandle(DragHandleSize, default, 2);
             _panHandle = new RectDragHandle(DragHandleSize, default, 2);
@@ -199,10 +200,10 @@ namespace Lan.Shapes.Shapes
             }
 
             var renderContext = RenderOpen();
-            
+
             // Draw the line geometry
             renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
-            
+
             DrawLengthText(renderContext);
             renderContext.Close();
         }
@@ -211,7 +212,7 @@ namespace Lan.Shapes.Shapes
         {
             // Draw the length text
             var length = Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
-            
+
             var formattedText = new FormattedText(
                 length.ToString("f4"),
                 CultureInfo.GetCultureInfo("en-us"),
@@ -238,12 +239,25 @@ namespace Lan.Shapes.Shapes
         protected override void UpdateVisualOnLocked()
         {
             //base.UpdateVisualOnLocked();
+            RenderLineAndText();
+
+        }
+
+        private void RenderLineAndText()
+        {
+            //base.UpdateVisualOnLocked();
             var renderContext = RenderOpen();
             // Draw the line geometry
-            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, _lineGeometry);
+            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometryGroup);
+
             DrawLengthText(renderContext);
             renderContext.Close();
+        }
 
+
+        public override void UpdateVisual()
+        {
+            RenderLineAndText();
         }
 
         #endregion

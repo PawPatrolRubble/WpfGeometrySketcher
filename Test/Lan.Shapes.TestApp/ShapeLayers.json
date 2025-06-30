@@ -40,7 +40,7 @@
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 50
+    "TagFontSize": 30
   },
 
   {
@@ -84,7 +84,7 @@
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 50
+    "TagFontSize": 30
   },
 
   {
@@ -128,7 +128,7 @@
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 50
+    "TagFontSize": 30
   },
 
   {
@@ -172,7 +172,7 @@
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 50
+    "TagFontSize": 30
   },
 
   {
@@ -216,6 +216,6 @@
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 50
+    "TagFontSize": 30
   }
 ]
