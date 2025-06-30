@@ -3,12 +3,14 @@
 #region
 
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
 using Lan.Shapes;
+using Lan.Shapes.Enums;
 using Lan.Shapes.Interfaces;
 
 #endregion
@@ -66,10 +68,10 @@ namespace Lan.SketchBoard
 
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (SketchBoardDataManager == null || SketchBoardDataManager.CurrentShapeLayer ==null) return;
-
+            if (SketchBoardDataManager == null) return;
+            
             // Use the ViewportScalingService to calculate appropriate thickness based on viewport size
-            var scaleFactor = Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
+            var scaleFactor = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
 
             foreach (var shapeStyler in stylers)
@@ -80,6 +82,12 @@ namespace Lan.SketchBoard
             }
         }
 
+        // This method is now deprecated as we're using ViewportScalingService
+        // Kept for backward compatibility
+        private double CalculateStrokeThickness()
+        {
+            return Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
+        }
 
         #region others
 
@@ -89,11 +97,14 @@ namespace Lan.SketchBoard
             if (d is SketchBoard sketchBoard && e.NewValue is ISketchBoardDataManager dataManager)
             {
                 var oldShapes = dataManager.Shapes;
-                dataManager.InitializeVisualCollection(sketchBoard);
 
-                foreach (var shape in oldShapes)
+                dataManager.InitializeVisualCollection(sketchBoard);
+                if (oldShapes != null)
                 {
-                    dataManager.AddShape(shape);
+                    foreach (var shape in oldShapes)
+                    {
+                        dataManager.AddShape(shape);
+                    }
                 }
             }
         }
@@ -169,7 +180,7 @@ namespace Lan.SketchBoard
 
         private ShapeVisualBase? GetHitTestShape(Point mousePosition)
         {
-            if ((SketchBoardDataManager?.SelectedGeometry?.IsBeingDraggedOrPanMoving ?? false)
+            if ((SketchBoardDataManager.SelectedGeometry?.IsBeingDraggedOrPanMoving ?? false)
                 && !SketchBoardDataManager.SelectedGeometry.IsLocked)
             {
                 return SketchBoardDataManager.SelectedGeometry;
@@ -200,7 +211,7 @@ namespace Lan.SketchBoard
                     else
                     {
                         //SketchBoardDataManager.SelectedGeometry = GetHitTestShape(e.GetPosition(this));
-                        SketchBoardDataManager?.SelectedGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
+                        SketchBoardDataManager.SelectedGeometry?.OnMouseMove(e.GetPosition(this), e.LeftButton);
                     }
                 }
             }
