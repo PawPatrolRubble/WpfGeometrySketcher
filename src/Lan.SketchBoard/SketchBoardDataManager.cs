@@ -29,7 +29,7 @@ namespace Lan.SketchBoard
 
         #region Implementations
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         #endregion
 
@@ -87,9 +87,9 @@ namespace Lan.SketchBoard
 
             //todo set current geometry type
             //
-            if (_drawingTools.ContainsKey(drawingTool))
+            if (_drawingTools.TryGetValue(drawingTool, out var tool))
             {
-                _currentGeometryType = _drawingTools[drawingTool];
+                _currentGeometryType = tool;
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Lan.SketchBoard
         ///     bindable collection of shapes
         /// </summary>
         //public ObservableCollection<ShapeVisualBase> Shapes { get; private set; }
-        private ObservableCollection<ShapeVisualBase> _shapes;
+        private ObservableCollection<ShapeVisualBase> _shapes = new ObservableCollection<ShapeVisualBase>();
 
         public ISketchBoard SketchBoard { get => _sketchBoard; }
 
@@ -121,7 +121,7 @@ namespace Lan.SketchBoard
         /// <summary>
         ///     this is used to hold all shapes
         /// </summary>
-        public VisualCollection VisualCollection { get; private set; }
+        public VisualCollection? VisualCollection { get; private set; }
 
         /// <summary>
         ///     get all shapes defined in canvas
@@ -209,7 +209,7 @@ namespace Lan.SketchBoard
         /// <param name="shape"></param>
         public void AddShape(ShapeVisualBase shape)
         {
-            VisualCollection.Add(shape);
+            VisualCollection?.Add(shape);
             Shapes.Add(shape);
             //CurrentGeometryInEdit = shape;
         }
@@ -221,14 +221,14 @@ namespace Lan.SketchBoard
         /// <param name="index"></param>
         public void AddShape(ShapeVisualBase shape, int index)
         {
-            VisualCollection.Insert(index, shape);
+            VisualCollection?.Insert(index, shape);
             Shapes.Insert(index, shape);
             CurrentGeometryInEdit = shape;
         }
 
         public void RemoveShape(ShapeVisualBase shape)
         {
-            VisualCollection.Remove(shape);
+            VisualCollection?.Remove(shape);
             Shapes.Remove(shape);
             ShapeRemoved?.Invoke(this, shape);
         }
@@ -244,7 +244,7 @@ namespace Lan.SketchBoard
 
         public void RemoveAt(int index)
         {
-            VisualCollection.RemoveAt(index);
+            VisualCollection?.RemoveAt(index);
             Shapes.RemoveAt(index);
         }
 
@@ -273,7 +273,7 @@ namespace Lan.SketchBoard
 
         public ShapeVisualBase? GetShapeVisual(int index)
         {
-            return VisualCollection[index] as ShapeVisualBase;
+            return VisualCollection?[index] as ShapeVisualBase;
         }
 
         /// <summary>
@@ -321,8 +321,8 @@ namespace Lan.SketchBoard
 
             if (shape != null)
             {
-                shape.ShapeLayer = CurrentShapeLayer;
-                VisualCollection.Add(shape);
+                if (CurrentShapeLayer != null) shape.ShapeLayer = CurrentShapeLayer;
+                VisualCollection?.Add(shape);
                 CurrentGeometryInEdit = shape;
                 Shapes.Add(shape);
             }
@@ -358,7 +358,6 @@ namespace Lan.SketchBoard
         {
 
             VisualCollection = new VisualCollection(visual);
-            Shapes ??= new ObservableCollection<ShapeVisualBase>();
             Shapes.Clear();
 
             if (visual is SketchBoard sketchBoard)
@@ -371,6 +370,10 @@ namespace Lan.SketchBoard
 
         public void OnImageViewerPropertyChanged(double scale)
         {
+            if (CurrentShapeLayer==null)
+            {
+                return;
+            }
             foreach (var shapeStyler in CurrentShapeLayer.Stylers)
             {
                 shapeStyler.Value.SketchPen.Thickness = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThickness(scale);
