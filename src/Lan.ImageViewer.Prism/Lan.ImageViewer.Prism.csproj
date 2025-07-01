@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.2.8</PackageVersion>
-		<Description>add show cross line in loaded event</Description>
+		<PackageVersion>1.2.10</PackageVersion>
+		<Description>tried to fix the bug og null refernece in sketchboard</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
