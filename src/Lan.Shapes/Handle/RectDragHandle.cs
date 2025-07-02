@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using Lan.Shapes.Shapes;
+using Lan.Shapes.Styler;
 
 namespace Lan.Shapes.Handle
 {
@@ -30,5 +32,14 @@ namespace Lan.Shapes.Handle
         {
             _rectangleGeometry.Rect = new Rect(center - new Vector(HandleSize.Width / 2, HandleSize.Height / 2), HandleSize);
         }
+
+        public static RectDragHandle CreateRectDragHandleFromStyler(IShapeStyler shapeStyler,Point center, int id)
+        {
+            return new RectDragHandle(shapeStyler.DragHandleSize, center, id);
+        }        public static RectDragHandle CreateRectDragHandleFromStyler(IShapeStyler shapeStyler,Point center, DragLocation id)
+        {
+            return new RectDragHandle(shapeStyler.DragHandleSize, center, (int)id);
+        }
+
     }
 }

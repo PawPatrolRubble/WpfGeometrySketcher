@@ -10,6 +10,7 @@ namespace Lan.Shapes.Handle
     {
         #region constructor
 
+
         protected DragHandle(Size handleSize, Point geometryCenter, double detectionRange, int id)
         {
             HandleSize = handleSize;

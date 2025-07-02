@@ -6,7 +6,7 @@
         "StrokeColor": "#168f4e",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "MouseOver": {
@@ -14,7 +14,7 @@
         "StrokeColor": "#e74c3c",
         "StrokeThickness": 1.5,
         "DashStyle": "Dash",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "Selected": {
@@ -22,7 +22,7 @@
         "StrokeColor": "#c0392b",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "Locked": {
@@ -30,7 +30,7 @@
         "StrokeColor": "#7f8c8d",
         "StrokeThickness": 1.0,
         "DashStyle": "Dot",
-        "DragHandleSize": 5,
+        "DragHandleSize": 40,
         "FillOpacity": 0.5
       }
     },
@@ -50,7 +50,7 @@
         "StrokeColor": "#5e3370",
         "StrokeThickness": 2.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "MouseOver": {
@@ -58,7 +58,7 @@
         "StrokeColor": "#884ea0",
         "StrokeThickness": 1.5,
         "DashStyle": "Dash",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "Selected": {
@@ -66,7 +66,7 @@
         "StrokeColor": "#6c3483",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "Locked": {
@@ -74,7 +74,7 @@
         "StrokeColor": "#7f8c8d",
         "StrokeThickness": 1.0,
         "DashStyle": "Dot",
-        "DragHandleSize": 5,
+        "DragHandleSize": 40,
         "FillOpacity": 0.5
       }
     },
@@ -94,7 +94,7 @@
         "StrokeColor": "#e77f24",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 35,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "MouseOver": {
@@ -138,7 +138,7 @@
         "StrokeColor": "#636e72",
         "StrokeThickness": 2.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "MouseOver": {
@@ -146,7 +146,7 @@
         "StrokeColor": "#2d3436",
         "StrokeThickness": 2.0,
         "DashStyle": "DashDot",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "Selected": {
@@ -154,7 +154,7 @@
         "StrokeColor": "#2f3542",
         "StrokeThickness": 2.0,
         "DashStyle": "Solid",
-        "DragHandleSize": 30,
+        "DragHandleSize": 40,
         "FillOpacity": 0.7
       },
       "Locked": {
@@ -182,7 +182,7 @@
         "StrokeColor": "#9b59b6",
         "StrokeThickness": 1.2,
         "DashStyle": "Solid",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "MouseOver": {
@@ -190,7 +190,7 @@
         "StrokeColor": "#8e44ad",
         "StrokeThickness": 1.2,
         "DashStyle": "Dash",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "Selected": {
@@ -198,7 +198,7 @@
         "StrokeColor": "#6c3483",
         "StrokeThickness": 1.2,
         "DashStyle": "Solid",
-        "DragHandleSize": 25,
+        "DragHandleSize": 40,
         "FillOpacity": 0.6
       },
       "Locked": {

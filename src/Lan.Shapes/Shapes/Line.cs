@@ -17,7 +17,9 @@ namespace Lan.Shapes.Shapes
 
         public Line(ShapeLayer layer) : base(layer)
         {
-            DragHandleSize = DragHandleSize ==0? 15: DragHandleSize;
+
+
+            DragHandleSize = layer.Stylers[0].DragHandleSize;
             _leftDragHandle = new RectDragHandle(DragHandleSize, default, 1);
             _rightDragHandle = new RectDragHandle(DragHandleSize, default, 2);
             _panHandle = new RectDragHandle(DragHandleSize, default, 2);
