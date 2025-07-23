@@ -152,6 +152,7 @@ namespace Lan.Shapes
             ShapeLayer = layer;
             Id = Guid.NewGuid();
             State = ShapeVisualState.Normal;
+            DragHandleSize = ShapeStyler?.DragHandleSize ?? 10;
             //Tag = this.GetType().Name;
         }
 

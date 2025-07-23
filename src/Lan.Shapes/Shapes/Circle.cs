@@ -19,7 +19,9 @@ namespace Lan.Shapes.Shapes
 
         public Circle(ShapeLayer shapeLayer) : base(shapeLayer)
         {
+            DragHandleSize = ShapeStyler.DragHandleSize;
             _dragHandle = new RectDragHandle(DragHandleSize, default, 1);
+            RenderGeometryGroup.Children.Add(_dragHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_ellipseGeometry);
         }
 

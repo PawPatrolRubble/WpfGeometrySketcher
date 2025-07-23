@@ -14,6 +14,9 @@ namespace Lan.Shapes
         public string Description { get; set; }
         public int MaximumThickenedShapeWidth { get; set; }
         public int TagFontSize { get; set; }
+        public int UnitsPerMillimeter { get; set; }
+        public int PixelPerUnit { get; set; }
+        public string UnitName{ get; set; }
 
 
         [JsonConverter(typeof(BrushToHexConverter))]
