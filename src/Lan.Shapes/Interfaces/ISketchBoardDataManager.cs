@@ -17,6 +17,9 @@ namespace Lan.Shapes.Interfaces
     public interface ISketchBoardDataManager
     {
 
+
+
+
         ISketchBoard SketchBoard { get; }
 
         /// <summary>
@@ -131,6 +134,8 @@ namespace Lan.Shapes.Interfaces
         /// </summary>
         void UnselectGeometry();
 
+        void UnselectGeometryType();
+
         void InitializeVisualCollection(Visual visual);
         void OnImageViewerPropertyChanged(double scale);
         
@@ -140,9 +145,16 @@ namespace Lan.Shapes.Interfaces
 
         event EventHandler<ShapeVisualBase> ShapeRemoved;
 
+        event EventHandler<ShapeVisualBase> ShapeSelected;
+
+        event EventHandler<ShapeVisualBase> ShapeUnselected;
+        event EventHandler<Type> GeometryTypeSelected;
+        event EventHandler<Type> GeometryTypeUnselected;
+
+
         /// <summary>
         /// triggered when new shape is sketched, right after the mouse up
         /// </summary>
-         Action<ShapeVisualBase>? NewShapeSketched { get; set; }
+        Action<ShapeVisualBase>? NewShapeSketched { get; set; }
     }
 }

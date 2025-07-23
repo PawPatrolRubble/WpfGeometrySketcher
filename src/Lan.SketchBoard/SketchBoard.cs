@@ -69,7 +69,7 @@ namespace Lan.SketchBoard
         private void SketchBoard_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (SketchBoardDataManager == null) return;
-            
+
             // Use the ViewportScalingService to calculate appropriate thickness based on viewport size
             var scaleFactor = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThicknessFromViewportSize(ActualWidth, ActualHeight);
             var stylers = SketchBoardDataManager.CurrentShapeLayer.Stylers;
@@ -178,6 +178,7 @@ namespace Lan.SketchBoard
         }
 
 
+        private bool _hasShapeSelected = false;
         private ShapeVisualBase? GetHitTestShape(Point mousePosition)
         {
             if ((SketchBoardDataManager.SelectedGeometry?.IsBeingDraggedOrPanMoving ?? false)
@@ -191,7 +192,15 @@ namespace Lan.SketchBoard
 
             var hitTestResult = VisualTreeHelper.HitTest(this, mousePosition);
 
-            if (hitTestResult != null) shape = hitTestResult.VisualHit as ShapeVisualBase;
+            if (hitTestResult != null)
+            {
+                shape = hitTestResult.VisualHit as ShapeVisualBase;
+                _hasShapeSelected = shape!=null;
+            }
+            else
+            {
+                _hasShapeSelected = false;
+            }
 
             return shape?.IsLocked ?? true ? null : shape;
         }
@@ -240,8 +249,13 @@ namespace Lan.SketchBoard
 
                 if (geometry.IsGeometryRendered)
                 {
-                    SketchBoardDataManager.UnselectGeometry();
+                    if (!_hasShapeSelected)
+                    {
+                        SketchBoardDataManager.UnselectGeometry();
+                    }
+                    SketchBoardDataManager.UnselectGeometryType();
                 }
+
             }
             catch (Exception ex)
             {
