@@ -6,7 +6,7 @@
         "StrokeColor": "#168f4e",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 40,
+        "DragHandleSize": 20,
         "FillOpacity": 0.6
       },
       "MouseOver": {
@@ -14,7 +14,7 @@
         "StrokeColor": "#e74c3c",
         "StrokeThickness": 1.5,
         "DashStyle": "Dash",
-        "DragHandleSize": 40,
+        "DragHandleSize": 20,
         "FillOpacity": 0.6
       },
       "Selected": {
@@ -22,7 +22,7 @@
         "StrokeColor": "#c0392b",
         "StrokeThickness": 1.5,
         "DashStyle": "Solid",
-        "DragHandleSize": 40,
+        "DragHandleSize":   20,
         "FillOpacity": 0.6
       },
       "Locked": {
@@ -30,17 +30,20 @@
         "StrokeColor": "#7f8c8d",
         "StrokeThickness": 1.0,
         "DashStyle": "Dot",
-        "DragHandleSize": 40,
+        "DragHandleSize": 20,
         "FillOpacity": 0.5
       }
     },
     "LayerId": 1,
+    "UnitsPerMillimeter": 1000,
+    "PixelPerUnit": 3410,
+    "UnitName": "um",
     "Name": "default",
     "Description": "refined teal tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 30
+    "TagFontSize": 20
   },
 
   {
@@ -79,12 +82,15 @@
       }
     },
     "LayerId": 2,
+    "UnitsPerMillimeter": 1000,
+    "PixelPerUnit": 3410,
+    "UnitName": "um",
     "Name": "layer2",
     "Description": "refined purple tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 30
+    "TagFontSize": 20
   },
 
   {
@@ -123,12 +129,14 @@
       }
     },
     "LayerId": 3,
+    "UnitsPerMillimeter": 1000,
+    "PixelPerUnit": 3410,
     "Name": "layer3",
     "Description": "warm tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 30
+    "TagFontSize": 20
   },
 
   {
@@ -167,12 +175,15 @@
       }
     },
     "LayerId": 4,
+    "UnitsPerMillimeter": 1000,
+    "PixelPerUnit": 3410,
+    "UnitName": "um",
     "Name": "layer4",
     "Description": "grey tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 30
+    "TagFontSize": 20
   },
 
   {
@@ -211,11 +222,14 @@
       }
     },
     "LayerId": 5,
+    "UnitsPerMillimeter": 1000,
+    "PixelPerUnit": 3410,
+    "UnitName": "um",
     "Name": "layer5",
     "Description": "purple tone layer",
     "TextForeground": null,
     "BorderBackground": "#00FFFFFF",
     "MaximumThickenedShapeWidth": 80,
-    "TagFontSize": 30
+    "TagFontSize": 20
   }
 ]

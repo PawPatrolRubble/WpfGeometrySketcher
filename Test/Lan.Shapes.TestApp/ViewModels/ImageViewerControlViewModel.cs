@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #region
 
@@ -26,9 +26,6 @@ namespace Lan.Shapes.App.ViewModels
 {
     public class ImageViewerControlViewModel : ObservableObject, IImageViewerViewModel
     {
-        #region constructor
-
-        #region Constructors
 
         public ImageViewerControlViewModel(
             IShapeLayerManager shapeLayerManager,
@@ -57,33 +54,29 @@ namespace Lan.Shapes.App.ViewModels
 
             ScaleToFitCommand = new RelayCommand(() => Scale = -1);
             ScaleToOriginalSizeCommand = new RelayCommand(() => Scale = 0);
+            sketchBoardDataManager.GeometryTypeUnselected += SketchBoardDataManager_GeometryTypeUnselected;
+
         }
 
-        #endregion
+        private void SketchBoardDataManager_GeometryTypeUnselected(object? sender, Type e)
+        {
+            if (SelectedGeometryType != null && SelectedGeometryType.Name == e.Name)
+            {
+                SelectedGeometryType.IsSelected = false;
+            }
+            SelectedGeometryType = null;
+        }
 
-        #endregion
 
-        #region private fields
 
-        #region fields
+        //private void SketchBoardDataManager_GeometryTypeUnselected(object sender, Type e)
+        //{
+        //}
+
 
         private const double ScaleIncremental = 0.1;
 
-        #endregion
-
-        #endregion
-
-        #region properties
-
-        #region Propeties
-
         public ICommand ChooseGeometryTypeCommand { get; }
-
-        #endregion
-
-        #endregion
-
-        #region fields
 
         private readonly IGeometryTypeManager _geometryTypeManager;
         private readonly ResourceDictionary _resourceDictionary;
@@ -100,9 +93,6 @@ namespace Lan.Shapes.App.ViewModels
         //public ShapeLayer SelectedShapeLayer { get; set; }
         private ShapeLayer _selectedShapeLayer;
 
-        #endregion
-
-        #region implementations
 
         /// <summary>
         ///     the sketch boar data manager used to manage sketch board
@@ -208,9 +198,6 @@ namespace Lan.Shapes.App.ViewModels
             GeometryTypeList.AddRange(_geometryTypeList.Where(x => func(x)));
         }
 
-        #endregion
-
-        #region others
 
         private void ChooseGeometryTypeCommandImpl(GeometryType? geometryType)
         {
@@ -252,7 +239,7 @@ namespace Lan.Shapes.App.ViewModels
 
 
         private void CreateGeometryTypeList()
-            {
+        {
             var iconPngsFromResource = new Dictionary<string, Geometry?>
             {
                 { nameof(Ellipse), _resourceDictionary["Ellipse"] as Geometry },
@@ -305,6 +292,5 @@ namespace Lan.Shapes.App.ViewModels
             return image;
         }
 
-        #endregion
     }
 }

@@ -36,11 +36,10 @@ namespace Lan.ImageViewer.Prism
             GeometryTypeList = new ObservableCollection<GeometryType>();
 
             Scale = 1;
-            ShowSimpleCanvas = false;
+            ShowSimpleCanvas = true;
             CreateGeometryTypeList();
             Image = CreateEmptyImageSource(2048, 2048);
             SketchBoardDataManager.SetShapeLayer(_shapeLayerManager.Layers[0]);
-
             //Image = ImageFromFile(Path.Combine(Environment.CurrentDirectory, "996.png"));
             ZoomOutCommand = new DelegateCommand(() => { Scale *= 1 - ScaleIncremental; });
             ChooseGeometryTypeCommand = new DelegateCommand<GeometryType>(ChooseGeometryTypeCommandImpl);
@@ -51,6 +50,16 @@ namespace Lan.ImageViewer.Prism
             DeleteShapeCommand = new DelegateCommand(DeleteShapeCommandExecute);
 
             Layers = new ObservableCollection<ShapeLayer>(_shapeLayerManager.Layers);
+            sketchBoardDataManager.GeometryTypeUnselected += SketchBoardDataManager_GeometryTypeUnselected;
+        }
+
+        private void SketchBoardDataManager_GeometryTypeUnselected(object sender, Type e)
+        {
+            if (SelectedGeometryType != null && SelectedGeometryType.Name == e.Name)
+            {
+                SelectedGeometryType.IsSelected = false;
+            }
+            SelectedGeometryType = null;
         }
 
         #endregion

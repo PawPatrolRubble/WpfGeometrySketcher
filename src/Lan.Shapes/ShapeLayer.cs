@@ -50,11 +50,22 @@ namespace Lan.Shapes
         }
 
 
+        /// <summary>
+        /// pixel per unit
+        /// </summary>
+        public double PixelPerUnit { get; set; } = 1;
+
+        /// <summary>
+        /// unit conversion ratio to mm， defining how many unit is equal to 1 mm
+        /// </summary>
+        public int  UnitsPerMillimeter { get; set; } = 1;
         public int LayerId { get; }
         public string Name { get; }
         public string Description { get; }
         public int MaximumThickenedShapeWidth { get; set; }
         public int TagFontSize { get; set; }
+        public string UnitName { get; set; }
+
 
         public Brush TextForeground { get; } = Brushes.Black;
         public Brush BorderBackground { get; } = Brushes.LightBlue;
@@ -79,12 +90,15 @@ namespace Lan.Shapes
             Description = shapeLayerParameter.Description;
             MaximumThickenedShapeWidth = shapeLayerParameter.MaximumThickenedShapeWidth;
             TagFontSize = shapeLayerParameter.TagFontSize;
+            UnitName = shapeLayerParameter.UnitName;
 
             _stylers = new Dictionary<ShapeVisualState, IShapeStyler>(shapeLayerParameter.StyleSchema.Select(x =>
                 new KeyValuePair<ShapeVisualState, IShapeStyler>(x.Key, new ShapeStyler(x.Value))));
 
             BorderBackground = shapeLayerParameter.BorderBackground;
             TextForeground = shapeLayerParameter.TextForeground;
+            UnitsPerMillimeter = shapeLayerParameter.UnitsPerMillimeter;
+            PixelPerUnit = shapeLayerParameter.PixelPerUnit;
         }
 
         

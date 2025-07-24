@@ -184,7 +184,9 @@ namespace Lan.SketchBoard
                 if (_selectedGeometry != null)
                 {
                     _selectedGeometry.State = ShapeVisualState.Selected;
+                    ShapeSelected?.Invoke(this, _selectedGeometry);
                 }
+
             }
         }
 
@@ -192,6 +194,27 @@ namespace Lan.SketchBoard
         public void SetGeometryType(Type type)
         {
             _currentGeometryType = type;
+            GeometryTypeSelected?.Invoke(this, _currentGeometryType);
+        }
+
+        public void UnselectGeometry()
+        {
+            if (_selectedGeometry != null)
+            {
+                _selectedGeometry.State = ShapeVisualState.Normal;
+                ShapeUnselected?.Invoke(this, _selectedGeometry);
+                _selectedGeometry = null;
+                CurrentGeometryInEdit = null;
+            }
+        }
+
+        public void UnselectGeometryType()
+        {
+            if (_currentGeometryType != null)
+            {
+                GeometryTypeUnselected?.Invoke(this, _currentGeometryType);
+                _currentGeometryType = null;
+            }
         }
 
         /// <summary>
@@ -345,15 +368,6 @@ namespace Lan.SketchBoard
             return shape;
         }
 
-        /// <summary>
-        ///     set current geometry as null
-        /// </summary>
-        public void UnselectGeometry()
-        {
-            CurrentGeometryInEdit = null;
-            _currentGeometryType = null;
-        }
-
         public void InitializeVisualCollection(Visual visual)
         {
 
@@ -385,6 +399,10 @@ namespace Lan.SketchBoard
 
         public event EventHandler<ShapeVisualBase>? ShapeCreated;
         public event EventHandler<ShapeVisualBase>? ShapeRemoved;
+        public event EventHandler<ShapeVisualBase>? ShapeSelected;
+        public event EventHandler<ShapeVisualBase>? ShapeUnselected;
+        public event EventHandler<Type>? GeometryTypeSelected;
+        public event EventHandler<Type>? GeometryTypeUnselected;
 
         /// <summary>
         ///     triggered when new shape is sketched, right after the mouse up
