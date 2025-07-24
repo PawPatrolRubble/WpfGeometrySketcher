@@ -10,8 +10,9 @@
     xmlns:viewModels="clr-namespace:Lan.Shapes.App.ViewModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="1200"
+    Height="800"
+    WindowStartupLocation="CenterScreen"
     d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
     mc:Ignorable="d">
 

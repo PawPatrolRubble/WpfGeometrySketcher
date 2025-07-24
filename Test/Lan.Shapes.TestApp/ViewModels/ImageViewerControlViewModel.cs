@@ -264,7 +264,8 @@ namespace Lan.Shapes.App.ViewModels
                 { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
                 { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
                 { nameof(Circle), _resourceDictionary["Circle"] as Geometry },
-                {nameof(Line),_resourceDictionary["LineSegment"] as Geometry}
+                {nameof(Line),_resourceDictionary["LineSegment"] as Geometry},
+                {nameof(Fiber),_resourceDictionary["LineSegment"] as Geometry},
             };
 
 
@@ -286,6 +287,7 @@ namespace Lan.Shapes.App.ViewModels
             _geometryTypeManager.RegisterGeometryType<Cross>();
             _geometryTypeManager.RegisterGeometryType<Line>();
             _geometryTypeManager.RegisterGeometryType<Rectangle>();
+            _geometryTypeManager.RegisterGeometryType<Fiber>();
 
             _geometryTypeList = new ObservableCollection<GeometryType>(_geometryTypeManager.GetRegisteredGeometryTypes()
                 .Select(x => new GeometryType(x, x, GetIconImage(x))));

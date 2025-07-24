@@ -16,6 +16,7 @@ namespace Lan.Shapes.Custom
     public class ThickenedCross : CustomGeometryBase, IDataExport<PointsData>
     {
         #region fields
+
         //水平与
         private const int MinPixelDistance = 1;
 
