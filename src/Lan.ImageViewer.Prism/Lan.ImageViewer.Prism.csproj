@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.2.12</PackageVersion>
-		<Description>fixed drag handle size issue for line</Description>
+		<PackageVersion>1.2.13</PackageVersion>
+		<Description>fixed some errors add new features</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
