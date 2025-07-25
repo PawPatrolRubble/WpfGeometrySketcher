@@ -139,6 +139,26 @@ namespace Lan.Shapes.Shapes
 
         }
 
+        private void AddRadiusText(DrawingContext renderContext)
+        {
+            var lengthInMm = 0.0;
+            if  (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
+            {
+                lengthInMm = Radius * ShapeLayer.UnitsPerMillimeter / ShapeLayer.PixelPerUnit;
+            }
+
+            var formattedText = new FormattedText(
+                $"{lengthInMm:f4} {ShapeLayer.UnitName}, {Radius:f4} px",
+                System.Globalization.CultureInfo.GetCultureInfo("en-us"),
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                ShapeLayer.TagFontSize,
+                Brushes.Red,
+                96);
+
+            renderContext.DrawText(formattedText, new Point(Center.X, Center.Y));
+        }
+
         protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
         {
             Radius = (newPoint.X - oldPoint.X) / 2;
@@ -295,6 +315,7 @@ namespace Lan.Shapes.Shapes
                 }
 
                 AddTagText(renderContext, Center);
+                AddRadiusText(renderContext);
             }
 
             renderContext.Close();
