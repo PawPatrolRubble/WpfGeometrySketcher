@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-	    <PackageVersion>1.1.22</PackageVersion>
-	    <Description>fixed circle drawing sketch bug</Description>
+	    <PackageVersion>1.1.23</PackageVersion>
+	    <Description>add text to circle radius</Description>
         <UseWPF>true</UseWPF>
 
     </PropertyGroup>
