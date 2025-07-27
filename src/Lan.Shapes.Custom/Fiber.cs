@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
@@ -11,7 +12,7 @@ namespace Lan.Shapes.Custom
 {
     public static class LineHelper
     {
-   
+
         #region properties        
         public static double Length(Point start, Point end)
         {
@@ -81,7 +82,7 @@ namespace Lan.Shapes.Custom
         {
             // Calculate the direction vector of the line
             Vector direction = new Vector(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
-            
+
             // Normalize the direction vector
             if (direction.Length > 0)
             {
@@ -91,17 +92,17 @@ namespace Lan.Shapes.Custom
             {
                 return (point, point); // Return degenerate line if input is degenerate
             }
-    
+
             // Calculate the perpendicular vector (-y, x)
             Vector perpendicular = new Vector(direction.Y, -direction.X);
-    
+
             // Scale the perpendicular vector to the desired length
             perpendicular *= length / 2;
-            
+
             // Create the perpendicular line through the point
             Point start = new Point(point.X - perpendicular.X, point.Y - perpendicular.Y);
             Point end = new Point(point.X + perpendicular.X, point.Y + perpendicular.Y);
-            
+
             return (start, end);
         }
 
@@ -116,26 +117,26 @@ namespace Lan.Shapes.Custom
         {
             // Calculate the direction vector of the original line
             Vector direction = new Vector(lineEnd.X - lineStart.X, lineEnd.Y - lineStart.Y);
-            
+
             // If the original line is degenerate (zero length), return a degenerate line
             if (direction.Length < 1e-6)
             {
                 return (point, point);
             }
-            
+
             // Get the original line length
             double originalLength = direction.Length;
-            
+
             // Normalize the direction vector
             direction.Normalize();
-            
+
             // Scale the direction vector to half the original length
             direction *= originalLength / 2;
-            
+
             // Create the parallel line through the point with the same length as the original
             Point start = new Point(point.X - direction.X, point.Y - direction.Y);
             Point end = new Point(point.X + direction.X, point.Y + direction.Y);
-            
+
             return (start, end);
         }
 
@@ -151,6 +152,7 @@ namespace Lan.Shapes.Custom
         private Point _rectTopRight;
         private Point _rectBottomLeft;
         private Point _rectBottomRight;
+        private EllipseGeometry _filletGeometry;
 
         public Fiber(ShapeLayer shapeLayer) : base(shapeLayer)
         {
@@ -159,24 +161,29 @@ namespace Lan.Shapes.Custom
             _topRightHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 2);
             _bottomRightHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 3);
             _bottomLeftHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 4);
-            _triangleBottomCenterHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 5);
-            _triangleTipHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 6);
+            _triangleLeftBaseHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 7);
+            _triangleRightBaseHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 8);
+            _filletRadiusHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 9);
+            _rotationHandle = RectDragHandle.CreateRectDragHandleFromStyler(defaultStyle, new Point(), 10);
 
             _pathGeometry = new PathGeometry();
             _pathFigure = new PathFigure();
+            _filletGeometry = new EllipseGeometry();
 
             _pathGeometry.Figures.Add(_pathFigure);
             _pathFigure.IsClosed = false;
             _pathGeometry.FillRule = FillRule.Nonzero;
-            
+
             Handles.AddRange(new[]
             {
                 _topLeftHandle,
                 _topRightHandle,
                 _bottomLeftHandle,
                 _bottomRightHandle,
-                _triangleBottomCenterHandle,
-                _triangleTipHandle
+                _triangleLeftBaseHandle,
+                _triangleRightBaseHandle,
+                _filletRadiusHandle,
+                _rotationHandle
             });
 
             RenderGeometryGroup.Children.Add(_pathGeometry);
@@ -184,8 +191,11 @@ namespace Lan.Shapes.Custom
             RenderGeometryGroup.Children.Add(_topRightHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_bottomLeftHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_bottomRightHandle.HandleGeometry);
-            RenderGeometryGroup.Children.Add(_triangleBottomCenterHandle.HandleGeometry);
-            RenderGeometryGroup.Children.Add(_triangleTipHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_triangleLeftBaseHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_triangleRightBaseHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_filletRadiusHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_rotationHandle.HandleGeometry);
+            RenderGeometryGroup.Children.Add(_filletGeometry);
         }
 
         #endregion
@@ -200,9 +210,17 @@ namespace Lan.Shapes.Custom
         private readonly RectDragHandle _topLeftHandle;
         private readonly RectDragHandle _topRightHandle;
 
-        //placed at the center of bottom edge of triangle
-        private readonly RectDragHandle _triangleBottomCenterHandle;
-        private readonly RectDragHandle _triangleTipHandle;
+
+        
+        // Handles at triangle base intersection points with rectangle edges
+        private readonly RectDragHandle _triangleLeftBaseHandle;
+        private readonly RectDragHandle _triangleRightBaseHandle;
+        
+        // Handle along angle bisector to adjust fillet circle radius
+        private readonly RectDragHandle _filletRadiusHandle;
+        
+        // Handle at rectangle center for rotation control
+        private readonly RectDragHandle _rotationHandle;
 
         public Point RectTopLeft
         {
@@ -216,78 +234,98 @@ namespace Lan.Shapes.Custom
         private void UpdateGeometry()
         {
             //recreate the geometry
-            
+
             _pathFigure.Segments.Clear();
             _pathFigure.StartPoint = RectTopLeft;
             _pathFigure.Segments.Add(new LineSegment(RectTopRight, true));
             _pathFigure.Segments.Add(new LineSegment(RectBottomRight, true));
             _pathFigure.Segments.Add(new LineSegment(RectBottomLeft, true));
             _pathFigure.Segments.Add(new LineSegment(RectTopLeft, true));
-            
+
             // Calculate the top center point of the rectangle
             Point topCenter = new Point(
                 (RectTopLeft.X + RectTopRight.X) / 2,
                 (RectTopLeft.Y + RectTopRight.Y) / 2
             );
-            
-            // Calculate the apex point on the top edge of the rectangle
-            // The apex will be positioned along the top edge based on TipAngleInDeg
-            // Convert TipAngleInDeg from degrees to radians for calculations
-            double angleInRadians = TipAngleInDeg * Math.PI / 180.0;
-            
-            // Calculate the position of the apex along the top edge
-            // 0 degrees would be at the left end, 90 degrees at the right end
-            double positionRatio = TipAngleInDeg / 90.0;
-            positionRatio = Math.Max(0.0, Math.Min(1.0, positionRatio)); // Clamp between 0 and 1
-            
-            // Calculate the apex point on the top edge
+
+            // Calculate the apex point at the middle of the rectangle's top edge
+            // The apex will always be positioned at the center of the top edge
             Point apex = new Point(
-                RectTopLeft.X + (RectTopRight.X - RectTopLeft.X) * positionRatio,
-                RectTopLeft.Y + (RectTopRight.Y - RectTopLeft.Y) * positionRatio
+                (RectTopLeft.X + RectTopRight.X) / 2,
+                (RectTopLeft.Y + RectTopRight.Y) / 2
             );
-            
+
             // Store the apex point
-            TipBottomRight = apex;
+            TriangleApex = apex;
+
+            // Calculate points on the left and right edges of the rectangle for triangle lateral edges
+            // These points are calculated based on the triangle angle
+            // The angle formed by the lateral edge and the rectangle edge equals (90° - TriangleAngleInDeg)
+
+            // Convert angle to radians
+            double angleInRadians = (90.0 - TriangleBottomEdgeAngleInDeg) * Math.PI / 180.0;
+
+            // Calculate the horizontal distance from apex to the left/right edges
+            double halfRectWidth = (RectTopRight.X - RectTopLeft.X) / 2.0;
+
+            // Calculate the vertical distance down from apex using trigonometry
+            // tan(angle) = opposite / adjacent = verticalDistance / halfRectWidth
+            double verticalDistance = halfRectWidth * Math.Tan(angleInRadians);
+
+            // Calculate the intersection points using proper line intersection
+            // Find where the lateral edges (from apex at the given angle) intersect the rectangle edges
             
-            // Update the triangle tip handle position
-            _triangleTipHandle.GeometryCenter = apex;
+            // Convert from triangle bottom edge angle to lateral edge angle with vertical rectangle edge
+            // If lateral edge makes angle θ with horizontal bottom, it makes (90° - θ) with vertical rectangle edge
+            double lateralToVerticalAngle = 90.0 - TriangleBottomEdgeAngleInDeg;
             
-            // Calculate a point inside the rectangle (e.g., center of the rectangle)
-            Point rectCenter = new Point(
-                (RectTopLeft.X + RectBottomRight.X) / 2,
-                (RectTopLeft.Y + RectBottomRight.Y) / 2
-            );
-            
-            // Calculate intersection points with left and right edges
-            // We draw lines from the apex to the left and right edges through the rectangle center
-            Point leftEdgeIntersection = GetIntersectionWithEdge(TipBottomRight, rectCenter, RectTopLeft, RectBottomLeft);
-            Point rightEdgeIntersection = GetIntersectionWithEdge(TipBottomRight, rectCenter, RectTopRight, RectBottomRight);
-            
+            Point leftEdgePoint = GetIntersectionPoint_Line1AnglePoint(RectTopLeft, RectBottomLeft, TriangleApex, lateralToVerticalAngle);
+            Point rightEdgePoint = GetIntersectionPoint_Line1AnglePoint(RectTopRight, RectBottomRight, TriangleApex, -lateralToVerticalAngle);
+
+            // Calculate and update the fillet circle geometry
+            UpdateFilletCircle();
+
             // First draw the rectangle
             // The rectangle is already drawn by the previous segments (lines 221-225)
-            
+
             // Now add the triangle segments to the path figure
             // Start a new path from the apex
-            _pathFigure.Segments.Add(new LineSegment(TipBottomRight, true));
-            
-            // Draw line from apex to right edge intersection
-            _pathFigure.Segments.Add(new LineSegment(rightEdgeIntersection, true));
-            
-            // Draw line from right edge intersection to left edge intersection
+            _pathFigure.Segments.Add(new LineSegment(TriangleApex, true));
+
+            // Draw line from apex to right edge point
+            _pathFigure.Segments.Add(new LineSegment(rightEdgePoint, true));
+
+            // Draw line from right edge point to left edge point
             // (This creates the base of the triangle)
-            _pathFigure.Segments.Add(new LineSegment(leftEdgeIntersection, true));
-            
-            // Draw line from left edge intersection back to the apex to close the triangle
-            _pathFigure.Segments.Add(new LineSegment(TipBottomRight, true));
-            
+            _pathFigure.Segments.Add(new LineSegment(leftEdgePoint, true));
+
+            // Draw line from left edge point back to the apex to close the triangle
+            _pathFigure.Segments.Add(new LineSegment(TriangleApex, true));
+
+            //draw middle line of rectangle
+            var topEdgeMiddlePoint = new Point((RectTopLeft.X + RectTopRight.X) / 2, (RectTopLeft.Y + RectTopRight.Y) / 2);
+            var bottomEdgeMiddlePoint = new Point((RectBottomLeft.X + RectBottomRight.X) / 2, (RectBottomLeft.Y + RectBottomRight.Y) / 2);
+            _pathFigure.Segments.Add(new LineSegment(topEdgeMiddlePoint, true));
+            _pathFigure.Segments.Add(new LineSegment(bottomEdgeMiddlePoint, true));
+
             // Update handle positions
             _topLeftHandle.GeometryCenter = RectTopLeft;
             _topRightHandle.GeometryCenter = RectTopRight;
             _bottomLeftHandle.GeometryCenter = RectBottomLeft;
             _bottomRightHandle.GeometryCenter = RectBottomRight;
-            _triangleBottomCenterHandle.GeometryCenter = topCenter;
-            _triangleTipHandle.GeometryCenter = TipBottomRight;
             
+            // Ensure triangle base handles are constrained to rectangle edges
+            // These points are already calculated to be on the rectangle edges by GetIntersectionPoint_Line1AnglePoint
+            _triangleLeftBaseHandle.GeometryCenter = leftEdgePoint;
+            _triangleRightBaseHandle.GeometryCenter = rightEdgePoint;
+            
+            // Position rotation handle at rectangle center
+            Point rectangleCenter = new Point(
+                (RectTopLeft.X + RectBottomRight.X) / 2,
+                (RectTopLeft.Y + RectBottomRight.Y) / 2
+            );
+            _rotationHandle.GeometryCenter = rectangleCenter;
+
             UpdateVisual();
         }
 
@@ -319,8 +357,8 @@ namespace Lan.Shapes.Custom
         }
 
         //default fillet radius is 20
-        private double _filletRadius = 20;
-        private double _tipAngleInDeg = 45;
+        private double _filletRadius = 200;
+        private double _triangleAngleInDeg = 45;
         private Point _tipBottomRight; // The apex point of the triangle
 
         #endregion
@@ -334,23 +372,32 @@ namespace Lan.Shapes.Custom
         public double FilletRadius
         {
             get { return _filletRadius; }
-            set { SetField(ref _filletRadius, value); }
+            set 
+            { 
+                SetField(ref _filletRadius, value);
+                UpdateFilletCircle(); // Update fillet circle when radius changes
+                UpdateVisual(); // Refresh visual
+            }
         }
 
-        public double TipAngleInDeg
+
+        /// <summary>
+        ///     The angle formed by the lateral edges and the bottom edge of the triangle
+        /// </summary>
+        public double TriangleBottomEdgeAngleInDeg
         {
-            get { return _tipAngleInDeg; }
+            get { return _triangleAngleInDeg; }
             set
             {
-                SetField(ref _tipAngleInDeg, value);
-                UpdateGeometryOnMouseMove();
+                SetField(ref _triangleAngleInDeg, value);
+                UpdateGeometry();
             }
         }
 
         /// <summary>
         ///     The apex point of the triangle at the top of the fiber
         /// </summary>
-        public Point TipBottomRight
+        public Point TriangleApex
         {
             get { return _tipBottomRight; }
             private set { SetField(ref _tipBottomRight, value); }
@@ -388,7 +435,7 @@ namespace Lan.Shapes.Custom
             {
                 if (!IsGeometryRendered)
                 {
-                    
+
                     //draw the whole geometry
                     RectBottomLeft = point;
                     var (bottomRightStart, bottomRightEnd) = LineHelper.GetPerpendicularLineThroughPoint(RectTopLeft, RectBottomLeft, point);
@@ -408,178 +455,261 @@ namespace Lan.Shapes.Custom
                     switch (SelectedDragHandle.Id)
                     {
                         case 1: //top left
-                            // When dragging top left, we need to:
-                            // 1. Keep the bottom right corner fixed
-                            // 2. Find the best rectangle that includes both the fixed corner and the mouse position
-                            // 3. Maintain the current orientation of the rectangle
-                            
+                                // When dragging top left, we need to:
+                                // 1. Keep the bottom right corner fixed
+                                // 2. Find the best rectangle that includes both the fixed corner and the mouse position
+                                // 3. Maintain the current orientation of the rectangle
+
                             // Calculate the current rectangle's orientation vectors
                             Vector rightDir = new Vector(RectTopRight.X - RectTopLeft.X, RectTopRight.Y - RectTopLeft.Y);
                             Vector downDir = new Vector(RectBottomLeft.X - RectTopLeft.X, RectBottomLeft.Y - RectTopLeft.Y);
-                            
+
                             if (rightDir.Length > 0) rightDir.Normalize();
                             if (downDir.Length > 0) downDir.Normalize();
-                            
+
                             // Calculate the vector from the fixed corner to the mouse position
                             Vector toMouse = new Vector(point.X - RectBottomRight.X, point.Y - RectBottomRight.Y);
-                            
+
                             // Project the mouse vector onto the rectangle's own axes
                             double rightProj = -Vector.Multiply(toMouse, rightDir); // Negative because we're moving left from bottom right
                             double downProj = -Vector.Multiply(toMouse, downDir);   // Negative because we're moving up from bottom right
-                            
+
                             // Ensure we maintain a rectangle by using these projections along the rectangle's own axes
                             Vector rightOffset = Vector.Multiply(rightDir, rightProj);
                             Vector downOffset = Vector.Multiply(downDir, downProj);
-                            
+
                             // Calculate new corner positions
                             Point newTopLeft = new Point(
                                 RectBottomRight.X - rightOffset.X - downOffset.X,
                                 RectBottomRight.Y - rightOffset.Y - downOffset.Y);
-                                
+
                             Point newTopRight = new Point(
                                 RectBottomRight.X - downOffset.X,
                                 RectBottomRight.Y - downOffset.Y);
-                                
+
                             Point newBottomLeft = new Point(
                                 RectBottomRight.X - rightOffset.X,
                                 RectBottomRight.Y - rightOffset.Y);
-                            
+
                             // Update all corners except bottom right (which stays fixed)
                             RectTopLeft = newTopLeft;
                             RectTopRight = newTopRight;
                             RectBottomLeft = newBottomLeft;
                             break;
-                            
+
                         case 2: //top right
-                            // When dragging top right, we need to:
-                            // 1. Keep the bottom left corner fixed
-                            // 2. Find the best rectangle that includes both the fixed corner and the mouse position
-                            // 3. Maintain the current orientation of the rectangle
-                            
+                                // When dragging top right, we need to:
+                                // 1. Keep the bottom left corner fixed
+                                // 2. Find the best rectangle that includes both the fixed corner and the mouse position
+                                // 3. Maintain the current orientation of the rectangle
+
                             // Calculate the current rectangle's orientation vectors
                             Vector leftDirTR = new Vector(RectTopLeft.X - RectTopRight.X, RectTopLeft.Y - RectTopRight.Y);
                             Vector downDirTR = new Vector(RectBottomRight.X - RectTopRight.X, RectBottomRight.Y - RectTopRight.Y);
-                            
+
                             if (leftDirTR.Length > 0) leftDirTR.Normalize();
                             if (downDirTR.Length > 0) downDirTR.Normalize();
-                            
+
                             // Calculate the vector from the fixed corner to the mouse position
                             Vector toMouseTR = new Vector(point.X - RectBottomLeft.X, point.Y - RectBottomLeft.Y);
-                            
+
                             // Project the mouse vector onto the rectangle's own axes
                             double leftProjTR = -Vector.Multiply(toMouseTR, leftDirTR);  // Negative because we want the opposite direction
                             double downProjTR = -Vector.Multiply(toMouseTR, downDirTR);  // Negative because we're moving up from bottom left
-                            
+
                             // Ensure we maintain a rectangle by using these projections along the rectangle's own axes
                             Vector leftOffsetTR = Vector.Multiply(leftDirTR, leftProjTR);
                             Vector downOffsetTR = Vector.Multiply(downDirTR, downProjTR);
-                            
+
                             // Calculate new corner positions
                             Point newTopRightTR = new Point(
                                 RectBottomLeft.X - leftOffsetTR.X - downOffsetTR.X,
                                 RectBottomLeft.Y - leftOffsetTR.Y - downOffsetTR.Y);
-                                
+
                             Point newTopLeftTR = new Point(
                                 RectBottomLeft.X - downOffsetTR.X,
                                 RectBottomLeft.Y - downOffsetTR.Y);
-                                
+
                             Point newBottomRightTR = new Point(
                                 RectBottomLeft.X - leftOffsetTR.X,
                                 RectBottomLeft.Y - leftOffsetTR.Y);
-                            
+
                             // Update all corners except bottom left (which stays fixed)
                             RectTopRight = newTopRightTR;
                             RectTopLeft = newTopLeftTR;
                             RectBottomRight = newBottomRightTR;
                             break;
-                            
+
                         case 3: //bottom right
-                            // When dragging bottom right, we need to:
-                            // 1. Keep the top left corner fixed
-                            // 2. Find the best rectangle that includes both the fixed corner and the mouse position
-                            // 3. Maintain the current orientation of the rectangle
-                            
+                                // When dragging bottom right, we need to:
+                                // 1. Keep the top left corner fixed
+                                // 2. Find the best rectangle that includes both the fixed corner and the mouse position
+                                // 3. Maintain the current orientation of the rectangle
+
                             // Calculate the current rectangle's orientation vectors
                             Vector rightDirBR = new Vector(RectTopRight.X - RectTopLeft.X, RectTopRight.Y - RectTopLeft.Y);
                             Vector downDirBR = new Vector(RectBottomLeft.X - RectTopLeft.X, RectBottomLeft.Y - RectTopLeft.Y);
-                            
+
                             if (rightDirBR.Length > 0) rightDirBR.Normalize();
                             if (downDirBR.Length > 0) downDirBR.Normalize();
-                            
+
                             // Calculate the vector from the fixed corner to the mouse position
                             Vector toMouseBR = new Vector(point.X - RectTopLeft.X, point.Y - RectTopLeft.Y);
-                            
+
                             // Project the mouse vector onto the rectangle's own axes
                             double rightProjBR = Vector.Multiply(toMouseBR, rightDirBR);
                             double downProjBR = Vector.Multiply(toMouseBR, downDirBR);
-                            
+
                             // Ensure we maintain a rectangle by using these projections along the rectangle's own axes
                             Vector rightOffsetBR = Vector.Multiply(rightDirBR, rightProjBR);
                             Vector downOffsetBR = Vector.Multiply(downDirBR, downProjBR);
-                            
+
                             // Calculate new corner positions
                             Point newBottomRightBR = new Point(
                                 RectTopLeft.X + rightOffsetBR.X + downOffsetBR.X,
                                 RectTopLeft.Y + rightOffsetBR.Y + downOffsetBR.Y);
-                                
+
                             Point newTopRightBR = new Point(
                                 RectTopLeft.X + rightOffsetBR.X,
                                 RectTopLeft.Y + rightOffsetBR.Y);
-                                
+
                             Point newBottomLeftBR = new Point(
                                 RectTopLeft.X + downOffsetBR.X,
                                 RectTopLeft.Y + downOffsetBR.Y);
-                            
+
                             // Update all corners except top left (which stays fixed)
                             RectBottomRight = newBottomRightBR;
                             RectTopRight = newTopRightBR;
                             RectBottomLeft = newBottomLeftBR;
                             break;
-                            
+
                         case 4: //bottom left
-                            // When dragging bottom left, we need to:
-                            // 1. Keep the top right corner fixed
-                            // 2. Find the best rectangle that includes both the fixed corner and the mouse position
-                            // 3. Maintain the current orientation of the rectangle
-                            
+                                // When dragging bottom left, we need to:
+                                // 1. Keep the top right corner fixed
+                                // 2. Find the best rectangle that includes both the fixed corner and the mouse position
+                                // 3. Maintain the current orientation of the rectangle
+
                             // Calculate the current rectangle's orientation vectors
                             Vector leftDirBL = new Vector(RectTopLeft.X - RectTopRight.X, RectTopLeft.Y - RectTopRight.Y);
                             Vector downDirBL = new Vector(RectBottomRight.X - RectTopRight.X, RectBottomRight.Y - RectTopRight.Y);
-                            
+
                             if (leftDirBL.Length > 0) leftDirBL.Normalize();
                             if (downDirBL.Length > 0) downDirBL.Normalize();
-                            
+
                             // Calculate the vector from the fixed corner to the mouse position
                             Vector toMouseBL = new Vector(point.X - RectTopRight.X, point.Y - RectTopRight.Y);
-                            
+
                             // Project the mouse vector onto the rectangle's own axes
                             double leftProjBL = Vector.Multiply(toMouseBL, leftDirBL);
                             double downProjBL = Vector.Multiply(toMouseBL, downDirBL);
-                            
+
                             // Ensure we maintain a rectangle by using these projections along the rectangle's own axes
                             Vector leftOffsetBL = Vector.Multiply(leftDirBL, leftProjBL);
                             Vector downOffsetBL = Vector.Multiply(downDirBL, downProjBL);
-                            
+
                             // Calculate new corner positions
                             Point newBottomLeftBL = new Point(
                                 RectTopRight.X + leftOffsetBL.X + downOffsetBL.X,
                                 RectTopRight.Y + leftOffsetBL.Y + downOffsetBL.Y);
-                                
+
                             Point newTopLeftBL = new Point(
                                 RectTopRight.X + leftOffsetBL.X,
                                 RectTopRight.Y + leftOffsetBL.Y);
-                                
+
                             Point newBottomRightBL = new Point(
                                 RectTopRight.X + downOffsetBL.X,
                                 RectTopRight.Y + downOffsetBL.Y);
-                            
+
                             // Update all corners except top right (which stays fixed)
                             RectBottomLeft = newBottomLeftBL;
                             RectTopLeft = newTopLeftBL;
                             RectBottomRight = newBottomRightBL;
                             break;
-                        case 5: //update the triangle
-                            TipAngleInDeg = CalculateTipAngleInDeg(point);
+                        case 7: // Left triangle base handle
+                        case 8: // Right triangle base handle
+                            // Use the same approach as rectangle resizing: direct delta-based updates
+                            if (OldPointForTranslate.HasValue)
+                            {
+                                // Calculate vertical movement delta
+                                double deltaY = point.Y - OldPointForTranslate.Value.Y;
+                                
+                                // Convert vertical movement to angle change (scale factor for responsiveness)
+                                double angleChange = deltaY * 0.1; // Adjust this factor for desired sensitivity
+                                
+                                // Update triangle angle directly
+                                double newAngle = TriangleBottomEdgeAngleInDeg + angleChange;
+                                TriangleBottomEdgeAngleInDeg = Math.Max(10, Math.Min(80, newAngle));
+                                
+                                // Update the reference point for next delta calculation
+                                OldPointForTranslate = point;
+                            }
+                            break;
+                        case 9: // Fillet radius handle
+                            // IMPROVED APPROACH: Project mouse movement along rectangle center line
+                            if (OldPointForTranslate.HasValue)
+                            {
+                                // Calculate rectangle center line direction (from top center to bottom center)
+                                Point topCenter = new Point(
+                                    (RectTopLeft.X + RectTopRight.X) / 2,
+                                    (RectTopLeft.Y + RectTopRight.Y) / 2
+                                );
+                                Point bottomCenter = new Point(
+                                    (RectBottomLeft.X + RectBottomRight.X) / 2,
+                                    (RectBottomLeft.Y + RectBottomRight.Y) / 2
+                                );
+                                
+                                // Center line direction should point AWAY from triangle apex for intuitive interaction
+                                // Since triangle apex is at top center, direction should point from top to bottom
+                                // BUT for intuitive radius control: moving away from apex = bigger radius
+                                // So we want positive projection when moving away from apex
+                                Vector centerLineDirection = topCenter - bottomCenter; // Reversed for intuitive control
+                                if (centerLineDirection.Length > 0)
+                                {
+                                    centerLineDirection.Normalize();
+                                    
+                                    // Project mouse movement onto the rectangle center line
+                                    Vector mouseMovement = point - OldPointForTranslate.Value;
+                                    double projectionOnCenterLine = Vector.Multiply(mouseMovement, centerLineDirection);
+                                
+                                    // Update radius - this will automatically move circle center via UpdateFilletCircle
+                                    FilletRadius +=-projectionOnCenterLine;
+                                }
+                                
+                                // Update the reference point for next delta calculation
+                                OldPointForTranslate = point;
+                            }
+                            break;
+                        case 10: // Rotation handle
+                            // Rotate the entire geometry around rectangle center
+                            if (OldPointForTranslate.HasValue)
+                            {
+                                // Calculate rectangle center
+                                Point rectangleCenter = new Point(
+                                    (RectTopLeft.X + RectBottomRight.X) / 2,
+                                    (RectTopLeft.Y + RectBottomRight.Y) / 2
+                                );
+                                
+                                // Calculate rotation angle based on mouse movement
+                                Vector oldVector = OldPointForTranslate.Value - rectangleCenter;
+                                Vector newVector = point - rectangleCenter;
+                                
+                                if (oldVector.Length > 0 && newVector.Length > 0)
+                                {
+                                    // Calculate angle between old and new vectors
+                                    double oldAngle = Math.Atan2(oldVector.Y, oldVector.X);
+                                    double newAngle = Math.Atan2(newVector.Y, newVector.X);
+                                    double rotationAngle = newAngle - oldAngle;
+                                    
+                                    // Apply rotation to all rectangle corners
+                                    RectTopLeft = RotatePointAroundCenter(RectTopLeft, rectangleCenter, rotationAngle);
+                                    RectTopRight = RotatePointAroundCenter(RectTopRight, rectangleCenter, rotationAngle);
+                                    RectBottomLeft = RotatePointAroundCenter(RectBottomLeft, rectangleCenter, rotationAngle);
+                                    RectBottomRight = RotatePointAroundCenter(RectBottomRight, rectangleCenter, rotationAngle);
+                                }
+                                
+                                // Update the reference point for next delta calculation
+                                OldPointForTranslate = point;
+                            }
                             break;
                     }
                 }
@@ -616,68 +746,104 @@ namespace Lan.Shapes.Custom
             // _bottomRightHandle.GeometryCenter = RectBottomRight;
 
             OldPointForTranslate = point;
-            
-        }
-        
 
-        private double CalculateTipAngleInDeg(Point point)
-        {
-            // Calculate the length of the top edge
-            Vector topEdge = new Vector(RectTopRight.X - RectTopLeft.X, RectTopRight.Y - RectTopLeft.Y);
-            double topEdgeLength = topEdge.Length;
-            
-            // Calculate the vector from top-left to the mouse point
-            Vector topLeftToPoint = new Vector(point.X - RectTopLeft.X, point.Y - RectTopLeft.Y);
-            
-            // Project this vector onto the top edge to find where along the edge the mouse is
-            if (topEdge.Length > 0)
-            {
-                topEdge.Normalize(); // Normalize for projection calculation
-            }
-            
-            // Calculate the projection of the mouse position onto the top edge
-            double projection = Vector.Multiply(topLeftToPoint, topEdge);
-            
-            // Convert this to a ratio along the top edge (0 = left end, 1 = right end)
-            double positionRatio = projection / topEdgeLength;
-            
-            // Clamp the ratio between 0 and 1
-            positionRatio = Math.Max(0.0, Math.Min(1.0, positionRatio));
-            
-            // Convert the position ratio to an angle between 0 and 90 degrees
-            double angleInDegrees = positionRatio * 90.0;
-            
-            // Clamp the angle to a reasonable range (e.g., 10 to 80 degrees)
-            return Math.Max(10, Math.Min(80, angleInDegrees));
         }
 
-        private int GetAngleBetweenPoints(Point start, Point end)
-        {
-            var dx = end.X - start.X;
-            var dy = end.Y - start.Y;
 
-            var deg = Convert.ToInt32(Math.Atan2(dy, dx) * (180 / Math.PI));
-            if (deg < 0)
+
+        /// <summary>
+        /// Calculates the intersection point between a triangle lateral edge and a rectangle edge
+        /// </summary>
+        /// <param name="apex">The apex point of the triangle</param>
+        /// <param name="edgeStart">Start point of the rectangle edge</param>
+        /// <param name="edgeEnd">End point of the rectangle edge</param>
+        /// <param name="triangleAngleInDeg">Triangle angle in degrees (angle at apex between the two lateral edges)</param>
+        /// <param name="isLeftEdge">True for left edge, false for right edge</param>
+        /// <returns>The intersection point on the rectangle edge</returns>
+        private Point GetTriangleEdgeIntersection(Point apex, Point edgeStart, Point edgeEnd, double triangleAngleInDeg, bool isLeftEdge)
+        {
+            // The triangle angle is the angle at the apex between the two lateral edges
+            // Each lateral edge makes an angle of (triangleAngleInDeg / 2) with the vertical centerline
+            double halfTriangleAngleRad = triangleAngleInDeg / 2.0 * Math.PI / 180.0;
+
+            // Calculate the direction from apex to the rectangle edge
+            // For left edge: direction is towards left and down
+            // For right edge: direction is towards right and down
+            double xDirection = isLeftEdge ? -Math.Sin(halfTriangleAngleRad) : Math.Sin(halfTriangleAngleRad);
+            double yDirection = Math.Cos(halfTriangleAngleRad); // Always positive (downward)
+
+            Vector lateralDirection = new Vector(xDirection, yDirection);
+
+            // Rectangle edge direction vector
+            Vector edgeDirection = edgeEnd - edgeStart;
+            double edgeLength = edgeDirection.Length;
+            if (edgeLength == 0) return edgeStart;
+
+            // Find intersection using parametric equations
+            // Rectangle edge: edgeStart + t * edgeDirection
+            // Lateral edge: apex + s * lateralDirection
+            // Solve: edgeStart + t * edgeDirection = apex + s * lateralDirection
+
+            double denominator = edgeDirection.X * lateralDirection.Y - edgeDirection.Y * lateralDirection.X;
+
+            if (Math.Abs(denominator) < 1e-10)
             {
-                deg += 360;
+                // Lines are parallel or nearly parallel, return edge center as fallback
+                return edgeStart + 0.5 * (edgeEnd - edgeStart);
             }
 
-            return deg;
+            Vector apexToEdgeStart = edgeStart - apex;
+            double t = (apexToEdgeStart.X * lateralDirection.Y - apexToEdgeStart.Y * lateralDirection.X) / denominator;
+
+            // Clamp t to keep intersection within edge bounds [0, 1]
+            t = Math.Max(0, Math.Min(1, t));
+
+            // Calculate and return the intersection point
+            return edgeStart + t * (edgeEnd - edgeStart);
         }
 
         /// <summary>
-        /// Calculates the intersection point between a line and a rectangle edge
+        /// Given a reference line (line1: defined by two points), an angle in degrees, and a point on the second line,
+        /// returns the intersection point between line1 and the line passing through the given point at the specified angle.
         /// </summary>
-        /// <param name="lineStart">Start point of the line</param>
-        /// <param name="lineEnd">End point of the line</param>
-        /// <param name="edgeStart">Start point of the edge</param>
-        /// <param name="edgeEnd">End point of the edge</param>
-        /// <returns>The intersection point between the line and the edge</returns>
-        private Point GetIntersectionWithEdge(Point lineStart, Point lineEnd, Point edgeStart, Point edgeEnd)
+        public static Point GetIntersectionPoint_Line1AnglePoint(
+            Point line1Point1, Point line1Point2, Point pointOnLine2, double angleInDegrees)
         {
-            // Use the LineHelper to calculate the intersection
-            return LineHelper.GetIntersectionWithLine(lineStart, lineEnd, edgeStart, edgeEnd);
+            double dx1 = line1Point2.X - line1Point1.X;
+            double dy1 = line1Point2.Y - line1Point1.Y;
+            double alpha = Math.Atan2(dy1, dx1);
+
+            double thetaRad = angleInDegrees * Math.PI / 180.0;
+            double beta = alpha + thetaRad;
+
+            double dx2 = Math.Cos(beta);
+            double dy2 = Math.Sin(beta);
+
+            // Set up the linear system:
+            // [ dx1  -dx2 ] [t1] = [pointOnLine2.X - line1Point1.X]
+            // [ dy1  -dy2 ] [t2]   [pointOnLine2.Y - line1Point1.Y]
+            double det = dx1 * (-dy2) - dy1 * (-dx2);
+            if (Math.Abs(det) < 1e-10)
+                return line1Point1; // Lines are parallel; return start of line1 as fallback
+
+            double rhsX = pointOnLine2.X - line1Point1.X;
+            double rhsY = pointOnLine2.Y - line1Point1.Y;
+
+            double t1 = (rhsX * (-dy2) - rhsY * (-dx2)) / det;
+            // double t2 = (dx1 * rhsY - dy1 * rhsX) / det; // Not needed unless you want the parameter along line2
+
+            // CRITICAL FIX: Constrain t1 to keep intersection within the rectangle edge bounds
+            // t1 = 0 means intersection at line1Point1, t1 = 1 means intersection at line1Point2
+            // Values outside [0,1] mean intersection is outside the rectangle edge
+            t1 = Math.Max(0.0, Math.Min(1.0, t1));
+
+            // Intersection point (now guaranteed to be on the rectangle edge)
+            return new Point(
+                line1Point1.X + t1 * dx1,
+                line1Point1.Y + t1 * dy1
+            );
         }
+
 
         private void UpdateGeometryOnMouseMove()
         {
@@ -685,11 +851,121 @@ namespace Lan.Shapes.Custom
             UpdateGeometry();
         }
 
-        private Point CalculateFilletCenter()
+        /// <summary>
+        /// Calculates the triangle bottom edge angle based on the position of a triangle base handle
+        /// Projects the mouse position onto the rectangle edge for intuitive interaction
+        /// </summary>
+        /// <param name="point">The current mouse position</param>
+        /// <param name="isLeftHandle">True if this is the left base handle, false for right</param>
+        /// <returns>The calculated triangle bottom edge angle in degrees</returns>
+        private double CalculateTriangleAngleFromBasePoint(Point point, bool isLeftHandle)
         {
-            // For the fiber geometry shown in the image, the fillet (circle) should be
-            // positioned at the apex of the triangle
-            return TipBottomRight;
+            // Get the appropriate rectangle edge
+            Point edgeStart = isLeftHandle ? RectTopLeft : RectTopRight;
+            Point edgeEnd = isLeftHandle ? RectBottomLeft : RectBottomRight;
+            
+            // Project the mouse point onto the rectangle edge
+            Vector edgeVector = edgeEnd - edgeStart;
+            Vector toMouse = point - edgeStart;
+            
+            double edgeLength = edgeVector.Length;
+            if (edgeLength == 0) return TriangleBottomEdgeAngleInDeg; // Return current angle if edge has no length
+            
+            // Calculate the projection parameter t
+            double t = Vector.Multiply(toMouse, edgeVector) / (edgeLength * edgeLength);
+            
+            // Ensure the handle stays within the rectangle edge bounds
+            // Clamp t to stay within the edge, with small margins to avoid extreme angles
+            t = Math.Max(0.1, Math.Min(0.9, t));
+            
+            // Get the projected point on the rectangle edge (this ensures handle stays on edge)
+            Point projectedPoint = edgeStart + t * edgeVector;
+            
+            // Calculate the vector from triangle apex to the projected point
+            Vector apexToProjected = projectedPoint - TriangleApex;
+            
+            // Calculate the horizontal distance from apex to the rectangle edge
+            double horizontalDistance = Math.Abs(isLeftHandle ? 
+                (RectTopLeft.X - TriangleApex.X) : 
+                (RectTopRight.X - TriangleApex.X));
+            
+            // Calculate the vertical distance from apex to the projected point
+            double verticalDistance = Math.Abs(projectedPoint.Y - TriangleApex.Y);
+            
+            // Simple approach: use the projection parameter t directly for smooth, predictable behavior
+            // This avoids the sensitivity issues with trigonometric calculations near the apex
+            
+            // The parameter t represents position along the rectangle edge:
+            // t = 0.1 (near top) should give small angle (10°)
+            // t = 0.9 (near bottom) should give large angle (80°)
+            
+            // Linear interpolation from t to angle - this is smooth and predictable
+            double normalizedT = Math.Max(0.1, Math.Min(0.9, t));
+            double angleFromT = 10 + (normalizedT - 0.1) * (80 - 10) / (0.9 - 0.1);
+            
+            return Math.Max(10, Math.Min(80, angleFromT));
+        }
+
+        /// <summary>
+        /// Updates the fillet circle geometry to be tangent to both lateral edges of the triangle
+        /// </summary>
+        private void UpdateFilletCircle()
+        {
+            if (FilletRadius <= 0)
+            {
+                // Hide the circle if radius is zero or negative
+                _filletGeometry.Center = new Point(0, 0);
+                _filletGeometry.RadiusX = 0;
+                _filletGeometry.RadiusY = 0;
+                return;
+            }
+
+            // Calculate half of the triangle angle in radians
+            double halfTriangleAngleRad = (180-2*TriangleBottomEdgeAngleInDeg) * Math.PI/2 / 180.0;
+
+            // For a circle tangent to both lateral edges, the center lies on the angle bisector
+            // The distance from apex to circle center is: radius / sin(halfAngle)
+            double distanceFromApex = FilletRadius / Math.Sin(halfTriangleAngleRad);
+
+            // Calculate the direction vectors of both lateral edges
+            // We need to get the actual intersection points first
+            double lateralToVerticalAngle = 90.0 - TriangleBottomEdgeAngleInDeg;
+            Point leftEdgePoint = GetIntersectionPoint_Line1AnglePoint(RectTopLeft, RectBottomLeft, TriangleApex, lateralToVerticalAngle);
+            Point rightEdgePoint = GetIntersectionPoint_Line1AnglePoint(RectTopRight, RectBottomRight, TriangleApex, -lateralToVerticalAngle);
+            
+            // Calculate direction vectors from apex to each base point
+            Vector leftEdgeDirection = new Vector(leftEdgePoint.X - TriangleApex.X, leftEdgePoint.Y - TriangleApex.Y);
+            Vector rightEdgeDirection = new Vector(rightEdgePoint.X - TriangleApex.X, rightEdgePoint.Y - TriangleApex.Y);
+            
+            // Normalize the direction vectors
+            leftEdgeDirection.Normalize();
+            rightEdgeDirection.Normalize();
+            
+            // Calculate the angle bisector direction (average of the two normalized directions)
+            Vector bisectorDirection = new Vector(
+                (leftEdgeDirection.X + rightEdgeDirection.X) / 2.0,
+                (leftEdgeDirection.Y + rightEdgeDirection.Y) / 2.0
+            );
+            bisectorDirection.Normalize();
+            
+            // The circle center is positioned along the angle bisector from the apex
+            Point circleCenter = new Point(
+                TriangleApex.X + bisectorDirection.X * distanceFromApex,
+                TriangleApex.Y + bisectorDirection.Y * distanceFromApex
+            );
+
+            // Update the ellipse geometry
+            _filletGeometry.Center = circleCenter;
+            _filletGeometry.RadiusX = FilletRadius;
+            _filletGeometry.RadiusY = FilletRadius;
+            
+            // Position the fillet radius handle along the angle bisector
+            // Place it on the circle edge for intuitive radius adjustment
+            Point handlePosition = new Point(
+                circleCenter.X + bisectorDirection.X * FilletRadius,
+                circleCenter.Y + bisectorDirection.Y * FilletRadius
+            );
+            _filletRadiusHandle.GeometryCenter = handlePosition;
         }
 
         protected override void OnStrokeThicknessChanges(double strokeThickness)
@@ -699,6 +975,101 @@ namespace Lan.Shapes.Custom
 
             // We don't need to do anything special here since the base class should handle
             // the stroke thickness changes for the geometries in RenderGeometryGroup
+        }
+        
+        /// <summary>
+        /// Rotates a point around a center point by the given angle in radians
+        /// </summary>
+        private Point RotatePointAroundCenter(Point point, Point center, double angleInRadians)
+        {
+            // Translate point to origin
+            double x = point.X - center.X;
+            double y = point.Y - center.Y;
+            
+            // Apply rotation matrix
+            double cosAngle = Math.Cos(angleInRadians);
+            double sinAngle = Math.Sin(angleInRadians);
+            
+            double rotatedX = x * cosAngle - y * sinAngle;
+            double rotatedY = x * sinAngle + y * cosAngle;
+            
+            // Translate back to original position
+            return new Point(rotatedX + center.X, rotatedY + center.Y);
+        }
+
+        /// <summary>
+        /// Override UpdateVisual to render only edges/strokes without fill
+        /// Only drag handles should have filled background for proper mouse hit testing
+        /// </summary>
+        public override void UpdateVisual()
+        {
+            if (ShapeStyler == null)
+            {
+                return;
+            }
+
+            var renderContext = RenderOpen();
+
+            // SOLUTION: Render invisible filled geometry for hit testing (translation)
+            // This allows the whole shape to be clickable for translation while appearing stroke-only
+            renderContext.DrawGeometry(Brushes.Transparent, null, RenderGeometry);
+
+            // Render the main geometry (rectangle + triangle) with stroke only, no fill
+            renderContext.DrawGeometry(null, ShapeStyler.SketchPen, RenderGeometry);
+
+            // Render the fillet circle with stroke only, no fill
+            if (FilletRadius > 0)
+            {
+                // Invisible fill for hit testing
+                renderContext.DrawGeometry(Brushes.Transparent, null, _filletGeometry);
+                // Visible stroke
+                renderContext.DrawGeometry(null, ShapeStyler.SketchPen, _filletGeometry);
+            }
+
+            // IMPORTANT: Always render drag handles with filled background for mouse events
+            // This ensures proper hit testing regardless of selection state
+            foreach (var handle in Handles)
+            {
+                renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, handle.HandleGeometry);
+            }
+
+            DrawAnnotationText(renderContext);
+
+            renderContext.Close();
+        }
+
+
+        private void DrawAnnotationText(DrawingContext renderContext)
+        {
+            // Draw the length text
+            var length = FilletRadius;
+            var lengthInMm = 0.0;
+            if  (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
+            {
+                lengthInMm = length * ShapeLayer.UnitsPerMillimeter / ShapeLayer.PixelPerUnit;
+            }
+
+            var formattedText = new FormattedText(
+                $"{lengthInMm:f4} {ShapeLayer.UnitName}, {length:f4} px",
+                CultureInfo.GetCultureInfo("en-us"),
+                FlowDirection.LeftToRight,
+                new Typeface("Verdana"),
+                ShapeLayer.TagFontSize,
+                Brushes.Red,
+                96);
+
+            // Calculate the angle of the rectangle's top edge
+            Vector topEdgeVector = RectTopRight - RectTopLeft;
+            double topEdgeAngle = Math.Atan2(topEdgeVector.Y, topEdgeVector.X) * 180.0 / Math.PI;
+            
+            // Position text aligned with rectangle top edge
+            var xPosition = (RectTopLeft.X + RectTopRight.X) / 2-30;
+            var yPosition = (RectTopLeft.Y+RectTopRight.Y) / 2 - formattedText.Height ; // Above top edge with small margin
+            
+            // Apply rotation transform to make text parallel to top edge
+            renderContext.PushTransform(new RotateTransform(topEdgeAngle, xPosition, yPosition));
+            renderContext.DrawText(formattedText, new Point(xPosition, yPosition));
+            renderContext.Pop(); // Remove the rotation transform
         }
 
         #endregion

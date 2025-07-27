@@ -73,6 +73,8 @@ namespace Lan.Shapes.App.ViewModels
             //ImageViewerViewModels.Add(Camera2);
             SelectedImageViewModel = ImageViewerViewModels[0];
 
+            //_imagePath = @"E:\nop_projects\luwu\20250725_170656\2.bmp";
+            //SelectedImageViewModel.Image = CreateImageSourceFromFile(_imagePath);
             Camera1.SketchBoardDataManager.SketchBoardManagerInitialized += (s, e) =>
             {
 
