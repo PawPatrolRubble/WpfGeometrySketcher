@@ -143,7 +143,8 @@ namespace Lan.ImageViewer.Prism
                 { nameof(ThickenedLine), _resourceDictionary["ThickenedLine"] as Geometry },
                 { nameof(FixedCenterCircle), _resourceDictionary["FixedCenterCircle"] as Geometry },
                 { nameof(GriddedRectangle), _resourceDictionary["Grid"] as Geometry },
-                { nameof(Line), _resourceDictionary["Line"] as Geometry }
+                { nameof(Line), _resourceDictionary["Line"] as Geometry },
+                { nameof(Fiber), _resourceDictionary["Fiber"] as Geometry }
             };
 
 

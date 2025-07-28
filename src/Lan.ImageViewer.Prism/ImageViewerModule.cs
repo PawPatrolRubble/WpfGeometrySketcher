@@ -31,7 +31,7 @@ namespace Lan.ImageViewer.Prism {
             //_geometryTypeManager.RegisterGeometryType<ThickenedLine>();
             //_geometryTypeManager.RegisterGeometryType<ArrowedLine>();
             _geometryTypeManager.RegisterGeometryType<Circle>();
-            //_geometryTypeManager.RegisterGeometryType<FixedCenterCircle>();
+            _geometryTypeManager.RegisterGeometryType<Fiber>();
             //_geometryTypeManager.RegisterGeometryType<Cross>();
             _geometryTypeManager.RegisterGeometryType<Line>();
             _geometryTypeManager.RegisterGeometryType<Rectangle>();

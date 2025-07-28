@@ -357,7 +357,7 @@ namespace Lan.Shapes.Custom
         }
 
         //default fillet radius is 20
-        private double _filletRadius = 200;
+        private double _filletRadius = 60;
         private double _triangleAngleInDeg = 45;
         private Point _tipBottomRight; // The apex point of the triangle
 

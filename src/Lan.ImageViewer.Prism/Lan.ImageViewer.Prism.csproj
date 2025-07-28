@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.2.14</PackageVersion>
-		<Description>add text to circle radius</Description>
+		<PackageVersion>1.2.17</PackageVersion>
+		<Description>change the default radius of fiber</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
