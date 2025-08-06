@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.2.17</PackageVersion>
-		<Description>change the default radius of fiber</Description>
+		<PackageVersion>1.2.18</PackageVersion>
+		<Description>changed the rotation center of fiber to bottom mid center, and add width height and angle of rect</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
