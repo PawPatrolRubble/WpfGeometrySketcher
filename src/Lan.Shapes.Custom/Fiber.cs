@@ -160,6 +160,10 @@ namespace Lan.Shapes.Custom
         private readonly RectDragHandle _triangleLeftBaseHandle;
         private readonly RectDragHandle _triangleRightBaseHandle;
 
+        private readonly LineGeometry _centerMarkHorizontal;
+        private readonly LineGeometry _centerMarkVertical;
+        private readonly int _crossSize = 40;
+
         //default fillet radius is 20
         private double _filletRadius = 30;
         private Point _tipBottomRight; // The apex point of the triangle
@@ -379,6 +383,9 @@ namespace Lan.Shapes.Custom
             _pathFigure = new PathFigure();
             _filletGeometry = new EllipseGeometry();
 
+            _centerMarkHorizontal = new LineGeometry();
+            _centerMarkVertical = new LineGeometry();
+
             _pathGeometry.Figures.Add(_pathFigure);
             _pathFigure.IsClosed = false;
             _pathGeometry.FillRule = FillRule.Nonzero;
@@ -396,6 +403,8 @@ namespace Lan.Shapes.Custom
             });
 
             RenderGeometryGroup.Children.Add(_pathGeometry);
+            RenderGeometryGroup.Children.Add(_centerMarkHorizontal);
+            RenderGeometryGroup.Children.Add(_centerMarkVertical);
             RenderGeometryGroup.Children.Add(_topLeftHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_topRightHandle.HandleGeometry);
             RenderGeometryGroup.Children.Add(_bottomLeftHandle.HandleGeometry);
@@ -971,6 +980,12 @@ namespace Lan.Shapes.Custom
             _filletGeometry.Center = circleCenter;
             _filletGeometry.RadiusX = FilletRadius;
             _filletGeometry.RadiusY = FilletRadius;
+
+            _centerMarkHorizontal.StartPoint = new Point(circleCenter.X, circleCenter.Y) + new Vector(0, -_crossSize * 1.0 / 2);
+            _centerMarkHorizontal.EndPoint = new Point(circleCenter.X, circleCenter.Y) + new Vector(0, _crossSize * 1.0 / 2);
+
+            _centerMarkVertical.StartPoint = new Point(circleCenter.X, circleCenter.Y) + new Vector(-_crossSize * 1.0 / 2, 0);
+            _centerMarkVertical.EndPoint = new Point(circleCenter.X, circleCenter.Y) + new Vector(_crossSize * 1.0 / 2, 0);
 
             // Position the fillet radius handle along the angle bisector
             // Place it on the circle edge for intuitive radius adjustment
