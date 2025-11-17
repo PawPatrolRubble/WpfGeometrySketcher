@@ -38,8 +38,5 @@ Camera1 = new ImageViewerControlViewModel();
 2. drag handle is auto calculated to ensure unifrom using experience， 根据图形大小自动计算拖拉框
 3. rgb value of pixel is displayed， 显示像素rgb值
 4. scale rate is supported， 显示缩放倍率
-
-
-### todo list
-1. add grid rectangle， 添加带格子矩形，带交互对话框，输入行和列数
+5. it can display raw image data from industrial camera, like Hikvision, Daheng etc. 支持工业相机图像信息实时显示
 
