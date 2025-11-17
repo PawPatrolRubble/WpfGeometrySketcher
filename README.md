@@ -35,8 +35,9 @@ Camera1 = new ImageViewerControlViewModel();
 
 ### Features
 1. extensible to support all kinds of custom geometries 方便扩展，可支持自定义图形
-2. drag handle is auto calculated to ensure unifrom using experience， 根据图形大小自动计算拖拉框
-3. rgb value of pixel is displayed， 显示像素rgb值
-4. scale rate is supported， 显示缩放倍率
-5. it can display raw image data from industrial camera, like Hikvision, Daheng etc. 支持工业相机图像信息实时显示
+2. you can zoom in and out in pixel scale, pan move the image using mouse 支持图片像素级放大缩小，支持鼠标平移图片
+3. drag handle is auto calculated to ensure unifrom using experience， 根据图形大小自动计算拖拉框
+4. rgb value of pixel is displayed， 显示像素rgb值
+5. scale rate is supported， 显示缩放倍率
+6. it can display raw image data from industrial camera, like Hikvision, Daheng etc. 支持工业相机图像信息实时显示
 
