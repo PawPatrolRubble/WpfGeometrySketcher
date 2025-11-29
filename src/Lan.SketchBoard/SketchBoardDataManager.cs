@@ -165,6 +165,7 @@ namespace Lan.SketchBoard
         }
 
         private ShapeVisualBase? _selectedGeometry;
+        private readonly List<ShapeVisualBase> _selectedShapes = new();
 
         public ShapeVisualBase? SelectedGeometry
         {
@@ -173,10 +174,14 @@ namespace Lan.SketchBoard
             {
                 if (_selectedGeometry != null)
                 {
-                    _selectedGeometry.State =
-                        _selectedGeometry.State == ShapeVisualState.Locked
-                            ? ShapeVisualState.Locked
-                            : ShapeVisualState.Normal;
+                    // Don't reset state if the shape is part of multi-selection
+                    if (!_selectedShapes.Contains(_selectedGeometry))
+                    {
+                        _selectedGeometry.State =
+                            _selectedGeometry.State == ShapeVisualState.Locked
+                                ? ShapeVisualState.Locked
+                                : ShapeVisualState.Normal;
+                    }
                 }
 
                 _selectedGeometry = value;
@@ -188,6 +193,113 @@ namespace Lan.SketchBoard
             }
         }
 
+        /// <summary>
+        /// Collection of currently selected shapes (for multi-selection)
+        /// </summary>
+        public IReadOnlyList<ShapeVisualBase> SelectedShapes => _selectedShapes;
+
+        /// <summary>
+        /// Event raised when the selection changes
+        /// </summary>
+        public event EventHandler<IReadOnlyList<ShapeVisualBase>>? SelectionChanged;
+
+        /// <summary>
+        /// Clear all selected shapes
+        /// </summary>
+        public void ClearSelection()
+        {
+            foreach (var shape in _selectedShapes)
+            {
+                if (shape.State != ShapeVisualState.Locked)
+                {
+                    shape.State = ShapeVisualState.Normal;
+                }
+            }
+            _selectedShapes.Clear();
+            SelectedGeometry = null;
+            SelectionChanged?.Invoke(this, _selectedShapes);
+        }
+
+        /// <summary>
+        /// Select multiple shapes at once
+        /// </summary>
+        public void SelectShapes(IEnumerable<ShapeVisualBase> shapes, bool addToExisting = false)
+        {
+            var shapesList = shapes.ToList();
+            Debug.WriteLine($"[SelectShapes] Called with {shapesList.Count} shapes, addToExisting={addToExisting}");
+            
+            if (!addToExisting)
+            {
+                // Clear existing selection without triggering event yet
+                foreach (var shape in _selectedShapes)
+                {
+                    if (shape.State != ShapeVisualState.Locked)
+                    {
+                        shape.State = ShapeVisualState.Normal;
+                    }
+                }
+                _selectedShapes.Clear();
+            }
+
+            foreach (var shape in shapesList)
+            {
+                if (!_selectedShapes.Contains(shape) && !shape.IsLocked)
+                {
+                    _selectedShapes.Add(shape);
+                    shape.State = ShapeVisualState.Selected;
+                    Debug.WriteLine($"[SelectShapes] Added shape: {shape.GetType().Name}");
+                }
+            }
+
+            Debug.WriteLine($"[SelectShapes] Total selected: {_selectedShapes.Count}");
+            
+            // Update single selection to first selected shape
+            SelectedGeometry = _selectedShapes.FirstOrDefault();
+            
+            SelectionChanged?.Invoke(this, _selectedShapes);
+        }
+
+        /// <summary>
+        /// Delete all currently selected shapes
+        /// </summary>
+        public void DeleteSelectedShapes()
+        {
+            Debug.WriteLine($"[DeleteSelectedShapes] Called. SelectedShapes.Count = {_selectedShapes.Count}");
+            
+            if (_selectedShapes.Count == 0)
+            {
+                Debug.WriteLine("[DeleteSelectedShapes] No shapes to delete, returning.");
+                return;
+            }
+
+            // Create a copy to avoid modifying collection while iterating
+            var shapesToDelete = _selectedShapes.ToList();
+            Debug.WriteLine($"[DeleteSelectedShapes] Deleting {shapesToDelete.Count} shapes.");
+            
+            foreach (var shape in shapesToDelete)
+            {
+                Debug.WriteLine($"[DeleteSelectedShapes] Removing shape: {shape.GetType().Name}");
+                RemoveShape(shape);
+            }
+
+            _selectedShapes.Clear();
+            SelectedGeometry = null;
+            SelectionChanged?.Invoke(this, _selectedShapes);
+            Debug.WriteLine("[DeleteSelectedShapes] Complete.");
+        }
+
+        /// <summary>
+        /// Move all selected shapes by the specified offset
+        /// </summary>
+        public void MoveSelectedShapes(Vector offset)
+        {
+            if (_selectedShapes.Count == 0) return;
+
+            foreach (var shape in _selectedShapes)
+            {
+                shape.TranslateBy(offset);
+            }
+        }
 
         public void SetGeometryType(Type type)
         {

@@ -70,14 +70,44 @@ namespace Lan.Shapes.Interfaces
         ShapeVisualBase? SelectedGeometry { get; set; }
 
         /// <summary>
+        /// Collection of currently selected shapes (for multi-selection)
+        /// </summary>
+        IReadOnlyList<ShapeVisualBase> SelectedShapes { get; }
+
+        /// <summary>
         /// set current geometry as null
         /// </summary>
         void UnselectGeometry();
 
         /// <summary>
+        /// Clear all selected shapes
+        /// </summary>
+        void ClearSelection();
+
+        /// <summary>
+        /// Select multiple shapes at once
+        /// </summary>
+        void SelectShapes(IEnumerable<ShapeVisualBase> shapes, bool addToExisting = false);
+
+        /// <summary>
+        /// Delete all currently selected shapes
+        /// </summary>
+        void DeleteSelectedShapes();
+
+        /// <summary>
+        /// Move all selected shapes by the specified offset
+        /// </summary>
+        void MoveSelectedShapes(Vector offset);
+
+        /// <summary>
         /// triggered when new shape is sketched, right after the mouse up
         /// </summary>
         Action<ShapeVisualBase>? NewShapeSketched { get; set; }
+
+        /// <summary>
+        /// Event raised when the selection changes
+        /// </summary>
+        event EventHandler<IReadOnlyList<ShapeVisualBase>>? SelectionChanged;
 
         event EventHandler<ShapeVisualBase> ShapeCreated;
 

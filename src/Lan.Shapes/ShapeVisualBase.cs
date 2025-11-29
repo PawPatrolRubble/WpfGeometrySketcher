@@ -473,6 +473,26 @@ namespace Lan.Shapes
             State = ShapeVisualState.Selected;
         }
 
+        /// <summary>
+        /// Translate the shape by the specified offset.
+        /// Used for multi-selection move operations.
+        /// </summary>
+        /// <param name="offset">The offset to move the shape by</param>
+        public virtual void TranslateBy(Vector offset)
+        {
+            // Store current point for translation
+            var currentPoint = BoundsRect.Location;
+            var newPoint = currentPoint + offset;
+            
+            // Use the existing HandleTranslate mechanism
+            OldPointForTranslate = currentPoint;
+            HandleTranslate(newPoint);
+            
+            CreateHandles();
+            UpdateGeometryGroup();
+            UpdateVisual();
+        }
+
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))

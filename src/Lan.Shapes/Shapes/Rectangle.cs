@@ -125,23 +125,21 @@ namespace Lan.Shapes.Shapes
         protected override void HandleResizing(Point point)
         {
             if (SelectedDragHandle != null)
-                switch (SelectedDragHandle.Id)
+                switch ((DragLocation)SelectedDragHandle.Id)
                 {
-                    case 1:
+                    case DragLocation.TopLeft:
                         TopLeft = ForcePointInRange(point, 0, BottomRight.X, 0, BottomRight.Y);
                         break;
-                    case 2:
-
-                        var validPointTopRight = ForcePointInRange(point, TopLeft.X, point.X, 0, BottomRight.Y);
+                    case DragLocation.TopRight:
+                        var validPointTopRight = ForcePointInRange(point, TopLeft.X, double.MaxValue, 0, BottomRight.Y);
                         TopLeft = new Point(TopLeft.X, validPointTopRight.Y);
                         BottomRight = new Point(validPointTopRight.X, BottomRight.Y);
                         break;
-                    case 3:
-                        BottomRight = ForcePointInRange(point, TopLeft.X, point.X, TopLeft.Y, point.Y);
+                    case DragLocation.BottomRight:
+                        BottomRight = ForcePointInRange(point, TopLeft.X, double.MaxValue, TopLeft.Y, double.MaxValue);
                         break;
-                    case 4:
-                        var validPointBottomLeft = ForcePointInRange(point, 0, BottomRight.X, TopLeft.Y, point.Y);
-
+                    case DragLocation.BottomLeft:
+                        var validPointBottomLeft = ForcePointInRange(point, 0, BottomRight.X, TopLeft.Y, double.MaxValue);
                         TopLeft = new Point(validPointBottomLeft.X, TopLeft.Y);
                         BottomRight = new Point(BottomRight.X, validPointBottomLeft.Y);
                         break;
@@ -197,22 +195,25 @@ namespace Lan.Shapes.Shapes
 
         private void UpdateHandleLocation()
         {
-            for (var i = 0; i < Handles.Count + 1; i++)
-                switch (i)
+            // Handles are created in order: TopLeft, TopRight, BottomLeft, BottomRight
+            foreach (var handle in Handles)
+            {
+                switch ((DragLocation)handle.Id)
                 {
-                    case 1:
-                        Handles[i - 1].GeometryCenter = TopLeft;
+                    case DragLocation.TopLeft:
+                        handle.GeometryCenter = TopLeft;
                         break;
-                    case 2:
-                        Handles[i - 1].GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
+                    case DragLocation.TopRight:
+                        handle.GeometryCenter = new Point(BottomRight.X, TopLeft.Y);
                         break;
-                    case 3:
-                        Handles[i - 1].GeometryCenter = BottomRight;
+                    case DragLocation.BottomRight:
+                        handle.GeometryCenter = BottomRight;
                         break;
-                    case 4:
-                        Handles[i - 1].GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
+                    case DragLocation.BottomLeft:
+                        handle.GeometryCenter = new Point(TopLeft.X, BottomRight.Y);
                         break;
                 }
+            }
         }
 
         public override void UpdateVisual()
