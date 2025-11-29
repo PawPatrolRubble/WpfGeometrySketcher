@@ -29,7 +29,7 @@ namespace Lan.Shapes.Shapes
 
         private TagPosition _tagPosition;
 
-        #region Propeties
+        #region Properties
 
         public Point BottomRight
         {
@@ -118,7 +118,8 @@ namespace Lan.Shapes.Shapes
 
         protected override void CreateHandles()
         {
-            Handles.AddRange(Enumerable.Range(1, 4).Select(x => new RectDragHandle(DragHandleSize, default, x)));
+            Handles.Clear();
+            Handles.AddRange(CreateCornerHandles());
         }
 
         protected override void HandleResizing(Point point)
@@ -157,18 +158,6 @@ namespace Lan.Shapes.Shapes
             }
         }
 
-        /// <summary>
-        /// 未选择状态
-        /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// left mouse button down event
-        /// </summary>
-        /// <param name="mousePoint"></param>
         public override void OnMouseLeftButtonDown(Point mousePoint)
         {
             if (!IsGeometryRendered)
@@ -184,10 +173,6 @@ namespace Lan.Shapes.Shapes
             OldPointForTranslate = mousePoint;
         }
 
-
-        /// <summary>
-        /// 鼠标点击移动
-        /// </summary>
         public override void OnMouseMove(Point point, MouseButtonState buttonState)
         {
             if (buttonState == MouseButtonState.Pressed)
@@ -208,14 +193,6 @@ namespace Lan.Shapes.Shapes
                     HandleTranslate(point);
                 }
             }
-        }
-
-        /// <summary>
-        /// 选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
         }
 
         private void UpdateHandleLocation()

@@ -57,7 +57,7 @@ namespace Lan.Shapes
 
         #endregion
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// 
@@ -210,16 +210,65 @@ namespace Lan.Shapes
 
         protected abstract void CreateHandles();
 
+        #region Factory Methods for Handle Creation
+
+        /// <summary>
+        /// Factory Method: Create a rectangular drag handle at the specified location.
+        /// </summary>
+        /// <param name="location">Center position of the handle</param>
+        /// <param name="dragLocation">The drag location enum value (used as ID)</param>
+        /// <returns>A new RectDragHandle instance</returns>
+        protected DragHandle CreateHandle(DragLocation dragLocation, Point location = default)
+        {
+            var size = GetHandleSize();
+            return new RectDragHandle(size, location, 10, (int)dragLocation);
+        }
+
+        /// <summary>
+        /// Factory Method: Create a rectangular drag handle with a custom ID.
+        /// </summary>
         protected DragHandle CreateRectDragHandle(Point location, int id)
         {
-            if (ShapeStyler == null)
-            {
-                throw new Exception("Style cannot be null");
-            }
-
-            return new RectDragHandle(new Size(ShapeStyler.DragHandleSize, ShapeStyler.DragHandleSize), location, 10,
-                id);
+            var size = GetHandleSize();
+            return new RectDragHandle(size, location, 10, id);
         }
+
+        /// <summary>
+        /// Factory Method: Create multiple handles for common corner positions.
+        /// </summary>
+        protected IEnumerable<DragHandle> CreateCornerHandles()
+        {
+            yield return CreateHandle(DragLocation.TopLeft);
+            yield return CreateHandle(DragLocation.TopRight);
+            yield return CreateHandle(DragLocation.BottomLeft);
+            yield return CreateHandle(DragLocation.BottomRight);
+        }
+
+        /// <summary>
+        /// Factory Method: Create handles for all 8 positions (corners + midpoints).
+        /// </summary>
+        protected IEnumerable<DragHandle> CreateAllHandles()
+        {
+            yield return CreateHandle(DragLocation.TopLeft);
+            yield return CreateHandle(DragLocation.TopMiddle);
+            yield return CreateHandle(DragLocation.TopRight);
+            yield return CreateHandle(DragLocation.RightMiddle);
+            yield return CreateHandle(DragLocation.BottomRight);
+            yield return CreateHandle(DragLocation.BottomMiddle);
+            yield return CreateHandle(DragLocation.BottomLeft);
+            yield return CreateHandle(DragLocation.LeftMiddle);
+        }
+
+        /// <summary>
+        /// Get the current handle size based on styler settings.
+        /// </summary>
+        private Size GetHandleSize()
+        {
+            var handleSize = ShapeStyler?.DragHandleSize ?? 10;
+            return new Size(handleSize, handleSize);
+        }
+
+        #endregion
 
         protected virtual void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
         {
@@ -245,7 +294,6 @@ namespace Lan.Shapes
             SelectedDragHandle = FindDragHandleMouseOver(p);
         }
 
-
         protected double GetDistanceBetweenTwoPoint(Point p1, Point p2)
         {
             return (p2 - p1).Length;
@@ -258,16 +306,18 @@ namespace Lan.Shapes
 
         protected abstract void HandleResizing(Point point);
 
-
         protected abstract void HandleTranslate(Point newPoint);
 
         /// <summary>
-        /// 未选择状态
+        /// Called when the shape is deselected
         /// </summary>
-        public abstract void OnDeselected();
+        public virtual void OnDeselected()
+        {
+            State = ShapeVisualState.Normal;
+        }
 
         /// <summary>
-        /// left mouse button down event
+        /// Left mouse button down event
         /// </summary>
         /// <param name="mousePoint"></param>
         public virtual void OnMouseLeftButtonDown(Point mousePoint)
@@ -286,7 +336,7 @@ namespace Lan.Shapes
         }
 
         /// <summary>
-        /// when mouse left button up
+        /// When mouse left button up
         /// </summary>
         /// <param name="newPoint"></param>
         public virtual void OnMouseLeftButtonUp(Point newPoint)
@@ -300,77 +350,104 @@ namespace Lan.Shapes
             IsBeingDraggedOrPanMoving = false;
         }
 
-
         /// <summary>
-        /// 鼠标点击移动
+        /// Handles mouse move events for shape interaction
         /// </summary>
         public virtual void OnMouseMove(Point point, MouseButtonState buttonState)
         {
             if (buttonState == MouseButtonState.Released)
             {
-                State = ShapeVisualState.MouseOver;
-
-                if (HandleGeometryGroup?.FillContains(point) ?? false)
-                {
-                    var handle = FindDragHandleMouseOver(point);
-                    if (handle != null)
-                    {
-                        UpdateMouseCursor((DragLocation)handle.Id);
-                    }
-                }
-
-
-                if (PanSensitiveArea.FillContains(point))
-                {
-                    Mouse.SetCursor(Cursors.Hand);
-                    _canMoveWithHand = true;
-                }
-                else
-                {
-                    _canMoveWithHand = false;
-                }
+                HandleMouseHover(point);
             }
-            else //when the mouse left button is pressed
+            else
             {
-                if (IsGeometryRendered)
-                {
-                    //scale operation
-                    if (SelectedDragHandle != null)
-                    {
-                        IsBeingDraggedOrPanMoving = true;
-                        UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
-                        HandleResizing(point);
-                        CreateHandles();
-                        UpdateGeometryGroup();
-                        UpdateVisual();
-                        return;
-                    }
-
-                    if (_canMoveWithHand)
-                    {
-                        HandleTranslate(point);
-                        CreateHandles();
-                        UpdateGeometryGroup();
-                        UpdateVisual();
-                    }
-                }
-                else
-                {
-                    if (MouseDownPoint != null)
-                    {
-                        DrawGeometryInMouseMove(MouseDownPoint.Value, point);
-                    }
-
-                    CreateHandles();
-                    UpdateGeometryGroup();
-                    UpdateVisual();
-                }
+                HandleMouseDrag(point);
             }
-
 
             OldPointForTranslate = point;
         }
 
+        /// <summary>
+        /// Handles mouse hover behavior (cursor updates, state changes)
+        /// </summary>
+        protected virtual void HandleMouseHover(Point point)
+        {
+            State = ShapeVisualState.MouseOver;
+
+            if (HandleGeometryGroup?.FillContains(point) ?? false)
+            {
+                var handle = FindDragHandleMouseOver(point);
+                if (handle != null)
+                {
+                    UpdateMouseCursor((DragLocation)handle.Id);
+                }
+            }
+
+            if (PanSensitiveArea.FillContains(point))
+            {
+                Mouse.SetCursor(Cursors.Hand);
+                _canMoveWithHand = true;
+            }
+            else
+            {
+                _canMoveWithHand = false;
+            }
+        }
+
+        /// <summary>
+        /// Handles mouse drag behavior (drawing, resizing, translating)
+        /// </summary>
+        protected virtual void HandleMouseDrag(Point point)
+        {
+            if (IsGeometryRendered)
+            {
+                HandleRenderedShapeDrag(point);
+            }
+            else
+            {
+                HandleDrawingDrag(point);
+            }
+        }
+
+        /// <summary>
+        /// Handles drag operations on an already rendered shape
+        /// </summary>
+        private void HandleRenderedShapeDrag(Point point)
+        {
+            if (SelectedDragHandle != null)
+            {
+                IsBeingDraggedOrPanMoving = true;
+                UpdateMouseCursor((DragLocation)SelectedDragHandle.Id);
+                HandleResizing(point);
+                CreateHandles();
+                UpdateGeometryGroup();
+                UpdateVisual();
+                return;
+            }
+
+            if (_canMoveWithHand)
+            {
+                HandleTranslate(point);
+                CreateHandles();
+                UpdateGeometryGroup();
+                UpdateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Handles drag operations while initially drawing a shape
+        /// </summary>
+        protected virtual void HandleDrawingDrag(Point point)
+        {
+            if (MouseDownPoint != null)
+            {
+                DrawGeometryInMouseMove(MouseDownPoint.Value, point);
+            }
+
+            CreateHandles();
+            UpdateGeometryGroup();
+            UpdateVisual();
+        }
 
         public virtual void OnMouseRightButtonUp(Point mousePosition)
         {
@@ -380,7 +457,7 @@ namespace Lan.Shapes
 
         public virtual void OnMouseLeftButtonDoubleClick(Point mouseDoubleClickPoint)
         {
-            ;
+            // Override in derived classes to handle double-click
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -389,9 +466,12 @@ namespace Lan.Shapes
         }
 
         /// <summary>
-        /// 选择时
+        /// Called when the shape is selected
         /// </summary>
-        public abstract void OnSelected();
+        public virtual void OnSelected()
+        {
+            State = ShapeVisualState.Selected;
+        }
 
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
@@ -410,9 +490,8 @@ namespace Lan.Shapes
             Mouse.SetCursor(Cursors.Hand);
         }
 
-
         /// <summary>
-        /// add geometries to group
+        /// Add geometries to group
         /// </summary>
         protected virtual void UpdateGeometryGroup()
         {
@@ -455,7 +534,11 @@ namespace Lan.Shapes
             }
         }
 
-
+        /// <summary>
+        /// Template Method for rendering the shape.
+        /// Override the hook methods (DrawMainGeometry, DrawHandles, DrawDecorations) 
+        /// to customize rendering behavior.
+        /// </summary>
         public virtual void UpdateVisual()
         {
             if (ShapeStyler == null)
@@ -464,12 +547,54 @@ namespace Lan.Shapes
             }
 
             var renderContext = RenderOpen();
-            renderContext.DrawGeometry(ShapeStyler.FillColor, ShapeStyler.SketchPen, RenderGeometry);
-            renderContext.Close();
+            try
+            {
+                DrawMainGeometry(renderContext);
+                DrawHandles(renderContext);
+                DrawDecorations(renderContext);
+            }
+            finally
+            {
+                renderContext.Close();
+            }
+        }
 
+        /// <summary>
+        /// Hook method: Draw the main geometry of the shape.
+        /// Override to customize main geometry rendering.
+        /// </summary>
+        protected virtual void DrawMainGeometry(DrawingContext context)
+        {
+            context.DrawGeometry(ShapeStyler!.FillColor, ShapeStyler.SketchPen, RenderGeometry);
+        }
+
+        /// <summary>
+        /// Hook method: Draw drag handles.
+        /// Override to customize handle rendering.
+        /// </summary>
+        protected virtual void DrawHandles(DrawingContext context)
+        {
+            foreach (var handle in Handles)
+            {
+                if (handle.HandleGeometry != null)
+                {
+                    context.DrawGeometry(ShapeStyler!.FillColor, ShapeStyler.SketchPen, handle.HandleGeometry);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Hook method: Draw additional decorations (text, indicators, etc.).
+        /// Override to add custom decorations.
+        /// </summary>
+        protected virtual void DrawDecorations(DrawingContext context)
+        {
+            // Default: no decorations. Override in derived classes.
         }
 
         #endregion
+
+        #region Helper Methods
 
         protected double EnsureNumberWithinRange(double value, double min, double max)
         {
@@ -586,3 +711,4 @@ namespace Lan.Shapes
         }
     }
 }
+#endregion

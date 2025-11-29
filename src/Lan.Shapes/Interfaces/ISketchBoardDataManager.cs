@@ -10,30 +10,14 @@ using System.Windows.Media;
 namespace Lan.Shapes.Interfaces
 {
     /// <summary>
-    /// provide the functionality for managing geometry data for <see cref="SketchBoard"/>,
-    /// which is only responsible for displaying
-    /// doesn't provide any event handling functions
+    /// Provides functionality for managing geometry data for SketchBoard.
     /// </summary>
-    public interface ISketchBoardDataManager
+    public interface IShapeCollection
     {
-
-        ISketchBoard SketchBoard { get; }
-
         /// <summary>
         /// bindable collection of shapes
         /// </summary>
         ObservableCollection<ShapeVisualBase> Shapes { get; }
-
-        /// <summary>
-        /// this is used to hold all shapes
-        /// </summary>
-        public VisualCollection VisualCollection { get; }
-
-        /// <summary>
-        /// get all shapes defined in canvas
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<ShapeVisualBase> GetSketchBoardVisuals();
 
         /// <summary>
         /// shape count
@@ -41,32 +25,7 @@ namespace Lan.Shapes.Interfaces
         int ShapeCount { get; }
 
         /// <summary>
-        /// 当前选中的画图类型
-        /// </summary>
-        ShapeVisualBase? CurrentGeometryInEdit { get; set; }
-
-        ShapeVisualBase? SelectedGeometry { get; set; }
-
-        
-
-
-        /// <summary>
-        /// 设置图层
-        /// </summary>
-        /// <param name="layer"></param>
-        void SetShapeLayer(ShapeLayer layer);
-
-
-        void SetGeometryType(Type type);
-
-        /// <summary>
-        /// 当前使用图层
-        /// </summary>
-        ShapeLayer? CurrentShapeLayer { get; }
-
-
-        /// <summary>
-        /// 由sketchboard 向此添加,可用于初始化时加载现有图形,
+        /// add one shape
         /// </summary>
         /// <param name="shape"></param>
         void AddShape(ShapeVisualBase shape);
@@ -96,53 +55,118 @@ namespace Lan.Shapes.Interfaces
         void ClearAllShapes();
 
         ShapeVisualBase? GetShapeVisual(int index);
+    }
 
+    /// <summary>
+    /// Provides functionality for selecting shapes.
+    /// </summary>
+    public interface IShapeSelection
+    {
         /// <summary>
-        /// add a specific geometry with specific data
+        /// 当前选中的画图类型
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TP"></typeparam>
-        /// <param name="parameter"></param>
-        ShapeVisualBase LoadShape<T, TP>(TP parameter) 
-            where T : ShapeVisualBase, IDataExport<TP>
-            where TP : IGeometryMetaData;
-        
-        /// <summary>
-        /// create a shape from sketchboard manager
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TP"></typeparam>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        ShapeVisualBase CreateShape<T, TP>(TP parameter) 
-            where T : ShapeVisualBase, IDataExport<TP>
-            where TP : IGeometryMetaData;
+        ShapeVisualBase? CurrentGeometryInEdit { get; set; }
 
-
-        /// <summary>
-        /// create new geometry from mouse down position
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        /// <returns>if no geometry type is selected, it will return null</returns>
-        ShapeVisualBase? CreateNewGeometry(Point mousePosition);
+        ShapeVisualBase? SelectedGeometry { get; set; }
 
         /// <summary>
         /// set current geometry as null
         /// </summary>
         void UnselectGeometry();
 
-        void InitializeVisualCollection(Visual visual);
-        void OnImageViewerPropertyChanged(double scale);
-        
-        event EventHandler<ISketchBoardDataManager> SketchBoardManagerInitialized;
+        /// <summary>
+        /// triggered when new shape is sketched, right after the mouse up
+        /// </summary>
+        Action<ShapeVisualBase>? NewShapeSketched { get; set; }
 
         event EventHandler<ShapeVisualBase> ShapeCreated;
 
         event EventHandler<ShapeVisualBase> ShapeRemoved;
+    }
+
+    /// <summary>
+    /// Provides functionality for creating shapes.
+    /// </summary>
+    public interface IShapeFactory
+    {
+        /// <summary>
+        /// Set the geometry type for new shape creation
+        /// </summary>
+        void SetGeometryType(Type type);
 
         /// <summary>
-        /// triggered when new shape is sketched, right after the mouse up
+        /// Load a shape from serialized data
         /// </summary>
-         Action<ShapeVisualBase>? NewShapeSketched { get; set; }
+        ShapeVisualBase LoadShape<T, TP>(TP parameter)
+            where T : ShapeVisualBase, IDataExport<TP>
+            where TP : IGeometryMetaData;
+
+        /// <summary>
+        /// Create a shape from data without adding to collection
+        /// </summary>
+        ShapeVisualBase CreateShape<T, TP>(TP parameter)
+            where T : ShapeVisualBase, IDataExport<TP>
+            where TP : IGeometryMetaData;
+
+        /// <summary>
+        /// Create new geometry from mouse down position
+        /// </summary>
+        /// <returns>New shape, or null if no geometry type is selected</returns>
+        ShapeVisualBase? CreateNewGeometry(Point mousePosition);
+    }
+
+    /// <summary>
+    /// Provides functionality for managing layers.
+    /// </summary>
+    public interface ILayerManager
+    {
+        /// <summary>
+        /// 设置图层
+        /// </summary>
+        /// <param name="layer"></param>
+        void SetShapeLayer(ShapeLayer layer);
+
+        /// <summary>
+        /// 当前使用图层
+        /// </summary>
+        ShapeLayer? CurrentShapeLayer { get; }
+    }
+
+    /// <summary>
+    /// Provides functionality for managing geometry data for SketchBoard.
+    /// This interface composes IShapeCollection, IShapeSelection, IShapeFactory, and ILayerManager
+    /// following the Interface Segregation Principle.
+    /// </summary>
+    public interface ISketchBoardDataManager : IShapeCollection, IShapeSelection, IShapeFactory, ILayerManager
+    {
+        /// <summary>
+        /// Reference to the sketch board control
+        /// </summary>
+        ISketchBoard SketchBoard { get; }
+
+        /// <summary>
+        /// Visual collection for rendering
+        /// </summary>
+        VisualCollection VisualCollection { get; }
+
+        /// <summary>
+        /// Get all shapes defined in canvas
+        /// </summary>
+        IEnumerable<ShapeVisualBase> GetSketchBoardVisuals();
+
+        /// <summary>
+        /// Initialize the visual collection with a parent visual
+        /// </summary>
+        void InitializeVisualCollection(Visual visual);
+
+        /// <summary>
+        /// Handle image viewer property changes (e.g., scale)
+        /// </summary>
+        void OnImageViewerPropertyChanged(double scale);
+
+        /// <summary>
+        /// Event raised when the sketch board manager is initialized
+        /// </summary>
+        event EventHandler<ISketchBoardDataManager>? SketchBoardManagerInitialized;
     }
 }

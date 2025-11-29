@@ -2,7 +2,7 @@
 
 
 	  <PropertyGroup>
-		  <TargetFramework>net6.0-windows</TargetFramework>
+		  <TargetFramework>net8.0-windows</TargetFramework>
 		  <UseWPF>true</UseWPF>
 		  <Description>add create shape method in sketchboard manager interface</Description>
 		  <ReferenceOutputAssembly>true</ReferenceOutputAssembly>

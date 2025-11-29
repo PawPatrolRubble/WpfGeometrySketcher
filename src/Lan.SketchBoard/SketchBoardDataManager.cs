@@ -371,10 +371,25 @@ namespace Lan.SketchBoard
 
         public void OnImageViewerPropertyChanged(double scale)
         {
+            if (CurrentShapeLayer == null) return;
+
+            // Store the current scale for future reference
+            Lan.Shapes.Scaling.ViewportScalingService.SetScale(scale);
+
+            // Update all stylers with new scale-adjusted values
             foreach (var shapeStyler in CurrentShapeLayer.Stylers)
             {
                 shapeStyler.Value.SketchPen.Thickness = Lan.Shapes.Scaling.ViewportScalingService.CalculateStrokeThickness(scale);
                 shapeStyler.Value.DragHandleSize = Lan.Shapes.Scaling.ViewportScalingService.CalculateDragHandleSize(scale);
+            }
+
+            // Re-render all shapes to reflect the new stroke thickness
+            if (Shapes != null)
+            {
+                foreach (var shape in Shapes)
+                {
+                    shape.UpdateVisual();
+                }
             }
         }
 

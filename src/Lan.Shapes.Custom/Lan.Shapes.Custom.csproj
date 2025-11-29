@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <PackageVersion>1.1.20</PackageVersion>
     <Description>add new geometry rectangle, circle</Description>
     <Nullable>enable</Nullable>

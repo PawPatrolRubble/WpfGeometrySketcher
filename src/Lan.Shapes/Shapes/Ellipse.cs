@@ -28,7 +28,7 @@ namespace Lan.Shapes.Shapes
 
         #endregion
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// 
@@ -124,15 +124,6 @@ namespace Lan.Shapes.Shapes
         }
 
         /// <summary>
-        /// 未选择状态
-        /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
         /// left mouse button down event
         /// </summary>
         /// <param name="mousePoint"></param>
@@ -193,21 +184,6 @@ namespace Lan.Shapes.Shapes
 
         }
 
-
-        /// <summary>
-        /// 选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// add geometries to group
-        /// </summary>
-        protected override void UpdateGeometryGroup()
-        {
-        }
 
         public override void UpdateVisual()
         {

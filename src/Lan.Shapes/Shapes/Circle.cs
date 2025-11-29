@@ -54,12 +54,15 @@ namespace Lan.Shapes.Shapes
         private readonly LineGeometry _verticalLine = new LineGeometry();
         private readonly LineGeometry _horizontalLine = new LineGeometry();
 
-        private readonly int crossSize = 40;
+        /// <summary>
+        /// Default size for the center cross indicator in pixels
+        /// </summary>
+        private const int DefaultCrossSize = 40;
         private Point _center;
 
         #endregion
 
-        #region Propeties
+        #region Properties
 
         /// <summary>
         /// </summary>
@@ -176,39 +179,6 @@ namespace Lan.Shapes.Shapes
             OldPointForTranslate = newPoint;
         }
 
-        /// <summary>
-        ///     未选择状态
-        /// </summary>
-        public override void OnDeselected()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        ///     left mouse button down event
-        /// </summary>
-        /// <param name="mousePoint"></param>
-        public override void OnMouseLeftButtonDown(Point mousePoint)
-        {
-            if (!IsGeometryRendered)
-            {
-                Center = mousePoint;
-            }
-            else
-            {
-                FindSelectedHandle(mousePoint);
-            }
-
-            OldPointForTranslate = mousePoint;
-            MouseDownPoint = mousePoint;
-        }
-
-        public override void FindSelectedHandle(Point p)
-        {
-            SelectedDragHandle = _dragHandle.FillContains(p) ? _dragHandle : null;
-        }
-
 
         /// <summary>
         ///     鼠标点击移动
@@ -238,14 +208,6 @@ namespace Lan.Shapes.Shapes
 
 
         /// <summary>
-        ///     选择时
-        /// </summary>
-        public override void OnSelected()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         ///     add geometries to group
         /// </summary>
         protected void UpdateGeometryGroup([CallerMemberName] string propertyName = "")
@@ -255,11 +217,11 @@ namespace Lan.Shapes.Shapes
                 case nameof(Center):
                     _ellipseGeometry.Center = Center;
                     _dragHandle.GeometryCenter = Center + new Vector(Radius, 0);
-                    _verticalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(0, -crossSize * 1.0 / 2);
-                    _verticalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(0, crossSize * 1.0 / 2);
+                    _verticalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(0, -DefaultCrossSize / 2.0);
+                    _verticalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(0, DefaultCrossSize / 2.0);
 
-                    _horizontalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(-crossSize * 1.0 / 2, 0);
-                    _horizontalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(crossSize * 1.0 / 2, 0);
+                    _horizontalLine.StartPoint = new Point(_center.X, _center.Y) + new Vector(-DefaultCrossSize / 2.0, 0);
+                    _horizontalLine.EndPoint = new Point(_center.X, _center.Y) + new Vector(DefaultCrossSize / 2.0, 0);
                     UpdateVisual();
 
                     break;
