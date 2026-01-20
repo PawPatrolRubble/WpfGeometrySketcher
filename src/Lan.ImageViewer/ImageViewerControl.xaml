@@ -72,21 +72,21 @@
             <ColumnDefinition Width="{Binding ShowSimpleCanvas, Converter={StaticResource BooleanToGridLengthConverter}}" />
         </Grid.ColumnDefinitions>
 
-        <Grid >
+        <Grid>
 
             <local:ImageViewer
                 x:Name="ImageViewer"
                 BorderBrush="LightGray"
                 BorderThickness="0"
-                DefaultStrokeThickness="1"
-                StrokeThickness="1"
                 CrossLineColor="Lime"
-                Style="{StaticResource ImageViewer.Compact}"
+                DefaultStrokeThickness="1"
                 ImageSource="{Binding Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 MouseDoubleClickPosition="{Binding MouseDoubleClickPosition, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                 Scale="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 ShowCrossLine="True"
-                SketchBoardDataManager="{Binding SketchBoardDataManager}" />
+                SketchBoardDataManager="{Binding SketchBoardDataManager}"
+                StrokeThickness="1"
+                Style="{StaticResource ImageViewer.Compact}" />
 
 
             <Grid

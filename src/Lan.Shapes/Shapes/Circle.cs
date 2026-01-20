@@ -19,8 +19,14 @@ namespace Lan.Shapes.Shapes
 
         public Circle(ShapeLayer shapeLayer) : base(shapeLayer)
         {
+
             _dragHandle = new RectDragHandle(DragHandleSize, default, 1);
+            Handles.Add(_dragHandle);
             RenderGeometryGroup.Children.Add(_ellipseGeometry);
+            if (_dragHandle.HandleGeometry != null)
+            {
+                HandleGeometryGroup.Children.Add(_dragHandle.HandleGeometry);
+            }
         }
 
         #endregion
@@ -31,7 +37,7 @@ namespace Lan.Shapes.Shapes
 
         public void FromData(EllipseData data)
         {
-            X = data.Center.X; 
+            X = data.Center.X;
             Y = data.Center.Y;
             Radius = data.RadiusX;
             IsGeometryRendered = true;
@@ -91,7 +97,7 @@ namespace Lan.Shapes.Shapes
             get => _y;
             set
             {
-                SetField(ref _y, value); 
+                SetField(ref _y, value);
                 Center = new Point(Center.X, _y);
             }
         }
@@ -140,9 +146,16 @@ namespace Lan.Shapes.Shapes
 
         }
 
+        public override void OnMouseLeftButtonDown(Point mousePoint)
+        {
+            MouseDownPoint = null;
+            base.OnMouseLeftButtonDown(mousePoint);
+        }
+
         protected override void DrawGeometryInMouseMove(Point oldPoint, Point newPoint)
         {
-            Radius = (newPoint.X - oldPoint.X) / 2;
+            Center = oldPoint;
+            Radius = (newPoint - oldPoint).Length;
         }
 
         protected override void HandleResizing(Point point)
@@ -187,10 +200,9 @@ namespace Lan.Shapes.Shapes
         {
             if (buttonState == MouseButtonState.Pressed)
             {
-                if (!IsGeometryRendered && OldPointForTranslate.HasValue)
+                if (!IsGeometryRendered && MouseDownPoint.HasValue)
                 {
-                    Radius = point.X - OldPointForTranslate.Value.X;
-                    Radius = point.Y - OldPointForTranslate.Value.Y;
+                    DrawGeometryInMouseMove(MouseDownPoint.Value, point);
                 }
                 else if (SelectedDragHandle != null)
                 {

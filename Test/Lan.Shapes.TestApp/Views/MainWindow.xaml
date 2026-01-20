@@ -10,9 +10,10 @@
     xmlns:viewModels="clr-namespace:Lan.Shapes.App.ViewModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="1200"
+    Height="800"
     d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -69,7 +70,7 @@
 
             <StackPanel Grid.Column="2">
                 <ComboBox ItemsSource="{Binding ImageViewerViewModels}" SelectedItem="{Binding SelectedImageViewModel}" />
-                
+
                 <Button Command="{Binding LoadFromParameterCommand}" Content="load from parameter" />
                 <Button Command="{Binding LockEditCommand}" Content="lock" />
                 <Button Command="{Binding UnlockEditCommand}" Content="Unlock" />
@@ -77,9 +78,7 @@
                 <Button Command="{Binding SetTagNameCommand}" Content="Set Tag" />
                 <Button Command="{Binding ClearAllShapesCommand}" Content="clear all" />
 
-                <TextBox
-                    VerticalAlignment="Center"
-                    Text="{Binding ImagePath}">
+                <TextBox VerticalAlignment="Center" Text="{Binding ImagePath}">
 
                     <TextBox.InputBindings>
                         <MouseBinding Command="{Binding ChooseFileDialogCommand}" MouseAction="LeftDoubleClick" />

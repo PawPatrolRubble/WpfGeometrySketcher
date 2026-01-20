@@ -64,7 +64,7 @@ namespace Lan.Shapes
         /// </summary>
         public abstract Rect BoundsRect { get; }
 
-        protected double DragHandleSize { get; set; }
+        protected double DragHandleSize { get; set; } = 20;
 
 
         public Guid Id { get; }
@@ -152,6 +152,7 @@ namespace Lan.Shapes
             ShapeLayer = layer;
             Id = Guid.NewGuid();
             State = ShapeVisualState.Normal;
+            HandleGeometryGroup = new GeometryGroup();
             //Tag = this.GetType().Name;
         }
 
