@@ -17,9 +17,9 @@ namespace Lan.Shapes.Shapes
     public class Polygon : ShapeVisualBase, IDataExport<PointsData>
     {
         #region fields
-        
+
         private const double Tolerance = 30;
-        
+
         #endregion
 
         #region fields
@@ -60,7 +60,7 @@ namespace Lan.Shapes.Shapes
         {
             foreach (var point in data.DataPoints)
             {
-                
+
             }
         }
 
@@ -243,6 +243,14 @@ namespace Lan.Shapes.Shapes
         public override void OnSelected()
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            foreach (var handle in Handles)
+            {
+                handle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
         }
 
 

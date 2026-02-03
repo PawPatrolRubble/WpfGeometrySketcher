@@ -165,6 +165,14 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            foreach (var handle in Handles)
+            {
+                handle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
         /// <summary>
         /// left mouse button down event
         /// </summary>
@@ -182,6 +190,7 @@ namespace Lan.Shapes.Shapes
             }
 
             OldPointForTranslate = mousePoint;
+            MouseDownPoint = mousePoint;
         }
 
 
@@ -201,13 +210,26 @@ namespace Lan.Shapes.Shapes
                     IsBeingDraggedOrPanMoving = true;
                     HandleResizing(point);
                 }
-                else
+                else if (IsGeometryRendered && _rectangleGeometry != null)
                 {
-                    IsBeingDraggedOrPanMoving = true;
-
-                    HandleTranslate(point);
+                    // If already dragging, continue. Otherwise check if mouse down was inside the rectangle
+                    if (IsBeingDraggedOrPanMoving || (MouseDownPoint.HasValue && _rectangleGeometry.FillContains(MouseDownPoint.Value)))
+                    {
+                        IsBeingDraggedOrPanMoving = true;
+                        HandleTranslate(point);
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Handle mouse left button up - clean up state
+        /// </summary>
+        public override void OnMouseLeftButtonUp(Point newPoint)
+        {
+            base.OnMouseLeftButtonUp(newPoint);
+            // Clear mouse tracking points to prevent stale state
+            OldPointForTranslate = null;
         }
 
         /// <summary>
@@ -265,7 +287,7 @@ namespace Lan.Shapes.Shapes
             switch (_tagPosition)
             {
                 case TagPosition.Center:
-                    return TopLeft.MiddleWith(BottomRight) -new Vector(ShapeLayer.TagFontSize/2, ShapeLayer.TagFontSize/2);
+                    return TopLeft.MiddleWith(BottomRight) - new Vector(ShapeLayer.TagFontSize / 2, ShapeLayer.TagFontSize / 2);
 
                 case TagPosition.Top:
                     return TopLeft - new Vector(0, ShapeLayer.TagFontSize);

@@ -202,6 +202,18 @@ namespace Lan.Shapes.Custom
             throw new NotImplementedException();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            if (_rightDragHandle != null)
+            {
+                _rightDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+            if (_topDragHandle != null)
+            {
+                _topDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
         private void UpdateHandlePosition(Point center, double radius)
         {
             _topDragHandle.GeometryCenter = center + new Vector(0, -radius);

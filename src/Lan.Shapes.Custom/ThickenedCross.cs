@@ -398,6 +398,15 @@ namespace Lan.Shapes.Custom
             }
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            base.OnDragHandleSizeChanges(dragHandleSize);
+            foreach (var handle in Handles)
+            {
+                handle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
 
         /// <summary>
         ///     left mouse button down event
@@ -427,7 +436,7 @@ namespace Lan.Shapes.Custom
             {
                 if (!IsGeometryRendered)
                 {
-                    VerticalBottomRight = GetValidValueFromPoint(DragLocations.VBottomRight,point);
+                    VerticalBottomRight = GetValidValueFromPoint(DragLocations.VBottomRight, point);
                     UpdateVisual();
                 }
                 else if (SelectedDragHandle != null)

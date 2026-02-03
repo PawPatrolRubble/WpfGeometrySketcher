@@ -120,6 +120,22 @@ namespace Lan.Shapes.Shapes
 
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            if (_leftDragHandle != null)
+            {
+                _leftDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+            if (_rightDragHandle != null)
+            {
+                _rightDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+            if (_panHandle != null)
+            {
+                _panHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
 
         public override void OnMouseLeftButtonDown(Point mousePoint)
         {
@@ -214,7 +230,7 @@ namespace Lan.Shapes.Shapes
             // Draw the length text
             var length = Math.Sqrt(Math.Pow(End.X - Start.X, 2) + Math.Pow(End.Y - Start.Y, 2));
             var lengthInMm = 0.0;
-            if  (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
+            if (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
             {
                 lengthInMm = length * ShapeLayer.UnitsPerMillimeter / ShapeLayer.PixelPerUnit;
             }

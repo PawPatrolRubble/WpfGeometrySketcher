@@ -283,7 +283,7 @@ namespace Lan.Shapes
             }
 
             OldPointForTranslate = mousePoint;
-            MouseDownPoint ??= mousePoint;
+            MouseDownPoint = mousePoint;
         }
 
         /// <summary>

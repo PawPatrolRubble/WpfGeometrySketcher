@@ -13,7 +13,7 @@ namespace Lan.Shapes.Custom
     {
         #region fields
 
-        protected  double MaxStrokeThickness { get; private set; } 
+        protected double MaxStrokeThickness { get; private set; }
 
         #endregion
 
@@ -99,6 +99,14 @@ namespace Lan.Shapes.Custom
         public override void OnSelected()
         {
             throw new NotImplementedException();
+        }
+
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            if (DistanceResizeHandle != null)
+            {
+                DistanceResizeHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
         }
 
         protected abstract void OnStrokeThicknessChanges(double strokeThickness);

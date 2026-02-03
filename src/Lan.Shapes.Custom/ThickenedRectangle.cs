@@ -233,6 +233,15 @@ namespace Lan.Shapes.Custom
             UpdateVisual();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            base.OnDragHandleSizeChanges(dragHandleSize);
+            foreach (var handle in Handles)
+            {
+                handle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
 
         private void ResizeByCornerPoint(DragLocation location, Point point)
         {

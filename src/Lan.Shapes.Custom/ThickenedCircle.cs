@@ -203,6 +203,15 @@ namespace Lan.Shapes.Custom
             }
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            base.OnDragHandleSizeChanges(dragHandleSize);
+            if (_resizeHandle != null)
+            {
+                _resizeHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
         public void FromData(EllipseData data)
         {
             Center = data.Center;

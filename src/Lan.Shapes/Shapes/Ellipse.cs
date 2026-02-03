@@ -131,6 +131,18 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            if (_rightDragHandle != null)
+            {
+                _rightDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+            if (_topDragHandle != null)
+            {
+                _topDragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
 
         /// <summary>
         /// left mouse button down event
@@ -148,7 +160,7 @@ namespace Lan.Shapes.Shapes
             }
 
             OldPointForTranslate = mousePoint;
-            MouseDownPoint ??= mousePoint;
+            MouseDownPoint = mousePoint;
         }
 
         public override void FindSelectedHandle(Point p)
@@ -182,15 +194,30 @@ namespace Lan.Shapes.Shapes
                     IsBeingDraggedOrPanMoving = true;
                     HandleResizing(point);
                 }
-                else
+                else if (IsGeometryRendered)
                 {
-                    IsBeingDraggedOrPanMoving = true;
-                    HandleTranslate(point);
+                    // If already dragging, continue. Otherwise check if mouse down was inside the ellipse
+                    if (IsBeingDraggedOrPanMoving || (MouseDownPoint.HasValue && _ellipseGeometry.FillContains(MouseDownPoint.Value)))
+                    {
+                        IsBeingDraggedOrPanMoving = true;
+                        HandleTranslate(point);
+                    }
                 }
 
                 UpdateVisual();
             }
 
+        }
+
+        /// <summary>
+        /// Handle mouse left button up - clean up state
+        /// </summary>
+        public override void OnMouseLeftButtonUp(Point newPoint)
+        {
+            base.OnMouseLeftButtonUp(newPoint);
+            // Clear mouse tracking points to prevent stale state
+            OldPointForTranslate = null;
+            MouseDownPoint = null;
         }
 
 

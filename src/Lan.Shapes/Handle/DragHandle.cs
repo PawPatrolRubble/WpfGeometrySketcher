@@ -13,10 +13,10 @@ namespace Lan.Shapes.Handle
 
         protected DragHandle(Size handleSize, Point geometryCenter, double detectionRange, int id)
         {
-            HandleSize = handleSize;
-            GeometryCenter = geometryCenter;
+            _handleSize = handleSize;  // Use backing field to avoid triggering setter before geometry is ready
             DetectionRange = detectionRange;
             Id = id;
+            GeometryCenter = geometryCenter;  // This triggers SetCenter after size is set
         }
 
         #endregion
@@ -33,7 +33,20 @@ namespace Lan.Shapes.Handle
 
         public double DetectionRange { get; }
 
-        public Size HandleSize { get; }
+        private Size _handleSize;
+        public Size HandleSize
+        {
+            get => _handleSize;
+            set
+            {
+                _handleSize = value;
+                // Update geometry when size changes
+                if (HandleGeometry != null)
+                {
+                    SetCenter(_geometryCenter);
+                }
+            }
+        }
 
         public Point GeometryCenter
         {
@@ -56,10 +69,7 @@ namespace Lan.Shapes.Handle
 
         protected abstract void SetCenter(Point center);
 
-        public virtual bool FillContains(Point checkPoint)
-        {
-            return HandleGeometry?.FillContains(checkPoint, DetectionRange, ToleranceType.Absolute) ?? false;
-        }
+        public abstract bool FillContains(Point checkPoint);
 
         #endregion
     }

@@ -105,6 +105,19 @@ namespace Lan.Shapes.Custom
             UpdateVisual();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            base.OnDragHandleSizeChanges(dragHandleSize);
+            if (_leftDragHandle != null)
+            {
+                _leftDragHandle.HandleSize = new System.Windows.Size(dragHandleSize, dragHandleSize);
+            }
+            if (_rightDragHandle != null)
+            {
+                _rightDragHandle.HandleSize = new System.Windows.Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
         /// <summary>
         /// when mouse left button up
         /// </summary>
@@ -218,7 +231,8 @@ namespace Lan.Shapes.Custom
 
         protected virtual bool CanRenderGeometry()
         {
-            if (DistanceResizeHandle == null || _leftDragHandle == null || _rightDragHandle == null) {
+            if (DistanceResizeHandle == null || _leftDragHandle == null || _rightDragHandle == null)
+            {
                 return false;
             }
 

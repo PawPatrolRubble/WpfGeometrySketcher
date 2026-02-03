@@ -33,7 +33,7 @@ namespace Lan.Shapes.Shapes
 
         public void FromData(EllipseData data)
         {
-            X = data.Center.X; 
+            X = data.Center.X;
             Y = data.Center.Y;
             Radius = data.RadiusX;
             IsGeometryRendered = true;
@@ -90,7 +90,7 @@ namespace Lan.Shapes.Shapes
             get => _y;
             set
             {
-                SetField(ref _y, value); 
+                SetField(ref _y, value);
                 Center = new Point(Center.X, _y);
             }
         }
@@ -142,7 +142,7 @@ namespace Lan.Shapes.Shapes
         private void AddRadiusText(DrawingContext renderContext)
         {
             var lengthInMm = 0.0;
-            if  (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
+            if (ShapeLayer.UnitsPerMillimeter != 0 && ShapeLayer.PixelPerUnit != 0)
             {
                 lengthInMm = Radius * ShapeLayer.UnitsPerMillimeter / ShapeLayer.PixelPerUnit;
             }
@@ -206,6 +206,14 @@ namespace Lan.Shapes.Shapes
             throw new NotImplementedException();
         }
 
+        protected override void OnDragHandleSizeChanges(double dragHandleSize)
+        {
+            if (_dragHandle != null)
+            {
+                _dragHandle.HandleSize = new Size(dragHandleSize, dragHandleSize);
+            }
+        }
+
 
         /// <summary>
         ///     left mouse button down event
@@ -241,23 +249,41 @@ namespace Lan.Shapes.Shapes
             {
                 if (!IsGeometryRendered && OldPointForTranslate.HasValue)
                 {
-                    Radius = point.X - OldPointForTranslate.Value.X;
-                    Radius = point.Y - OldPointForTranslate.Value.Y;
+                    // Calculate radius as distance from center to current point
+                    var dx = point.X - OldPointForTranslate.Value.X;
+                    var dy = point.Y - OldPointForTranslate.Value.Y;
+                    Radius = Math.Sqrt(dx * dx + dy * dy);
+                    // Don't update OldPointForTranslate during drawing - we need the center point
                 }
                 else if (SelectedDragHandle != null)
                 {
                     IsBeingDraggedOrPanMoving = true;
                     HandleResizing(point);
+                    // HandleResizing updates OldPointForTranslate internally
                 }
-                else
+                else if (IsGeometryRendered)
                 {
-                    IsBeingDraggedOrPanMoving = true;
-                    HandleTranslate(point);
+                    // If already dragging, continue. Otherwise check if mouse down was inside the circle
+                    if (IsBeingDraggedOrPanMoving || (MouseDownPoint.HasValue && _ellipseGeometry.FillContains(MouseDownPoint.Value)))
+                    {
+                        IsBeingDraggedOrPanMoving = true;
+                        HandleTranslate(point);
+                        // HandleTranslate updates OldPointForTranslate internally
+                    }
                 }
-
             }
         }
 
+        /// \u003csummary\u003e
+        /// Handle mouse left button up - clean up state
+        /// \u003c/summary\u003e
+        public override void OnMouseLeftButtonUp(Point newPoint)
+        {
+            base.OnMouseLeftButtonUp(newPoint);
+            // Clear mouse tracking points to prevent stale state
+            OldPointForTranslate = null;
+            MouseDownPoint = null;
+        }
 
         /// <summary>
         ///     选择时
