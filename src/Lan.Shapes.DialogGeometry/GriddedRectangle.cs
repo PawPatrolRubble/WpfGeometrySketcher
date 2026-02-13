@@ -173,10 +173,16 @@ namespace Lan.Shapes.DialogGeometry
             base.OnMouseLeftButtonDoubleClick(mouseDoubleClickPoint);
             _dialogService.ShowDialog<GridDataEditDialog, GridDataEditDialogViewModel>
             (
-                ()=>
+                () =>
                 {
                     var vm = new GridDataEditDialogViewModel();
                     vm.GridDataList.AddRange(GridData);
+
+                    if (vm.GridDataList.Count > 0)
+                    {
+                        vm.SelectedGridData = vm.GridDataList[0];
+                    }
+
                     return vm;
                 },
                 x =>
