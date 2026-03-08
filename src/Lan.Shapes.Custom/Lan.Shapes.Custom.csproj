@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
+    <PackageReference Include="netDxf" Version="2023.11.10" />
   </ItemGroup>
 
 </Project>

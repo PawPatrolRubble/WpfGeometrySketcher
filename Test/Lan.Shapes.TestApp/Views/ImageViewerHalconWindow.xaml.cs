@@ -19,7 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Lan.ImageViewer.Halcon;
 
 namespace Lan.Shapes.App
 {
@@ -31,26 +30,26 @@ namespace Lan.Shapes.App
         public ImageViewerHalconWindow()
         {
             InitializeComponent();
-            DataContext = App.ServiceProvider.GetRequiredService<MainWindowViewModel>();
+            //DataContext = App.ServiceProvider.GetRequiredService<MainWindowViewModel>();
         }
 
         private void FrameworkElement_OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (sender is ImageViewerHalconControl imageViewerControl)
-            {
-                if (imageViewerControl.DataContext is ImageViewerControlViewModel vm)
-                {
-                    vm.SketchBoardDataManager.LoadShape<Cross, CrossData>(new CrossData()
-                    {
-                        Center = new Point(40, 40),
-                        Height = 50,
-                        Width = 50,
-                        StrokeThickness = 1
-                    });
-                }
-                ;
-                //imageViewerControl
-            }
+            //if (sender is ImageViewerHalconControl imageViewerControl)
+            //{
+            //    if (imageViewerControl.DataContext is ImageViewerControlViewModel vm)
+            //    {
+            //        vm.SketchBoardDataManager.LoadShape<Cross, CrossData>(new CrossData()
+            //        {
+            //            Center = new Point(40, 40),
+            //            Height = 50,
+            //            Width = 50,
+            //            StrokeThickness = 1
+            //        });
+            //    }
+            //    ;
+            //    //imageViewerControl
+            //}
         }
     }
 }

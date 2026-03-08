@@ -71,7 +71,7 @@
 
             </halconDotNet:HSmartWindowControlWPF>-->
 
-            <local:ImageViewerHalcon ImageSource="E:\source codes\ivy\算法采集图片\2023-10-27_13_08_41_600.bmp" SketchBoardDataManager="{Binding SketchBoardDataManager}" />
+            <!--<local:ImageViewerHalcon ImageSource="E:\source codes\ivy\算法采集图片\2023-10-27_13_08_41_600.bmp" SketchBoardDataManager="{Binding SketchBoardDataManager}" />-->
 
             <Grid
                 Height="45"
