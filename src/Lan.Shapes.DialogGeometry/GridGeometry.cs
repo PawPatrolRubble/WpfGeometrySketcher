@@ -149,21 +149,23 @@ namespace Lan.Shapes.DialogGeometry
                 var dialog = new DialogService();
                 dialog.ShowDialog<GridDialog, GridDialogDialogViewModel>(() => new GridDialogDialogViewModel(), x =>
                 {
-                    RowCount = x.RowCount;
-                    ColumnCount = x.ColCount;
-                    RowGap = x.VerticalGap;
-                    ColumnGap = x.HorizontalGap;
+                    if (x.Result == DialogResult.Ok)
+                    {
+                        RowCount = x.RowCount;
+                        ColumnCount = x.ColCount;
+                        RowGap = x.VerticalGap;
+                        ColumnGap = x.HorizontalGap;
+
+                        BottomRight = newPoint;
+                        _boundGeometry.Rect = new Rect(TopLeft, BottomRight);
+                        IsGeometryRendered = true;
+
+                        RowGap = (int)((BottomRight.Y - TopLeft.Y) / RowCount);
+                        ColumnGap = (int)((BottomRight.X - TopLeft.X) / ColumnCount);
+
+                        UpdateOrAddLineGeometries(true);
+                    }
                 });
-                BottomRight = newPoint;
-                _boundGeometry.Rect = new Rect(TopLeft, BottomRight);
-                IsGeometryRendered = true;
-
-                RowGap = (int)((BottomRight.Y - TopLeft.Y) / RowCount);
-                ColumnGap = (int)((BottomRight.X - TopLeft.X) / ColumnCount);
-
-                UpdateOrAddLineGeometries(true);
-                //RenderGeometryGroup.Children.AddRange(_horizontalLines);
-                //RenderGeometryGroup.Children.AddRange(_verticalLines);
             }
 
             UpdateVisual();

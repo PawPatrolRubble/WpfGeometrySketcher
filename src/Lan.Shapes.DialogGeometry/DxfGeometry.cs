@@ -218,18 +218,21 @@ namespace Lan.Shapes.DialogGeometry
                     var dialog = new DialogService();
                     dialog.ShowDialog<DxfExportDialog, DxfExportDialogViewModel>(() => new DxfExportDialogViewModel(), x =>
                     {
-                        var doc = ExportToDxf(new Point(x.TopLeftX, x.TopLeftY), x.PixelToMmFactor);
-
-                        var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
-                        saveFileDialog.Filter = "DXF files (*.dxf)|*.dxf|All files (*.*)|*.*";
-                        saveFileDialog.DefaultExt = "dxf";
-                        saveFileDialog.AddExtension = true;
-                        saveFileDialog.FileName = "exported_sketch.dxf";
-
-                        if (saveFileDialog.ShowDialog() == true)
+                        if (x.Result == DialogResult.Ok)
                         {
-                            doc.Save(saveFileDialog.FileName);
-                            MessageBox.Show("Export to DXF completed!");
+                            var doc = ExportToDxf(new Point(x.TopLeftX, x.TopLeftY), x.PixelToMmFactor);
+
+                            var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                            saveFileDialog.Filter = "DXF files (*.dxf)|*.dxf|All files (*.*)|*.*";
+                            saveFileDialog.DefaultExt = "dxf";
+                            saveFileDialog.AddExtension = true;
+                            saveFileDialog.FileName = "exported_sketch.dxf";
+
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                doc.Save(saveFileDialog.FileName);
+                                MessageBox.Show("Export to DXF completed!");
+                            }
                         }
                     });
                 };

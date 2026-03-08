@@ -20,13 +20,25 @@ namespace Lan.Shapes.DialogGeometry.Dialog
 
             if (vm is DialogViewModelBase dialogViewModel)
             {
-                dialogViewModel.RequestClose +=()=>
+                dialogViewModel.RequestClose += () =>
                 {
-                    closedCallback(vm);
                     window.Close();
                 };
 
+                window.Closing += (s, e) =>
+                {
+                    // Only set to Close if not already set by OK/Cancel
+                    if (dialogViewModel.Result == DialogResult.None)
+                    {
+                        dialogViewModel.Result = DialogResult.Close;
+                    }
+                };
             }
+
+            window.Closed += (s, e) =>
+            {
+                closedCallback(vm);
+            };
 
             window.ShowDialog();
         }

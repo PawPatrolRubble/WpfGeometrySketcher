@@ -79,7 +79,7 @@
                 Width="90"
                 Height="35"
                 Margin="5"
-                Command="{Binding CloseCommand}"
+                Command="{Binding CancelCommand}"
                 Content="取消"
                 FontSize="18"
                 Style="{StaticResource ButtonWarning}" />
