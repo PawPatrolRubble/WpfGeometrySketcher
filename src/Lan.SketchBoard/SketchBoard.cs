@@ -135,7 +135,16 @@ namespace Lan.SketchBoard
         /// <param name="e"></param>
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
         {
-            SketchBoardDataManager?.CurrentGeometryInEdit?.OnMouseRightButtonUp(e.GetPosition(this));
+            var hitShape = GetHitTestShape(e.GetPosition(this));
+            if (hitShape != null)
+            {
+                hitShape.OnMouseRightButtonUp(e.GetPosition(this));
+            }
+            else
+            {
+                SketchBoardDataManager?.CurrentGeometryInEdit?.OnMouseRightButtonUp(e.GetPosition(this));
+            }
+
             SketchBoardDataManager?.UnselectGeometry();
 
             base.OnMouseRightButtonUp(e);
@@ -195,7 +204,7 @@ namespace Lan.SketchBoard
             if (hitTestResult != null)
             {
                 shape = hitTestResult.VisualHit as ShapeVisualBase;
-                _hasShapeSelected = shape!=null;
+                _hasShapeSelected = shape != null;
             }
             else
             {

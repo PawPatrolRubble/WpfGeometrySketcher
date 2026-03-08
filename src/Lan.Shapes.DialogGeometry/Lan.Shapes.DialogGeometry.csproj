@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <TargetFramework>net6.0-windows</TargetFramework>
 	  <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="HandyControls" Version="3.4.5" />
+    <PackageReference Include="netDxf" Version="2023.11.10" />
   </ItemGroup>
 
   <ItemGroup>

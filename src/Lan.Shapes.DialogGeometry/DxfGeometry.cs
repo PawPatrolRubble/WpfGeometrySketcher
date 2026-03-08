@@ -1,20 +1,17 @@
-﻿using netDxf;
-using netDxf.Entities;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Controls;
-using Lan.Shapes.Shapes;
+using Lan.Shapes.DialogGeometry.Dialog;
 using Lan.Shapes.Handle;
+using Lan.Shapes.Shapes;
+using netDxf;
+using netDxf.Entities;
 using Point = System.Windows.Point;
 
-namespace Lan.Shapes.Custom
+namespace Lan.Shapes.DialogGeometry
 {
     public class DxfGeometry : ShapeVisualBase
     {
@@ -218,10 +215,23 @@ namespace Lan.Shapes.Custom
                 var exportItem = new MenuItem { Header = "Export to DXF..." };
                 exportItem.Click += (s, e) =>
                 {
-                    // Example of how to trigger the export when clicked:
-                    // var doc = ExportToDxf(new Point(0, 0), 1.0); // pass the correct pixelToMmFactor here!
-                    // doc.Save("exported_sketch.dxf");
-                    MessageBox.Show("Export to DXF clicked!\n(Implement file save dialog logic here)");
+                    var dialog = new DialogService();
+                    dialog.ShowDialog<DxfExportDialog, DxfExportDialogViewModel>(() => new DxfExportDialogViewModel(), x =>
+                    {
+                        var doc = ExportToDxf(new Point(x.TopLeftX, x.TopLeftY), x.PixelToMmFactor);
+
+                        var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                        saveFileDialog.Filter = "DXF files (*.dxf)|*.dxf|All files (*.*)|*.*";
+                        saveFileDialog.DefaultExt = "dxf";
+                        saveFileDialog.AddExtension = true;
+                        saveFileDialog.FileName = "exported_sketch.dxf";
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            doc.Save(saveFileDialog.FileName);
+                            MessageBox.Show("Export to DXF completed!");
+                        }
+                    });
                 };
                 contextMenu.Items.Add(exportItem);
 
@@ -536,9 +546,17 @@ namespace Lan.Shapes.Custom
 
             if (_geometry is PathGeometry pathGeo)
             {
+                // WPF's GetFlattenedPathGeometry natively drops all figures where IsFilled=false!
+                // We securely clone the geometry and temporarily force IsFilled=true to guarantee full point data retrieval.
+                var cloneGeo = pathGeo.Clone();
+                foreach (var figure in cloneGeo.Figures)
+                {
+                    figure.IsFilled = true;
+                }
+
                 // We use Flatten to universally convert complex Bézier and arc curves correctly back into highly 
                 // precise linear Polyline2D entities suitable for standard CAD and CNC tools
-                var flatGeo = pathGeo.GetFlattenedPathGeometry(0.01, ToleranceType.Absolute);
+                var flatGeo = cloneGeo.GetFlattenedPathGeometry(0.01, ToleranceType.Absolute);
 
                 foreach (var figure in flatGeo.Figures)
                 {
@@ -573,10 +591,10 @@ namespace Lan.Shapes.Custom
         private netDxf.Vector2 ToDxfPoint(Point p, Point topLeftRealWorld, double pixelToMm)
         {
             return new netDxf.Vector2(
-                topLeftRealWorld.X + p.X * pixelToMm,
+                topLeftRealWorld.X + p.X / pixelToMm,
 
                 // Flip the Y-axis back because WPF rendering coordinate Y goes down, but DXF Y goes up
-                topLeftRealWorld.Y - p.Y * pixelToMm
+                topLeftRealWorld.Y - p.Y / pixelToMm
             );
         }
 
