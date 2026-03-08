@@ -35,6 +35,7 @@ namespace Lan.ImageViewer.Prism {
             //_geometryTypeManager.RegisterGeometryType<Cross>();
             _geometryTypeManager.RegisterGeometryType<Line>();
             _geometryTypeManager.RegisterGeometryType<Rectangle>();
+            _geometryTypeManager.RegisterGeometryType<DxfGeometry>();
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry) {
