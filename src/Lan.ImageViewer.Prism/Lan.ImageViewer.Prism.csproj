@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.4.1</PackageVersion>
-		<Description>update targetframework to 6.0</Description>
+		<PackageVersion>1.4.3</PackageVersion>
+		<Description>add reverse option in dxf geometry when exportng dxf</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
@@ -25,12 +25,6 @@
 			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
-
-
-	<!--<PropertyGroup>
-		<PackageOutputPath>\\192.168.60.253\运营管理部\IT技术\IT技术个人盘\李万胜\nugets</PackageOutputPath>
-	</PropertyGroup>-->
-
 
 
 	<Target Name="PublishToNexus" AfterTargets="Pack">

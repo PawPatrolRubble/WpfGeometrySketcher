@@ -1,19 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<UserControl x:Class="Lan.Shapes.DialogGeometry.Dialog.DxfExportDialog"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dialogs="http://prismlibrary.com/"
-             xmlns:hc="https://handyorg.github.io/handycontrol"
-             xmlns:local="clr-namespace:Lan.Shapes.DialogGeometry.Dialog"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             Width="350"
-             Height="250"
-             d:Background="White"
-             d:DataContext="{d:DesignInstance local:DxfExportDialogViewModel}"
-             d:DesignHeight="250"
-             d:DesignWidth="350"
-             mc:Ignorable="d">
+<?xml version="1.0" encoding="UTF-8" ?>
+<UserControl
+    x:Class="Lan.Shapes.DialogGeometry.Dialog.DxfExportDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="http://prismlibrary.com/"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Lan.Shapes.DialogGeometry.Dialog"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="350"
+    Height="250"
+    d:Background="White"
+    d:DataContext="{d:DesignInstance local:DxfExportDialogViewModel}"
+    d:DesignHeight="250"
+    d:DesignWidth="350"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,55 +24,75 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Margin="0,10,0,10">
-        <TextBlock Text="DXF Export"
-                   FontSize="16"
-                   FontWeight="Bold" />
-        <hc:TextBox Margin="5"
-                    hc:InfoElement.HorizontalAlignment="Right"
-                    hc:InfoElement.ShowClearButton="True"
-                    hc:InfoElement.Title="Top-Left X"
-                    hc:InfoElement.TitlePlacement="Left"
-                    hc:InfoElement.TitleWidth="100"
-                    FontSize="16"
-                    Text="{Binding TopLeftX}" />
-        <hc:TextBox Margin="5"
-                    hc:InfoElement.HorizontalAlignment="Right"
-                    hc:InfoElement.ShowClearButton="True"
-                    hc:InfoElement.Title="Top-Left Y"
-                    hc:InfoElement.TitlePlacement="Left"
-                    hc:InfoElement.TitleWidth="100"
-                    FontSize="16"
-                    Text="{Binding TopLeftY}" />
-        <hc:TextBox Margin="5"
-                    hc:InfoElement.HorizontalAlignment="Right"
-                    hc:InfoElement.ShowClearButton="True"
-                    hc:InfoElement.Title="Pixel/MM"
-                    hc:InfoElement.TitlePlacement="Left"
-                    hc:InfoElement.TitleWidth="100"
-                    FontSize="16"
-                    Text="{Binding PixelToMmFactor}">
+        <TextBlock
+            FontSize="16"
+            FontWeight="Bold"
+            Text="DXF Export" />
+        <hc:TextBox
+            Margin="5"
+            hc:InfoElement.HorizontalAlignment="Right"
+            hc:InfoElement.ShowClearButton="True"
+            hc:InfoElement.Title="Top-Left X"
+            hc:InfoElement.TitlePlacement="Left"
+            hc:InfoElement.TitleWidth="100"
+            FontSize="16"
+            Text="{Binding TopLeftX}" />
+        <hc:TextBox
+            Margin="5"
+            hc:InfoElement.HorizontalAlignment="Right"
+            hc:InfoElement.ShowClearButton="True"
+            hc:InfoElement.Title="Top-Left Y"
+            hc:InfoElement.TitlePlacement="Left"
+            hc:InfoElement.TitleWidth="100"
+            FontSize="16"
+            Text="{Binding TopLeftY}" />
+        <hc:TextBox
+            Margin="5"
+            hc:InfoElement.HorizontalAlignment="Right"
+            hc:InfoElement.ShowClearButton="True"
+            hc:InfoElement.Title="Pixel/MM"
+            hc:InfoElement.TitlePlacement="Left"
+            hc:InfoElement.TitleWidth="100"
+            FontSize="16"
+            Text="{Binding PixelToMmFactor}">
+
+
+
+
             <hc:TextBox.InputBindings>
-                <KeyBinding Key="Enter"
-                            Command="{Binding CloseCommand}" />
+                <KeyBinding Key="Enter" Command="{Binding CloseCommand}" />
             </hc:TextBox.InputBindings>
         </hc:TextBox>
-        <StackPanel Margin="0,20,0,0"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-            <Button Width="90"
-                    Height="35"
-                    Margin="5"
-                    Command="{Binding OkCommand}"
-                    Content="OK"
-                    FontSize="16"
-                    Style="{StaticResource ButtonPrimary}" />
-            <Button Width="90"
-                    Height="35"
-                    Margin="5"
-                    Command="{Binding CancelCommand}"
-                    Content="Cancel"
-                    FontSize="16"
-                    Style="{StaticResource ButtonWarning}" />
+
+
+        <CheckBox
+            Margin="10,10"
+            Content="Reverse Y axis"
+            FontSize="16"
+            ToolTip="( start pos true=> +/ false=> -)"
+            HorizontalAlignment="Right"
+            IsChecked="{Binding ReverseYAxis}" />
+
+        <StackPanel
+            Margin="0,10,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                Width="90"
+                Height="35"
+                Margin="5"
+                Command="{Binding OkCommand}"
+                Content="OK"
+                FontSize="16"
+                Style="{StaticResource ButtonPrimary}" />
+            <Button
+                Width="90"
+                Height="35"
+                Margin="5"
+                Command="{Binding CancelCommand}"
+                Content="Cancel"
+                FontSize="16"
+                Style="{StaticResource ButtonWarning}" />
         </StackPanel>
     </StackPanel>
 </UserControl>

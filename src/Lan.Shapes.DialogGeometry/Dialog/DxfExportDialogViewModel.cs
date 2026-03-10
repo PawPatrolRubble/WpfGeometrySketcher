@@ -23,5 +23,14 @@ namespace Lan.Shapes.DialogGeometry.Dialog
             get => _pixelToMmFactor;
             set => SetField(ref _pixelToMmFactor, value);
         }
+
+        private bool _reverseYAxis;
+
+        public bool ReverseYAxis
+        {
+            get => _reverseYAxis;
+            set { SetField(ref _reverseYAxis, value); }
+        }
+
     }
 }
