@@ -2,8 +2,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
-		<PackageVersion>1.4.3</PackageVersion>
-		<Description>add reverse option in dxf geometry when exportng dxf</Description>
+		<PackageVersion>1.4.5</PackageVersion>
+		<Description>preserve the circle information when exporting to dxf</Description>
 		<!--<ReferenceOutputAssembly>true</ReferenceOutputAssembly>-->
 		<!--<IncludeReferencedProjects>true</IncludeReferencedProjects>-->
 		<ReferenceOutputAssembly>true</ReferenceOutputAssembly>

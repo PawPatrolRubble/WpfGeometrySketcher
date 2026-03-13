@@ -10,9 +10,7 @@
         <PackageReference Include="HandyControls" Version="3.4.5">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="netDxf" Version="2023.11.10">
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="netDxf" Version="2023.11.10" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />

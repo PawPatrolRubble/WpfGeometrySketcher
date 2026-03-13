@@ -270,7 +270,7 @@ namespace Lan.Shapes.DialogGeometry
                         {
                             if (x.Result == DialogResult.Ok)
                             {
-                                var doc = ExportToDxf(new Point(x.TopLeftX, x.TopLeftY), x.PixelToMmFactor, x.ReverseYAxis);
+                                var doc = ExportToDxf(new Point(x.TopLeftX, x.TopLeftY), x.ReverseYAxis);
 
                                 var saveFileDialog = new SaveFileDialog();
                                 saveFileDialog.Filter = "DXF files (*.dxf)|*.dxf|All files (*.*)|*.*";
@@ -467,20 +467,17 @@ namespace Lan.Shapes.DialogGeometry
             base.OnMouseLeftButtonDown(mousePoint);
             if (!IsGeometryRendered)
             {
-                var filePicker = new OpenFileDialog
-                {
-                    Filter = "DXF Files (*.dxf)|*.dxf|All Files (*.*)|*.*"
-                };
-
-                if (filePicker.ShowDialog() == true)
-                {
-                    var filePath = filePicker.FileName;
-                    ReadDxfFile(filePath, mousePoint);
-                    //RenderGeometryGroup.Children.Add(new RectangleGeometry(new Rect(mousePoint, new Size(200,200))));
-
-                    UpdateVisual();
-                    IsGeometryRendered = true;
-                }
+                var dialog = new DialogService();
+                dialog.ShowDialog<DxfImportDialog, DxfImportDialogViewModel>(() => new DxfImportDialogViewModel(),
+                    x =>
+                    {
+                        if (x.Result == DialogResult.Ok && !string.IsNullOrWhiteSpace(x.FilePath))
+                        {
+                            ReadDxfFile(x.FilePath, mousePoint, x.PixelToMmFactor);
+                            UpdateVisual();
+                            IsGeometryRendered = true;
+                        }
+                    });
             }
             else
             {
@@ -495,15 +492,27 @@ namespace Lan.Shapes.DialogGeometry
             }
         }
 
-        private void ReadDxfFile(string filePath, Point offset)
+        private double _dxfRenderScale = 1.0;
+
+        private void ReadDxfFile(string filePath, Point offset, double pixelToMmFactor = 1.0)
         {
             var doc = DxfDocument.Load(filePath);
             _originalDxfDoc = DxfDocument.Load(filePath);
             _initialOffset = offset;
             _accumulatedWpfTransform = Matrix.Identity;
-            // Implement the logic to read a DXF file and extract geometry data
-            // You can use a library like netDxf to simplify this process
-            _geometry = DxfRenderer.BuildGeometry(doc, 1, offset);
+            var dpiScale = 1.0;
+            if (Application.Current != null && Application.Current.MainWindow != null)
+            {
+                dpiScale = VisualTreeHelper.GetDpi(Application.Current.MainWindow).DpiScaleX;
+            }
+
+            // The user inputs pixelToMmFactor based on physical image pixels, but WPF Canvas draws in Device-Independent Units.
+            // When Windows has Display Scaling (e.g. 125%), 1 DIU naturally renders to 1.25 physical pixels,
+            // making the manually calculated physical pixel scale appear too large. Thus, we divide it by the DpiScale.
+            double actualScale = pixelToMmFactor / dpiScale;
+            _dxfRenderScale = actualScale;
+
+            _geometry = DxfRenderer.BuildGeometry(doc, actualScale, offset);
 
             _dxfGeometryWrapper = new GeometryGroup();
             if (_geometry != null)
@@ -661,7 +670,7 @@ namespace Lan.Shapes.DialogGeometry
         }
 
 
-        public DxfDocument ExportToDxf(Point sketchBoardTopLeftRealWorld, double pixelToMmFactor, bool reverseY)
+        public DxfDocument ExportToDxf(Point sketchBoardTopLeftRealWorld, bool reverseY)
         {
             BakeTransform();
 
@@ -674,9 +683,9 @@ namespace Lan.Shapes.DialogGeometry
 
             // We calculate the net affine transformation mapping from the ORIGINAL DXF coordinates to the final EXPORT DXF coordinates.
             // Let F(v) map from original DXF point v to export DXF point.
-            var v0 = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 0, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
-            var vX = MapOriginalDxfPointToExportDxfPoint(new Vector3(1, 0, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
-            var vY = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 1, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
+            var v0 = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 0, 0), sketchBoardTopLeftRealWorld, reverseY);
+            var vX = MapOriginalDxfPointToExportDxfPoint(new Vector3(1, 0, 0), sketchBoardTopLeftRealWorld, reverseY);
+            var vY = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 1, 0), sketchBoardTopLeftRealWorld, reverseY);
 
             var T = v0;
             
@@ -712,14 +721,14 @@ namespace Lan.Shapes.DialogGeometry
             return doc;
         }
 
-        private Vector3 MapOriginalDxfPointToExportDxfPoint(Vector3 v, Point sketchBoardTopLeftRealWorld, double pixelToMmFactor, bool reverseY)
+        private Vector3 MapOriginalDxfPointToExportDxfPoint(Vector3 v, Point sketchBoardTopLeftRealWorld, bool reverseY)
         {
-            var p0 = new Point(v.X + _initialOffset.X, -v.Y + _initialOffset.Y);
+            var p0 = new Point(v.X * _dxfRenderScale + _initialOffset.X, -v.Y * _dxfRenderScale + _initialOffset.Y);
             var p1 = _accumulatedWpfTransform.Transform(p0);
 
-            var dxfX = sketchBoardTopLeftRealWorld.X + p1.X / pixelToMmFactor;
-            var dxfY = reverseY ? sketchBoardTopLeftRealWorld.Y + p1.Y / pixelToMmFactor 
-                                : sketchBoardTopLeftRealWorld.Y - p1.Y / pixelToMmFactor;
+            var dxfX = sketchBoardTopLeftRealWorld.X + p1.X / _dxfRenderScale;
+            var dxfY = reverseY ? sketchBoardTopLeftRealWorld.Y + p1.Y / _dxfRenderScale 
+                                : sketchBoardTopLeftRealWorld.Y - p1.Y / _dxfRenderScale;
 
             return new Vector3(dxfX, dxfY, 0);
         }
