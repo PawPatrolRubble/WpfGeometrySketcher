@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,6 +32,10 @@ namespace Lan.Shapes.DialogGeometry
         private GeometryGroup? _dxfGeometryWrapper;
 
         private Geometry? _geometry;
+
+        private DxfDocument? _originalDxfDoc;
+        private Point _initialOffset;
+        private Matrix _accumulatedWpfTransform = Matrix.Identity;
 
         #endregion
 
@@ -389,6 +394,7 @@ namespace Lan.Shapes.DialogGeometry
             }
 
             var matrix = _dxfGeometryWrapper.Transform.Value;
+            _accumulatedWpfTransform = Matrix.Multiply(_accumulatedWpfTransform, matrix);
 
             // Calculate uniform scale and rotation from the standard affine 2D matrix
             var scale = Math.Sqrt(matrix.M11 * matrix.M11 + matrix.M21 * matrix.M21);
@@ -492,6 +498,9 @@ namespace Lan.Shapes.DialogGeometry
         private void ReadDxfFile(string filePath, Point offset)
         {
             var doc = DxfDocument.Load(filePath);
+            _originalDxfDoc = DxfDocument.Load(filePath);
+            _initialOffset = offset;
+            _accumulatedWpfTransform = Matrix.Identity;
             // Implement the logic to read a DXF file and extract geometry data
             // You can use a library like netDxf to simplify this process
             _geometry = DxfRenderer.BuildGeometry(doc, 1, offset);
@@ -651,64 +660,68 @@ namespace Lan.Shapes.DialogGeometry
             }
         }
 
+
         public DxfDocument ExportToDxf(Point sketchBoardTopLeftRealWorld, double pixelToMmFactor, bool reverseY)
         {
             BakeTransform();
 
             var doc = new DxfDocument();
 
-            if (_geometry is PathGeometry pathGeo)
+            if (_originalDxfDoc == null)
             {
-                // WPF's GetFlattenedPathGeometry natively drops all figures where IsFilled=false!
-                // We securely clone the geometry and temporarily force IsFilled=true to guarantee full point data retrieval.
-                var cloneGeo = pathGeo.Clone();
-                foreach (var figure in cloneGeo.Figures)
+                return doc;
+            }
+
+            // We calculate the net affine transformation mapping from the ORIGINAL DXF coordinates to the final EXPORT DXF coordinates.
+            // Let F(v) map from original DXF point v to export DXF point.
+            var v0 = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 0, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
+            var vX = MapOriginalDxfPointToExportDxfPoint(new Vector3(1, 0, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
+            var vY = MapOriginalDxfPointToExportDxfPoint(new Vector3(0, 1, 0), sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
+
+            var T = v0;
+            
+            // The column vectors of the transformation matrix
+            var M11 = vX.X - v0.X;
+            var M21 = vX.Y - v0.Y;
+
+            var M12 = vY.X - v0.X;
+            var M22 = vY.Y - v0.Y;
+
+            var transformMatrix = new netDxf.Matrix3(
+                M11, M12, 0,
+                M21, M22, 0,
+                0,   0,   1
+            );
+
+            // Copy layers to retain exact colors/line types
+            foreach (var layer in _originalDxfDoc.Layers)
+            {
+                if (!doc.Layers.Contains(layer.Name))
                 {
-                    figure.IsFilled = true;
+                    doc.Layers.Add((netDxf.Tables.Layer)layer.Clone());
                 }
+            }
 
-                // We use Flatten to universally convert complex Bézier and arc curves correctly back into highly 
-                // precise linear Polyline2D entities suitable for standard CAD and CNC tools
-                var flatGeo = cloneGeo.GetFlattenedPathGeometry(0.01, ToleranceType.Absolute);
-
-                foreach (var figure in flatGeo.Figures)
-                {
-                    var vertices = new List<Vector2>();
-
-                    var startPos = ToDxfPoint(figure.StartPoint, sketchBoardTopLeftRealWorld, pixelToMmFactor, reverseY);
-                    vertices.Add(startPos);
-
-                    foreach (var segment in figure.Segments)
-                    {
-                        if (segment is LineSegment ls)
-                        {
-                            vertices.Add(ToDxfPoint(ls.Point, sketchBoardTopLeftRealWorld, pixelToMmFactor,reverseY));
-                        }
-                        else if (segment is PolyLineSegment pls)
-                        {
-                            foreach (var p in pls.Points)
-                            {
-                                vertices.Add(ToDxfPoint(p, sketchBoardTopLeftRealWorld, pixelToMmFactor,reverseY));
-                            }
-                        }
-                    }
-
-                    var poly = new Polyline2D(vertices, figure.IsClosed);
-                    doc.Entities.Add(poly);
-                }
+            foreach (var entity in _originalDxfDoc.Entities.All)
+            {
+                var copy = (EntityObject)entity.Clone();
+                copy.TransformBy(transformMatrix, T);
+                doc.Entities.Add(copy);
             }
 
             return doc;
         }
 
-        private Vector2 ToDxfPoint(Point p, Point topLeftRealWorld, double pixelToMm, bool reverseY )
+        private Vector3 MapOriginalDxfPointToExportDxfPoint(Vector3 v, Point sketchBoardTopLeftRealWorld, double pixelToMmFactor, bool reverseY)
         {
-            return new Vector2(
-                topLeftRealWorld.X + p.X / pixelToMm,
+            var p0 = new Point(v.X + _initialOffset.X, -v.Y + _initialOffset.Y);
+            var p1 = _accumulatedWpfTransform.Transform(p0);
 
-                // Flip the Y-axis back because WPF rendering coordinate Y goes down, but DXF Y goes up
-                (float)(reverseY ? topLeftRealWorld.Y + p.Y / pixelToMm : topLeftRealWorld.Y - p.Y / pixelToMm)
-            );
+            var dxfX = sketchBoardTopLeftRealWorld.X + p1.X / pixelToMmFactor;
+            var dxfY = reverseY ? sketchBoardTopLeftRealWorld.Y + p1.Y / pixelToMmFactor 
+                                : sketchBoardTopLeftRealWorld.Y - p1.Y / pixelToMmFactor;
+
+            return new Vector3(dxfX, dxfY, 0);
         }
 
         #endregion

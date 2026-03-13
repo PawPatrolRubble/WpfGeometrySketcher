@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
@@ -7,23 +7,19 @@
         <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="HandyControls"
-                          Version="3.4.5">
+        <PackageReference Include="HandyControls" Version="3.4.5">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="netDxf"
-                          Version="2023.11.10">
+        <PackageReference Include="netDxf" Version="2023.11.10">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Lan.Shapes\Lan.Shapes.csproj" />
     </ItemGroup>
-    <Target Name="CopyProjectReferencesToPackage"
-            DependsOnTargets="ResolveReferences">
+    <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
         <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)"
-                                  Condition="'%(Extension)' == '.dll' AND ('%(Filename)' == 'netDxf' OR '%(Filename)' == 'HandyControl')" />
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.dll' AND ('%(Filename)' == 'netDxf' OR '%(Filename)' == 'HandyControl')" />
         </ItemGroup>
     </Target>
 </Project>
