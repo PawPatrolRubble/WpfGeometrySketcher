@@ -26,17 +26,9 @@
 		</ItemGroup>
 	</Target>
 
-
-	<!--<PropertyGroup>
-		<PackageOutputPath>\\192.168.60.253\运营管理部\IT技术\IT技术个人盘\李万胜\nugets</PackageOutputPath>
-	</PropertyGroup>-->
-
-
-
-	<Target Name="PublishToNexus" AfterTargets="Pack">
-		<Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg&quot; --source Nexus --api-key 648396fd-280e-37c7-8978-9e749499e1f7" />
+	<Target Name="PublishToNexus" AfterTargets="Pack" Condition="'$(NEXUS_API_KEY)' != ''">
+		<Exec Command="dotnet nuget push &quot;$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg&quot; --source Nexus --api-key $(NEXUS_API_KEY)" />
 	</Target>
-
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
